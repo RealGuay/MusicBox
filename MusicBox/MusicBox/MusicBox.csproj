@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>MusicBox</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Prism.DryIoc" Version="8.0.0.1909" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MusicBox.Core\MusicBox.Core.csproj" />
+    <ProjectReference Include="..\Modules\MusicBox.Modules.ModuleName\MusicBox.Modules.ModuleName.csproj" />
+    <ProjectReference Include="..\Services\MusicBox.Services.Interfaces\MusicBox.Services.Interfaces.csproj" />
+    <ProjectReference Include="..\Services\MusicBox.Services\MusicBox.Services.csproj" />
+  </ItemGroup>
+</Project>
