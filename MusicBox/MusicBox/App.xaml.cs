@@ -1,6 +1,8 @@
 ﻿using MusicBox.Modules.ModuleName;
 using MusicBox.Services;
 using MusicBox.Services.Interfaces;
+using MusicBox.Services.MidiInterfaces;
+using MusicBox.Services.MidiSanford;
 using MusicBox.Views;
 using Prism.Ioc;
 using Prism.Modularity;
@@ -21,16 +23,14 @@ namespace MusicBox
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterSingleton<IMessageService, MessageService>();
+            containerRegistry.RegisterSingleton<IMidiTimer, MidiTimer>();
             containerRegistry.RegisterSingleton<IBeatMaker, BeatMaker>();
-
         }
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
         {
             moduleCatalog.AddModule<ModuleNameModule>();
         }
-
-
 
         protected override void OnExit(ExitEventArgs e)
         {

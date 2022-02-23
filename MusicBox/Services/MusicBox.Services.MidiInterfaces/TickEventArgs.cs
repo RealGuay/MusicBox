@@ -1,6 +1,6 @@
 ﻿namespace MusicBox.Services.MidiInterfaces
 {
-    public class TickEventArg
+    public class TickEventArgs
     {
         public int TickAbsoluteCount { get; set; }
     }

@@ -9,6 +9,6 @@ namespace MusicBox.Services.MidiInterfaces
         void Start();
         void Stop();
         int Period { get; set; }
-        event EventHandler<TickEventArg> TickDetected;
+        event EventHandler<TickEventArgs> TickDetected;
     }
 }

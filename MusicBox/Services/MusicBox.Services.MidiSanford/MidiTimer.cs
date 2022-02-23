@@ -18,7 +18,7 @@ namespace MusicBox.Services.MidiSanford
             set { ChangePeriod(ref period, value); }
         }
 
-        public event EventHandler<TickEventArg> TickDetected;
+        public event EventHandler<TickEventArgs> TickDetected;
 
         public MidiTimer()
         {
@@ -62,7 +62,7 @@ namespace MusicBox.Services.MidiSanford
         private void OnTimerTick(object sender, EventArgs e)
         {
             _tickCount++;
-            TickDetected?.Invoke(this, new TickEventArg { TickAbsoluteCount = _tickCount });
+            TickDetected?.Invoke(this, new TickEventArgs { TickAbsoluteCount = _tickCount });
         }
     }
 }
