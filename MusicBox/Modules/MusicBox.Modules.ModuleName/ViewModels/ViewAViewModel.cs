@@ -12,8 +12,8 @@ namespace MusicBox.Modules.ModuleName.ViewModels
             get { return _message; }
             set { SetProperty(ref _message, value); }
         }
-
-        public ViewAViewModel(IRegionManager regionManager, IMessageService messageService) :
+         // todo remove IBeatMaker in ctor
+        public ViewAViewModel(IRegionManager regionManager, IMessageService messageService, IBeatMaker beatMaker) :
             base(regionManager)
         {
             Message = messageService.GetMessage();

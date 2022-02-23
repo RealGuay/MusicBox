@@ -6,6 +6,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MusicBox.Services.Interfaces\MusicBox.Services.Interfaces.csproj" />
+    <ProjectReference Include="..\MusicBox.Services.MidiInterfaces\MusicBox.Services.MidiInterfaces.csproj" />
+    <ProjectReference Include="..\MusicBox.Services.MidiSanford\MusicBox.Services.MidiSanford.csproj" />
   </ItemGroup>
 
 </Project>

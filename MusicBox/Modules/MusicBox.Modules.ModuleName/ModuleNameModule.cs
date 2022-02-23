@@ -1,5 +1,6 @@
 ﻿using MusicBox.Core;
 using MusicBox.Modules.ModuleName.Views;
+using MusicBox.Services.Interfaces;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Regions;

@@ -21,11 +21,22 @@ namespace MusicBox
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterSingleton<IMessageService, MessageService>();
+            containerRegistry.RegisterSingleton<IBeatMaker, BeatMaker>();
+
         }
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
         {
             moduleCatalog.AddModule<ModuleNameModule>();
+        }
+
+
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            base.OnExit(e);
+            IBeatMaker beatMaker = Container.Resolve<IBeatMaker>();
+            beatMaker?.Dispose();
         }
     }
 }
