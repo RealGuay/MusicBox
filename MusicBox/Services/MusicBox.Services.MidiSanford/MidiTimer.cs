@@ -62,7 +62,7 @@ namespace MusicBox.Services.MidiSanford
         private void OnTimerTick(object sender, EventArgs e)
         {
             _tickCount++;
-            TickDetected?.Invoke(this, new TickEventArgs { TickAbsoluteCount = _tickCount });
+            TickDetected?.Invoke(this, new TickEventArgs { TickCountFromStart = _tickCount });
         }
     }
 }

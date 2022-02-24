@@ -5,9 +5,16 @@
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True" >
     <Grid>
+        <StackPanel>
         <TextBlock Text="{Binding Message}"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
                    FontSize="24"/>
+            <Button Content="Start" Command="{Binding StartCommand}"></Button>
+            <TextBlock Text="{Binding BarProgress}"></TextBlock>
+            <TextBlock Text="{Binding BeatProgress}"></TextBlock>
+            <TextBlock Text="{Binding SubbeatProgress}"></TextBlock>
+            <TextBlock Text="{Binding TickProgress}"></TextBlock>
+        </StackPanel>
     </Grid>
 </UserControl>

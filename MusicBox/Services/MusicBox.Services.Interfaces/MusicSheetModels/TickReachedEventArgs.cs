@@ -2,7 +2,7 @@
 {
     public class TickReachedEventArgs
     {
-        public int TickInBarCount;
+        public int TickInSubBeatCount;
         public int AbsoluteTickCount;
     }
 }

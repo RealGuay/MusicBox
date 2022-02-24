@@ -2,6 +2,6 @@
 {
     public class TickEventArgs
     {
-        public int TickAbsoluteCount { get; set; }
+        public int TickCountFromStart { get; set; }
     }
 }

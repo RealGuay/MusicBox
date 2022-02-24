@@ -8,11 +8,8 @@ namespace MusicBox.Services
 {
     public class BeatMaker : IBeatMaker
     {
-        private IMidiTimer _midiTimer;
+        private readonly IMidiTimer _midiTimer;
         private TimeSignature _timeSignature;
-
-        private int _typeOfNote;
-        private int _timerPeriodMs;
 
         private int _tickPerSubBeat;
 
@@ -27,12 +24,6 @@ namespace MusicBox.Services
         private WrapAroundCounter _beatCounter;
         private WrapAroundCounter _subBeatCounter;
         private WrapAroundCounter _tickCounter;
-        private const int TICK_PER_BEAT = 24;
-
-        private int _subBeatsPerBeat;
-
-        private DateTime _lastTick;
-        private int _beatsPerBar;
 
         public event EventHandler<BarReachedEventArgs> BarReached;
 
@@ -42,66 +33,23 @@ namespace MusicBox.Services
 
         public event EventHandler<TickReachedEventArgs> TickReached;
 
-        //public BeatMaker(int tempo, int beatsPerBar, int typeOfNote, int subBeatsPerBeat)
-        //{
-        //   TimeSignature ts = TimeSignature.CreateTimeSignature4_4();
-        //   int tickResolution = 96;
-
-        //   BeatMaker(ts, tempo, tickResolution);
-
-        //   this.beatsPerBar = beatsPerBar;
-        //   this.typeOfNote = typeOfNote;
-        //   this.subBeatsPerBeat = subBeatsPerBeat;
-
-        //   tickPerSubBeat = TICK_PER_BEAT / subBeatsPerBeat;
-
-        //   ResetAllCounts();
-
-        //   lastTick = DateTime.Now;
-
-        //   timerPeriodMs = CalculateTimerPeriod(tempo);
-        //   InitTimer(timerPeriodMs);
-        //}
-
         public BeatMaker(IMidiTimer midiTimer)
         {
             _midiTimer = midiTimer;
             _midiTimer.TickDetected += TimerTickDetected;
+            // SetParams(TimeSignature.TS_4_4, 60, TickResolution.Normal);  // default params
+            SetParams(TimeSignature.TS_12_8, 60, TickResolution.Normal);  // default params
         }
 
-        public void Init(TimeSignature signature, int tempo, TickResolution tickResolution)
+        public void SetParams(TimeSignature signature, int tempo, TickResolution tickResolution)
         {
             _timeSignature = signature;
             _tickResolution = tickResolution;
 
-            _beatsPerBar = signature.BeatsPerBar;
-            _typeOfNote = signature.TypeOfNote;
-            _subBeatsPerBeat = signature.SubbeatsPerBeat;
+            _tickPerSubBeat = (int)tickResolution * _timeSignature.NotesPerBeat / _timeSignature.NotesPerQuarter / _timeSignature.SubbeatsPerBeat;
 
-            _tickPerSubBeat = (int)tickResolution / _typeOfNote / _subBeatsPerBeat;
-
-            ResetAllCounts();
-            _lastTick = DateTime.Now;
+            ResetAllCounters();
             InitTimer(tempo);
-        }
-
-        public void ResetAllCounts()
-        {
-            _currentBarCount = 1;
-            _currentBeatCount = 1;
-            _currentSubBeatCount = 1;
-            _absoluteTickCount = 0;
-
-            // todo reset counts and avoid creation of new counters
-            _barCounter = new WrapAroundCounter(_currentBarCount, int.MaxValue, null, BarIncremented);
-            _beatCounter = new WrapAroundCounter(_currentBeatCount, _beatsPerBar, _barCounter, BeatIncremented);
-            _subBeatCounter = new WrapAroundCounter(_currentSubBeatCount, _subBeatsPerBeat, _beatCounter, SubBeatIncremented);
-            _tickCounter = new WrapAroundCounter(0, _tickPerSubBeat - 1, _subBeatCounter, null);
-
-            _barCounter.ResetCount();
-            _beatCounter.ResetCount();
-            _subBeatCounter.ResetCount();
-            _tickCounter.ResetCount();
         }
 
         private void InitTimer(int tempo)
@@ -112,53 +60,66 @@ namespace MusicBox.Services
 
         public void SetTempo(int newTempo)
         {
-            _timerPeriodMs = CalculateTimerPeriod(newTempo);
-            _midiTimer.Period = _timerPeriodMs;
+            int timerPeriodMs = CalculateTimerPeriod(newTempo);
+            _midiTimer.Period = timerPeriodMs;
         }
 
         private int CalculateTimerPeriod(int tempo)
         {
-            double beatPeriodMs = 60.0 * 1000.0 / tempo;
-            double tickPeriodMs = beatPeriodMs * _timeSignature.TypeOfNote / (int)_tickResolution / _timeSignature.NotesPerBeat;
-            return (int)tickPeriodMs;
+            double msPerBeat = 60.0 * 1000.0 / tempo; // ms/beat
+            double beatsPerQuarter = _timeSignature.NotesPerQuarter / _timeSignature.NotesPerBeat; // beat/Quarter
+            double msPerQuarter = beatsPerQuarter * msPerBeat; // ms/Quarter
+            double msPerTick = msPerQuarter / (int)_tickResolution; // ms/tick
+            return (int)msPerTick;
+        }
+
+        public void ResetAllCounters()
+        {
+            _currentBarCount = 1;
+            _currentBeatCount = 1;
+            _currentSubBeatCount = 1;
+            _absoluteTickCount = 0;
+
+            // todo reset counts and avoid creation of new counters
+            _barCounter = new WrapAroundCounter(_currentBarCount, int.MaxValue, null, BarIncremented);
+            _beatCounter = new WrapAroundCounter(_currentBeatCount, _timeSignature.BeatsPerBar, _barCounter, BeatIncremented);
+            _subBeatCounter = new WrapAroundCounter(_currentSubBeatCount, _timeSignature.SubbeatsPerBeat, _beatCounter, SubBeatIncremented);
+            _tickCounter = new WrapAroundCounter(0, _tickPerSubBeat - 1, _subBeatCounter, null);
+
+            _barCounter.ResetCount();
+            _beatCounter.ResetCount();
+            _subBeatCounter.ResetCount();
+            _tickCounter.ResetCount();
         }
 
         public void RewindToStart()
         {
-            ResetAllCounts();
+            ResetAllCounters();
         }
 
         private void TimerTickDetected(object sender, TickEventArgs e)
         {
-            TickReached(this, new TickReachedEventArgs() { TickInBarCount = _tickCounter.CurrentValue, AbsoluteTickCount = _absoluteTickCount });
-            _tickCounter.Increment();
             _absoluteTickCount++;
-            TraceTime();
+            _tickCounter.Increment();
+            TickReached?.Invoke(this, new TickReachedEventArgs() { TickInSubBeatCount = _tickCounter.CurrentValue, AbsoluteTickCount = _absoluteTickCount });
         }
 
         private void BarIncremented(int barCount)
         {
-            BarReached(this, new BarReachedEventArgs() { BarCount = barCount });
+            BarReached?.Invoke(this, new BarReachedEventArgs() { BarCount = barCount });
         }
 
         private void BeatIncremented(int beatCount)
         {
             //            Debug.WriteLine($"BeatReached {beatCount}");
-            BeatReached(this, new BeatReachedEventArgs() { BeatCount = beatCount });
+            BeatReached?.Invoke(this, new BeatReachedEventArgs() { BeatCount = beatCount });
         }
 
         private void SubBeatIncremented(int subBeatCount)
         {
             //Debug.WriteLine($"SubBeatReached {subBeatCount}");
-            SubBeatReached(this, new SubBeatReachedEventArgs() { SubBeatCount = subBeatCount });
+            SubBeatReached?.Invoke(this, new SubBeatReachedEventArgs() { SubBeatCount = subBeatCount });
             UpdateCurrentCounts();
-        }
-
-        private void TraceTime()
-        {
-            DateTime now = DateTime.Now;
-            TimeSpan diffTime = now - _lastTick;
-            _lastTick = now;
         }
 
         private void UpdateCurrentCounts()
