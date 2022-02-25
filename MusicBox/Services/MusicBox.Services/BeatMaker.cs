@@ -37,8 +37,12 @@ namespace MusicBox.Services
         {
             _midiTimer = midiTimer;
             _midiTimer.TickDetected += TimerTickDetected;
+            SetParams(TimeSignature.TS_2_4, 30, TickResolution.Normal);  // default params
+            // SetParams(TimeSignature.TS_3_4, 60, TickResolution.Normal);  // default params
             // SetParams(TimeSignature.TS_4_4, 60, TickResolution.Normal);  // default params
-            SetParams(TimeSignature.TS_12_8, 60, TickResolution.Normal);  // default params
+            // SetParams(TimeSignature.TS_3_8, 60, TickResolution.Normal);  // default params
+            // SetParams(TimeSignature.TS_6_8, 60, TickResolution.Normal);  // default params
+            // SetParams(TimeSignature.TS_12_8, 60, TickResolution.Normal);  // default params
         }
 
         public void SetParams(TimeSignature signature, int tempo, TickResolution tickResolution)
@@ -67,7 +71,7 @@ namespace MusicBox.Services
         private int CalculateTimerPeriod(int tempo)
         {
             double msPerBeat = 60.0 * 1000.0 / tempo; // ms/beat
-            double beatsPerQuarter = _timeSignature.NotesPerQuarter / _timeSignature.NotesPerBeat; // beat/Quarter
+            double beatsPerQuarter = (double)_timeSignature.NotesPerQuarter / _timeSignature.NotesPerBeat; // beat/Quarter
             double msPerQuarter = beatsPerQuarter * msPerBeat; // ms/Quarter
             double msPerTick = msPerQuarter / (int)_tickResolution; // ms/tick
             return (int)msPerTick;
