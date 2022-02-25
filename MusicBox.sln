@@ -23,7 +23,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusicBox.Core", "MusicBox\M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicBox.Services.MidiSanford", "MusicBox\Services\MusicBox.Services.MidiSanford\MusicBox.Services.MidiSanford.csproj", "{72965311-C86F-4068-8A27-674F7B43E4C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicBox.Services.MidiInterfaces", "MusicBox\Services\MusicBox.Services.MidiInterfaces\MusicBox.Services.MidiInterfaces.csproj", "{7067B99B-3B71-47D6-8F9A-EEDA194A58BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusicBox.Services.MidiInterfaces", "MusicBox\Services\MusicBox.Services.MidiInterfaces\MusicBox.Services.MidiInterfaces.csproj", "{7067B99B-3B71-47D6-8F9A-EEDA194A58BE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusicBox.Modules.Metronome", "MusicBox\Modules\MusicBox.Modules.Metronome\MusicBox.Modules.Metronome.csproj", "{35F95ADC-21CE-4643-B0EB-AEFB78F34274}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{7067B99B-3B71-47D6-8F9A-EEDA194A58BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7067B99B-3B71-47D6-8F9A-EEDA194A58BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7067B99B-3B71-47D6-8F9A-EEDA194A58BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35F95ADC-21CE-4643-B0EB-AEFB78F34274}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35F95ADC-21CE-4643-B0EB-AEFB78F34274}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35F95ADC-21CE-4643-B0EB-AEFB78F34274}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35F95ADC-21CE-4643-B0EB-AEFB78F34274}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -74,6 +80,7 @@ Global
 		{3502577F-5994-4F6C-A909-AFC6FDF78A9B} = {841FA957-60CA-4E9E-8E94-CE465E203358}
 		{72965311-C86F-4068-8A27-674F7B43E4C8} = {841FA957-60CA-4E9E-8E94-CE465E203358}
 		{7067B99B-3B71-47D6-8F9A-EEDA194A58BE} = {841FA957-60CA-4E9E-8E94-CE465E203358}
+		{35F95ADC-21CE-4643-B0EB-AEFB78F34274} = {5AC54FCC-0539-4537-95B4-75D2D08B0A4C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {71DD6885-F199-4F42-A301-878002BB34B9}

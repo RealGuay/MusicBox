@@ -1,4 +1,5 @@
 ﻿using MusicBox.Modules.ModuleName;
+using MusicBox.Modules.Metronome;
 using MusicBox.Services;
 using MusicBox.Services.Interfaces;
 using MusicBox.Services.MidiInterfaces;
@@ -30,6 +31,7 @@ namespace MusicBox
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
         {
             moduleCatalog.AddModule<ModuleNameModule>();
+            moduleCatalog.AddModule<MetronomeModule>();
         }
 
         protected override void OnExit(ExitEventArgs e)
