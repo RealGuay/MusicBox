@@ -54,6 +54,15 @@ namespace MusicBox.Services
 
             ResetAllCounters();
             InitTimer(tempo);
+            TransmitAllCounts();
+        }
+
+        private void TransmitAllCounts()
+        {
+            BarReached?.Invoke(this, new BarReachedEventArgs() { BarCount = _barCounter.CurrentValue });
+            BeatReached?.Invoke(this, new BeatReachedEventArgs() { BeatCount = _beatCounter.CurrentValue });
+            SubBeatReached?.Invoke(this, new SubBeatReachedEventArgs() { SubBeatCount = _subBeatCounter.CurrentValue });
+            TickReached?.Invoke(this, new TickReachedEventArgs() { TickInSubBeatCount = _tickCounter.CurrentValue, AbsoluteTickCount = _absoluteTickCount });
         }
 
         private void InitTimer(int tempo)
@@ -94,6 +103,8 @@ namespace MusicBox.Services
             _beatCounter.ResetCount();
             _subBeatCounter.ResetCount();
             _tickCounter.ResetCount();
+
+            TransmitAllCounts();
         }
 
         public void RewindToStart()
@@ -135,6 +146,7 @@ namespace MusicBox.Services
 
         public void Start()
         {
+            TransmitAllCounts();
             _midiTimer.Start();
         }
 
