@@ -22,17 +22,21 @@ namespace MusicBox.Services.Interfaces.Util
 
         public void Increment()
         {
-            CurrentValue++;
-            if (CurrentValue > _maxValue)
+            if (CurrentValue < _maxValue)
+            {
+                CurrentValue++;
+                _countIncremented?.Invoke(CurrentValue);
+            }
+            else
             {
                 CurrentValue = _minValue;
+                _countIncremented?.Invoke(CurrentValue);
                 _wrapAroundDetected?.Invoke();
             }
-            _countIncremented?.Invoke(CurrentValue);
         }
 
         public void SetRange(int min, int max)
-        { 
+        {
             _minValue = min;
             _maxValue = max;
         }
