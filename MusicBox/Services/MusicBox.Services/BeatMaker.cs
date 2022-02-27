@@ -2,6 +2,7 @@
 using MusicBox.Services.Interfaces.MusicSheetModels;
 using MusicBox.Services.Interfaces.Util;
 using MusicBox.Services.MidiInterfaces;
+using Prism.Ioc;
 using System;
 
 namespace MusicBox.Services
@@ -9,15 +10,9 @@ namespace MusicBox.Services
     public class BeatMaker : IBeatMaker
     {
         private readonly IMidiTimer _midiTimer;
+        private readonly IContainerProvider _containerProvider;
         private TimeSignature _timeSignature;
-
-        private int _tickPerSubBeat;
-
         private TickResolution _tickResolution;
-
-        private int _currentBarCount;
-        private int _currentBeatCount;
-        private int _currentSubBeatCount;
         private int _absoluteTickCount;
 
         private WrapAroundCounter _barCounter;
@@ -33,16 +28,25 @@ namespace MusicBox.Services
 
         public event EventHandler<TickReachedEventArgs> TickReached;
 
-        public BeatMaker(IMidiTimer midiTimer)
+        public BeatMaker(IMidiTimer midiTimer, IContainerProvider containerProvider)
         {
             _midiTimer = midiTimer;
             _midiTimer.TickDetected += TimerTickDetected;
-            SetParams(TimeSignature.TS_2_4, 30, TickResolution.Normal);  // default params
-            // SetParams(TimeSignature.TS_3_4, 60, TickResolution.Normal);  // default params
-            // SetParams(TimeSignature.TS_4_4, 60, TickResolution.Normal);  // default params
-            // SetParams(TimeSignature.TS_3_8, 60, TickResolution.Normal);  // default params
-            // SetParams(TimeSignature.TS_6_8, 60, TickResolution.Normal);  // default params
-            // SetParams(TimeSignature.TS_12_8, 60, TickResolution.Normal);  // default params
+
+            _containerProvider = containerProvider;
+
+            CreateAllCounters();
+            SetParams(TimeSignature.TS_4_4, 30, TickResolution.Normal);  // default params
+        }
+
+        private void CreateAllCounters()
+        {
+            var createWac = _containerProvider.Resolve<Func<Action<int>, Action, WrapAroundCounter>>();
+
+            _tickCounter = createWac(delegate { }, TickWrapAroundDetected);
+            _subBeatCounter = createWac(SubBeatIncremented, SubBeatWrapAroundDetected);
+            _beatCounter = createWac(BeatIncremented, BeatWrapAroundDetected);
+            _barCounter = createWac(BarIncremented, delegate { });
         }
 
         public void SetParams(TimeSignature signature, int tempo, TickResolution tickResolution)
@@ -50,10 +54,29 @@ namespace MusicBox.Services
             _timeSignature = signature;
             _tickResolution = tickResolution;
 
-            _tickPerSubBeat = (int)tickResolution * _timeSignature.NotesPerBeat / _timeSignature.NotesPerQuarter / _timeSignature.SubbeatsPerBeat;
-
+            SetRangeAllCounters();
             ResetAllCounters();
             InitTimer(tempo);
+        }
+
+        private void SetRangeAllCounters()
+        {
+            int tickPerSubBeat = (int)_tickResolution * _timeSignature.NotesPerBeat / _timeSignature.NotesPerQuarter / _timeSignature.SubbeatsPerBeat;
+
+            _barCounter.SetRange(1, int.MaxValue);
+            _beatCounter.SetRange(1, _timeSignature.BeatsPerBar);
+            _subBeatCounter.SetRange(1, _timeSignature.SubbeatsPerBeat);
+            _tickCounter.SetRange(0, tickPerSubBeat - 1);
+        }
+
+        private void ResetAllCounters()
+        {
+            _absoluteTickCount = 0;
+            _barCounter.ResetCount();
+            _beatCounter.ResetCount();
+            _subBeatCounter.ResetCount();
+            _tickCounter.ResetCount();
+
             TransmitAllCounts();
         }
 
@@ -86,32 +109,6 @@ namespace MusicBox.Services
             return (int)msPerTick;
         }
 
-        public void ResetAllCounters()
-        {
-            _currentBarCount = 1;
-            _currentBeatCount = 1;
-            _currentSubBeatCount = 1;
-            _absoluteTickCount = 0;
-
-            // todo reset counts and avoid creation of new counters
-            _barCounter = new WrapAroundCounter(_currentBarCount, int.MaxValue, null, BarIncremented);
-            _beatCounter = new WrapAroundCounter(_currentBeatCount, _timeSignature.BeatsPerBar, _barCounter, BeatIncremented);
-            _subBeatCounter = new WrapAroundCounter(_currentSubBeatCount, _timeSignature.SubbeatsPerBeat, _beatCounter, SubBeatIncremented);
-            _tickCounter = new WrapAroundCounter(0, _tickPerSubBeat - 1, _subBeatCounter, null);
-
-            _barCounter.ResetCount();
-            _beatCounter.ResetCount();
-            _subBeatCounter.ResetCount();
-            _tickCounter.ResetCount();
-
-            TransmitAllCounts();
-        }
-
-        public void RewindToStart()
-        {
-            ResetAllCounters();
-        }
-
         private void TimerTickDetected(object sender, TickEventArgs e)
         {
             _absoluteTickCount++;
@@ -119,9 +116,10 @@ namespace MusicBox.Services
             TickReached?.Invoke(this, new TickReachedEventArgs() { TickInSubBeatCount = _tickCounter.CurrentValue, AbsoluteTickCount = _absoluteTickCount });
         }
 
-        private void BarIncremented(int barCount)
+        private void SubBeatIncremented(int subBeatCount)
         {
-            BarReached?.Invoke(this, new BarReachedEventArgs() { BarCount = barCount });
+            //Debug.WriteLine($"SubBeatReached {subBeatCount}");
+            SubBeatReached?.Invoke(this, new SubBeatReachedEventArgs() { SubBeatCount = subBeatCount });
         }
 
         private void BeatIncremented(int beatCount)
@@ -130,18 +128,24 @@ namespace MusicBox.Services
             BeatReached?.Invoke(this, new BeatReachedEventArgs() { BeatCount = beatCount });
         }
 
-        private void SubBeatIncremented(int subBeatCount)
+        private void BarIncremented(int barCount)
         {
-            //Debug.WriteLine($"SubBeatReached {subBeatCount}");
-            SubBeatReached?.Invoke(this, new SubBeatReachedEventArgs() { SubBeatCount = subBeatCount });
-            UpdateCurrentCounts();
+            BarReached?.Invoke(this, new BarReachedEventArgs() { BarCount = barCount });
         }
 
-        private void UpdateCurrentCounts()
+        private void TickWrapAroundDetected()
         {
-            _currentBarCount = _barCounter.CurrentValue;
-            _currentBeatCount = _beatCounter.CurrentValue;
-            _currentSubBeatCount = _subBeatCounter.CurrentValue;
+            _subBeatCounter.Increment();
+        }
+
+        private void SubBeatWrapAroundDetected()
+        {
+            _beatCounter.Increment();
+        }
+
+        private void BeatWrapAroundDetected()
+        {
+            _barCounter.Increment();
         }
 
         public void Start()
@@ -153,6 +157,11 @@ namespace MusicBox.Services
         public void Stop()
         {
             _midiTimer.Stop();
+        }
+
+        public void RewindToStart()
+        {
+            ResetAllCounters();
         }
 
         public void Dispose()

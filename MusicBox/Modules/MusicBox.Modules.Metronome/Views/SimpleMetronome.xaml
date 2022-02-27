@@ -22,8 +22,8 @@
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <Border Grid.ColumnSpan="4"  Background="YellowGreen" >
-        <TextBlock  Text="Simple Metronome !!!" Background="YellowGreen" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+        <Border Grid.ColumnSpan="4"  Background="Aquamarine" >
+            <TextBlock  Text="Simple Metronome !!!" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
         </Border>
         <StackPanel Grid.Row="1" Grid.Column="0" Background="Linen">
             <TextBlock Text="Bar" HorizontalAlignment="Center" ></TextBlock>
@@ -51,7 +51,7 @@
                     <Button Content="Start" Command="{Binding StartCommand}"  Margin="20" Padding="10"></Button>
                     <Button Content="Stop" Command="{Binding StopCommand}"  Visibility="{Binding IsRunning, Converter={StaticResource BooleanToVisibilityConv}}" Margin="20" Padding="10"></Button>
                 </Grid>
-                <Button Content="Reset Count" Command="{Binding ResetCountCommand}" Margin="20"  Padding="10"></Button>
+                <Button Content="Rewind to start" Command="{Binding RewindToStartCommand}" Margin="20"  Padding="10"></Button>
             </StackPanel>
         </Border>
         <Border Grid.Row="3" Grid.ColumnSpan="4" Background="NavajoWhite">

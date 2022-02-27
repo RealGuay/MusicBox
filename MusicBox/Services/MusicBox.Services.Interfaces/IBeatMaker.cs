@@ -13,10 +13,6 @@ namespace MusicBox.Services.Interfaces
 
         event EventHandler<TickReachedEventArgs> TickReached;
 
-        void ResetAllCounters();
-
-        void RewindToStart();
-
         void SetParams(TimeSignature signature, int tempo, TickResolution tickResolution);
 
         void SetTempo(int newTempo);
@@ -24,5 +20,7 @@ namespace MusicBox.Services.Interfaces
         void Start();
 
         void Stop();
+
+        void RewindToStart();
     }
 }

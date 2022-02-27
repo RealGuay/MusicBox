@@ -9,7 +9,7 @@ namespace MusicBox.Modules.Metronome.ViewModels
     {
         public DelegateCommand StartCommand { get; set; }
         public DelegateCommand StopCommand { get; set; }
-        public DelegateCommand ResetCountCommand { get; set; }
+        public DelegateCommand RewindToStartCommand { get; set; }
 
         private readonly IBeatMaker _beatMaker;
 
@@ -26,7 +26,7 @@ namespace MusicBox.Modules.Metronome.ViewModels
 
         private void ChangeTempo(int value)
         {
-            SetProperty(ref tempo, value, nameof(Tempo));
+            SetProperty(ref tempo, value, nameof(Tempo));  // do NOT forget to set the property name with nameof(...) 
             _beatMaker.SetTempo(tempo);
         }
 
@@ -78,12 +78,12 @@ namespace MusicBox.Modules.Metronome.ViewModels
             _beatMaker.SubBeatReached += _beatMaker_SubBeatReached;
             _beatMaker.TickReached += _beatMaker_TickReached;
 
-            Tempo = 60;
+            Tempo = 80;
             _beatMaker.SetParams(Services.Interfaces.MusicSheetModels.TimeSignature.TS_12_8, Tempo, TickResolution.Normal);
 
             StartCommand = new DelegateCommand(Start);
             StopCommand = new DelegateCommand(Stop);
-            ResetCountCommand = new DelegateCommand(ResetCount);
+            RewindToStartCommand = new DelegateCommand(RewindToStart);
 
             IsRunning = false;
         }
@@ -120,9 +120,9 @@ namespace MusicBox.Modules.Metronome.ViewModels
             IsRunning = false;
         }
 
-        private void ResetCount()
+        private void RewindToStart()
         {
-            _beatMaker.ResetAllCounters();
+            _beatMaker.RewindToStart();
         }
     }
 }
