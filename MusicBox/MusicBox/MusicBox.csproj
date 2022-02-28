@@ -10,6 +10,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Modules\MusicBox.Modules.Metronome\MusicBox.Modules.Metronome.csproj" />
+    <ProjectReference Include="..\Modules\MusicBox.Modules.SheetEditor\MusicBox.Modules.SheetEditor.csproj" />
     <ProjectReference Include="..\MusicBox.Core\MusicBox.Core.csproj" />
     <ProjectReference Include="..\Modules\MusicBox.Modules.ModuleName\MusicBox.Modules.ModuleName.csproj" />
     <ProjectReference Include="..\Services\MusicBox.Services.Interfaces\MusicBox.Services.Interfaces.csproj" />

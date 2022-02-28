@@ -1,10 +1,11 @@
-﻿using MusicBox.Modules.ModuleName;
-using MusicBox.Modules.Metronome;
+﻿using MusicBox.Modules.Metronome;
+using MusicBox.Modules.ModuleName;
+using MusicBox.Modules.SheetEditor;
 using MusicBox.Services;
 using MusicBox.Services.Interfaces;
+using MusicBox.Services.Interfaces.Util;
 using MusicBox.Services.MidiInterfaces;
 using MusicBox.Services.MidiSanford;
-using MusicBox.Services.Interfaces.Util;
 using MusicBox.Views;
 using Prism.Ioc;
 using Prism.Modularity;
@@ -34,6 +35,7 @@ namespace MusicBox
         {
             moduleCatalog.AddModule<ModuleNameModule>();
             moduleCatalog.AddModule<MetronomeModule>();
+            moduleCatalog.AddModule<SheetEditorModule>();
         }
 
         protected override void OnExit(ExitEventArgs e)
