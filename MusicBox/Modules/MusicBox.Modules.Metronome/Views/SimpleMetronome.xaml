@@ -22,9 +22,12 @@
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <Border Grid.ColumnSpan="4"  Background="Aquamarine" >
-            <TextBlock  Text="Simple Metronome !!!" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
-        </Border>
+        <Grid Grid.ColumnSpan="4"  Background="Aquamarine" >
+            <StackPanel Orientation="Horizontal"  Margin="10" HorizontalAlignment="Center">
+                <TextBlock  Text="Simple Metronome !!!" VerticalAlignment="Center"></TextBlock>
+                <TextBlock Text="{Binding TimeSignatureName}"/>
+            </StackPanel>
+        </Grid>
         <StackPanel Grid.Row="1" Grid.Column="0" Background="Linen">
             <TextBlock Text="Bar" HorizontalAlignment="Center" ></TextBlock>
             <TextBlock Text="{Binding BarCount}" HorizontalAlignment="Center" ></TextBlock>

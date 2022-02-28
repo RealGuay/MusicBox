@@ -13,6 +13,15 @@ namespace MusicBox.Modules.Metronome.ViewModels
 
         private readonly IBeatMaker _beatMaker;
 
+        private string timeSignatureName;
+
+        public string TimeSignatureName
+        {
+            get { return timeSignatureName; }
+            set {SetProperty(ref timeSignatureName , value); }
+        }
+
+
         private int tempo;
 
         public int Tempo
@@ -79,7 +88,9 @@ namespace MusicBox.Modules.Metronome.ViewModels
             _beatMaker.TickReached += _beatMaker_TickReached;
 
             Tempo = 80;
-            _beatMaker.SetParams(Services.Interfaces.MusicSheetModels.TimeSignature.TS_12_8, Tempo, TickResolution.Normal);
+            TimeSignature ts = TimeSignature.TS_12_8;
+            TimeSignatureName = $" ({ts.Name}) ";
+            _beatMaker.SetParams(ts, Tempo, TickResolution.Normal);
 
             StartCommand = new DelegateCommand(Start);
             StopCommand = new DelegateCommand(Stop);
