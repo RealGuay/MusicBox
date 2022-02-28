@@ -7,6 +7,79 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <TextBlock Text="Sheet Editor" FontSize="30"></TextBlock>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+
+        <GroupBox Grid.Row="1" Header="Segments" MaxWidth="600"  VerticalAlignment="Top">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel VerticalAlignment="Center" MinWidth="120">
+                    <Button Content="New"    Margin="10" ></Button>
+                    <Button Content="Delete" Margin="10"></Button>
+                    <Button Content="Repeat" Margin="10"></Button>
+                    <Button Content="Copy"   Margin="10"></Button>
+                </StackPanel>
+
+                <ListBox  Grid.Column="1" ItemsSource="{Binding Segments}" Margin="5" MinHeight="200" MinWidth="120"></ListBox>
+
+                <StackPanel Grid.Column="2" VerticalAlignment="Center" MinWidth="120">
+                    <Button Content="↑↑↑"   Margin="10" ></Button>
+                    <Button Content="↓↓↓" Margin="10"></Button>
+                </StackPanel>
+
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Grid.Row="1"  Grid.Column="1" Header="Information" MaxHeight="400" VerticalAlignment="Top">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Title:" Margin="5,10"/>
+                <TextBox   Grid.Row="0" Grid.Column="1" Text="" Height="20" MinWidth="120"/>
+                <TextBlock  Grid.Row="1" Grid.Column="0" Text="Lyrics by:" Margin="5,10"/>
+                <TextBox  Grid.Row="1" Grid.Column="1" Text=""  Height="20" MinWidth="120"/>
+                <TextBlock  Grid.Row="2" Grid.Column="0" Text="Music by:" Margin="5,10"/>
+                <TextBox  Grid.Row="2" Grid.Column="1" Text=""  Height="20" MinWidth="120"/>
+                <TextBlock  Grid.Row="3" Grid.Column="0" Text="Sheet File:" Margin="5,10"/>
+                <TextBox  Grid.Row="3" Grid.Column="1" Text=""  Height="20" MinWidth="120"/>
+
+                <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="10">
+                    <Button Content="Load" Margin="10" Width="80"/>
+                    <Button Grid.Row="4" Grid.Column="1" Content="Save" Margin="10" Width="80"/>
+                    <Button Grid.Row="5" Grid.Column="0" Content="Play" Margin="10" Width="80"/>
+                </StackPanel>
+                
+                <StackPanel Grid.Row="6" Grid.ColumnSpan="2" Orientation="Horizontal">
+                    <TextBlock Text="Tempo:" Margin="10"/>
+                    <TextBlock Text="60" Margin="10"/>
+                    <Slider Minimum="10" AutoToolTipPlacement="TopLeft" Maximum="200" Width="120" Margin="10"/>
+                </StackPanel>
+            </Grid>
+
+        </GroupBox>
+        
     </Grid>
 </UserControl>
