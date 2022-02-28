@@ -5,16 +5,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MusicBox.Modules.Metronome.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="900" FontSize="30">
+             d:DesignHeight="350" d:DesignWidth="900" FontSize="30" MaxHeight="400">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConv"></BooleanToVisibilityConverter>
     </UserControl.Resources>
-    <Grid>
+    <Grid Background="LightBlue">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="180"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
@@ -22,49 +22,60 @@
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <Grid Grid.ColumnSpan="4"  Background="Aquamarine" >
+        
+        <Grid Grid.ColumnSpan="4"   >
             <StackPanel Orientation="Horizontal"  Margin="10" HorizontalAlignment="Center">
                 <TextBlock  Text="Simple Metronome !!!" VerticalAlignment="Center"></TextBlock>
                 <TextBlock Text="{Binding TimeSignatureName}"/>
             </StackPanel>
         </Grid>
-        <StackPanel Grid.Row="1" Grid.Column="0" Background="Linen">
-            <TextBlock Text="Bar" HorizontalAlignment="Center" ></TextBlock>
-            <TextBlock Text="{Binding BarCount}" HorizontalAlignment="Center" ></TextBlock>
-    
-        </StackPanel>
-        <StackPanel Grid.Row="1" Grid.Column="1" Background="LightCoral">
-        <TextBlock Text="Beat" HorizontalAlignment="Center" ></TextBlock>
-        <TextBlock Text="{Binding BeatCount}" HorizontalAlignment="Center" ></TextBlock>
-        </StackPanel>
 
-        <StackPanel Grid.Row="1" Grid.Column="2" Background="LightBlue">
-        <TextBlock Text="SubBeat" HorizontalAlignment="Center" ></TextBlock>
-        <TextBlock Text="{Binding SubBeatCount}" HorizontalAlignment="Center" ></TextBlock>
-        </StackPanel>
+        <Border Grid.Row="1" Grid.Column="0"  BorderBrush="Black" BorderThickness="3">
+            <StackPanel >
+                <TextBlock Text="Bar" HorizontalAlignment="Center" ></TextBlock>
+                <TextBlock Text="{Binding BarCount}" HorizontalAlignment="Center" ></TextBlock>
 
-        <StackPanel Grid.Row="1" Grid.Column="3" Background="RosyBrown">    
-            <TextBlock Text="Tick" HorizontalAlignment="Center" ></TextBlock>
-            <TextBlock Text="{Binding TickCount}" HorizontalAlignment="Center" ></TextBlock>
-        </StackPanel>
+            </StackPanel>
+        </Border>
 
-        <Border  Grid.Row="2" Grid.ColumnSpan="4" Background="NavajoWhite">
+        <Border Grid.Row="1" Grid.Column="1"  BorderBrush="Black" BorderThickness="3">
+            <StackPanel  >
+                <TextBlock Text="Beat" HorizontalAlignment="Center" ></TextBlock>
+                <TextBlock Text="{Binding BeatCount}" HorizontalAlignment="Center" ></TextBlock>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="1" Grid.Column="2"  BorderBrush="Black" BorderThickness="3">
+            <StackPanel >
+                <TextBlock Text="SubBeat" HorizontalAlignment="Center" ></TextBlock>
+                <TextBlock Text="{Binding SubBeatCount}" HorizontalAlignment="Center" ></TextBlock>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="1" Grid.Column="3"  BorderBrush="Black" BorderThickness="3">
+            <StackPanel >
+                <TextBlock Text="Tick" HorizontalAlignment="Center" ></TextBlock>
+                <TextBlock Text="{Binding TickCount}" HorizontalAlignment="Center" ></TextBlock>
+            </StackPanel>
+        </Border>
+
+        <Border  Grid.Row="2" Grid.ColumnSpan="4"  >
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Grid>
                     <Button Content="Start" Command="{Binding StartCommand}"  Margin="20" Padding="10"></Button>
                     <Button Content="Stop" Command="{Binding StopCommand}"  Visibility="{Binding IsRunning, Converter={StaticResource BooleanToVisibilityConv}}" Margin="20" Padding="10"></Button>
                 </Grid>
-                <Button Content="Rewind to start" Command="{Binding RewindToZeroCommand}" Margin="20"  Padding="10"></Button>
+                <Button Content="Rewind to Zero" Command="{Binding RewindToZeroCommand}" Margin="20"  Padding="10"></Button>
             </StackPanel>
         </Border>
-        <Border Grid.Row="3" Grid.ColumnSpan="4" Background="NavajoWhite">
+        <Border Grid.Row="3" Grid.ColumnSpan="4"  >
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Tempo :" Margin="10,20,5,10"/>
                 <TextBlock Text="{Binding Tempo}" Margin="0,20"/>
                 <Slider Value="{Binding Tempo, Delay=500}" AutoToolTipPlacement="TopLeft" AutoToolTipPrecision="0" Minimum="10" Maximum="150" Width="300" Margin="10,35"></Slider>
             </StackPanel>
         </Border>
-        
-        
+
+
     </Grid>
 </UserControl>

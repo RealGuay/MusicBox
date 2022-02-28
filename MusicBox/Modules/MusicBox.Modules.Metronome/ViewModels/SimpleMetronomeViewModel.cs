@@ -82,14 +82,14 @@ namespace MusicBox.Modules.Metronome.ViewModels
         public SimpleMetronomeViewModel(IBeatMaker beatMaker)
         {
             _beatMaker = beatMaker;
-            _beatMaker.BarReached += _beatMaker_BarReached;
-            _beatMaker.BeatReached += _beatMaker_BeatReached;
-            _beatMaker.SubBeatReached += _beatMaker_SubBeatReached;
-            _beatMaker.TickReached += _beatMaker_TickReached;
+            _beatMaker.BarReached += BarReached;
+            _beatMaker.BeatReached += BeatReached;
+            _beatMaker.SubBeatReached += SubBeatReached;
+            _beatMaker.TickReached += TickReached;
 
             Tempo = 80;
             TimeSignature ts = TimeSignature.TS_12_8;
-            TimeSignatureName = $" ({ts.Name}) ";
+            TimeSignatureName = $"({ts.Name})";
             _beatMaker.SetParams(ts, Tempo, TickResolution.Normal);
 
             StartCommand = new DelegateCommand(Start);
@@ -99,22 +99,22 @@ namespace MusicBox.Modules.Metronome.ViewModels
             IsRunning = false;
         }
 
-        private void _beatMaker_BarReached(object sender, BarReachedEventArgs e)
+        private void BarReached(object sender, BarReachedEventArgs e)
         {
             BarCount = e.BarCount;
         }
 
-        private void _beatMaker_BeatReached(object sender, BeatReachedEventArgs e)
+        private void BeatReached(object sender, BeatReachedEventArgs e)
         {
             BeatCount = e.BeatCount;
         }
 
-        private void _beatMaker_SubBeatReached(object sender, SubBeatReachedEventArgs e)
+        private void SubBeatReached(object sender, SubBeatReachedEventArgs e)
         {
             SubBeatCount = e.SubBeatCount;
         }
 
-        private void _beatMaker_TickReached(object sender, TickReachedEventArgs e)
+        private void TickReached(object sender, TickReachedEventArgs e)
         {
             TickCount = e.TickInSubBeatCount;
         }
