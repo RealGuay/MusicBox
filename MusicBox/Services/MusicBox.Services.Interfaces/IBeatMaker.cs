@@ -21,6 +21,6 @@ namespace MusicBox.Services.Interfaces
 
         void Stop();
 
-        void RewindToStart();
+        void RewindToZero();
     }
 }

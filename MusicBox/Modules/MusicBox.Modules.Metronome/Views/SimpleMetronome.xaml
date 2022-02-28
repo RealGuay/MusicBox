@@ -54,7 +54,7 @@
                     <Button Content="Start" Command="{Binding StartCommand}"  Margin="20" Padding="10"></Button>
                     <Button Content="Stop" Command="{Binding StopCommand}"  Visibility="{Binding IsRunning, Converter={StaticResource BooleanToVisibilityConv}}" Margin="20" Padding="10"></Button>
                 </Grid>
-                <Button Content="Rewind to start" Command="{Binding RewindToStartCommand}" Margin="20"  Padding="10"></Button>
+                <Button Content="Rewind to start" Command="{Binding RewindToZeroCommand}" Margin="20"  Padding="10"></Button>
             </StackPanel>
         </Border>
         <Border Grid.Row="3" Grid.ColumnSpan="4" Background="NavajoWhite">

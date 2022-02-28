@@ -9,7 +9,7 @@ namespace MusicBox.Modules.Metronome.ViewModels
     {
         public DelegateCommand StartCommand { get; set; }
         public DelegateCommand StopCommand { get; set; }
-        public DelegateCommand RewindToStartCommand { get; set; }
+        public DelegateCommand RewindToZeroCommand { get; set; }
 
         private readonly IBeatMaker _beatMaker;
 
@@ -94,7 +94,7 @@ namespace MusicBox.Modules.Metronome.ViewModels
 
             StartCommand = new DelegateCommand(Start);
             StopCommand = new DelegateCommand(Stop);
-            RewindToStartCommand = new DelegateCommand(RewindToStart);
+            RewindToZeroCommand = new DelegateCommand(RewindToZero);
 
             IsRunning = false;
         }
@@ -131,9 +131,9 @@ namespace MusicBox.Modules.Metronome.ViewModels
             IsRunning = false;
         }
 
-        private void RewindToStart()
+        private void RewindToZero()
         {
-            _beatMaker.RewindToStart();
+            _beatMaker.RewindToZero();
         }
     }
 }

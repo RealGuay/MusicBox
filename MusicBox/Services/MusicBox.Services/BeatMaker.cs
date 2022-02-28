@@ -13,7 +13,7 @@ namespace MusicBox.Services
         private readonly IContainerProvider _containerProvider;
         private TimeSignature _timeSignature;
         private TickResolution _tickResolution;
-        private int _absoluteTickCount;
+        private int _ticksFromZero;
 
         private WrapAroundCounter _barCounter;
         private WrapAroundCounter _beatCounter;
@@ -43,10 +43,10 @@ namespace MusicBox.Services
         {
             var createWac = _containerProvider.Resolve<Func<Action<int>, Action, WrapAroundCounter>>();
 
-            _tickCounter = createWac(delegate { }, TickWrapAroundDetected);
-            _subBeatCounter = createWac(SubBeatIncremented, SubBeatWrapAroundDetected);
-            _beatCounter = createWac(BeatIncremented, BeatWrapAroundDetected);
             _barCounter = createWac(BarIncremented, delegate { });
+            _beatCounter = createWac(BeatIncremented, () => _barCounter.Increment());
+            _subBeatCounter = createWac(SubBeatIncremented, () => _beatCounter.Increment());
+            _tickCounter = createWac(delegate { }, () => _subBeatCounter.Increment());
         }
 
         public void SetParams(TimeSignature signature, int tempo, TickResolution tickResolution)
@@ -71,7 +71,7 @@ namespace MusicBox.Services
 
         private void ResetAllCounters()
         {
-            _absoluteTickCount = 0;
+            _ticksFromZero = 0;
             _barCounter.ResetCount();
             _beatCounter.ResetCount();
             _subBeatCounter.ResetCount();
@@ -85,7 +85,7 @@ namespace MusicBox.Services
             BarReached?.Invoke(this, new BarReachedEventArgs() { BarCount = _barCounter.CurrentValue });
             BeatReached?.Invoke(this, new BeatReachedEventArgs() { BeatCount = _beatCounter.CurrentValue });
             SubBeatReached?.Invoke(this, new SubBeatReachedEventArgs() { SubBeatCount = _subBeatCounter.CurrentValue });
-            TickReached?.Invoke(this, new TickReachedEventArgs() { TickInSubBeatCount = _tickCounter.CurrentValue, AbsoluteTickCount = _absoluteTickCount });
+            TickReached?.Invoke(this, new TickReachedEventArgs() { TickInSubBeatCount = _tickCounter.CurrentValue, TicksFromZero = _ticksFromZero });
         }
 
         private void InitTimer(int tempo)
@@ -111,41 +111,24 @@ namespace MusicBox.Services
 
         private void TimerTickDetected(object sender, TickEventArgs e)
         {
-            _absoluteTickCount++;
+            _ticksFromZero++;
             _tickCounter.Increment();
-            TickReached?.Invoke(this, new TickReachedEventArgs() { TickInSubBeatCount = _tickCounter.CurrentValue, AbsoluteTickCount = _absoluteTickCount });
+            TickReached?.Invoke(this, new TickReachedEventArgs() { TickInSubBeatCount = _tickCounter.CurrentValue, TicksFromZero = _ticksFromZero });
         }
 
         private void SubBeatIncremented(int subBeatCount)
         {
-            //Debug.WriteLine($"SubBeatReached {subBeatCount}");
             SubBeatReached?.Invoke(this, new SubBeatReachedEventArgs() { SubBeatCount = subBeatCount });
         }
 
         private void BeatIncremented(int beatCount)
         {
-            //            Debug.WriteLine($"BeatReached {beatCount}");
             BeatReached?.Invoke(this, new BeatReachedEventArgs() { BeatCount = beatCount });
         }
 
         private void BarIncremented(int barCount)
         {
             BarReached?.Invoke(this, new BarReachedEventArgs() { BarCount = barCount });
-        }
-
-        private void TickWrapAroundDetected()
-        {
-            _subBeatCounter.Increment();
-        }
-
-        private void SubBeatWrapAroundDetected()
-        {
-            _beatCounter.Increment();
-        }
-
-        private void BeatWrapAroundDetected()
-        {
-            _barCounter.Increment();
         }
 
         public void Start()
@@ -159,7 +142,7 @@ namespace MusicBox.Services
             _midiTimer.Stop();
         }
 
-        public void RewindToStart()
+        public void RewindToZero()
         {
             ResetAllCounters();
         }

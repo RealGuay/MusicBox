@@ -3,6 +3,6 @@
     public class TickReachedEventArgs
     {
         public int TickInSubBeatCount;
-        public int AbsoluteTickCount;
+        public int TicksFromZero;
     }
 }
