@@ -6,9 +6,6 @@
              xmlns:ctrl="clr-namespace:MusicBox.Core.Controls;assembly=MusicBox.Core"
              mc:Ignorable="d"
              d:DesignHeight="350" d:DesignWidth="900" FontSize="30" MaxHeight="400">
-    <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConv"></BooleanToVisibilityConverter>
-    </UserControl.Resources>
     <Grid Background="LightBlue">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -60,11 +57,11 @@
 
         <Border  Grid.Row="2" Grid.ColumnSpan="4">
             <ctrl:PlayAndTempo 
-                MyStartCommand="{Binding StartCommand}" 
-                MyStopCommand="{Binding StopCommand}"  
-                RToZCommand="{Binding RewindToZeroCommand}"
-                IsPlaying="{Binding IsRunning}"
-                Pat_Tempo="{Binding Tempo, Mode=TwoWay}" />
+                PlayStartCommand="{Binding StartCommand}" 
+                PlayStopCommand="{Binding StopCommand}"  
+                PlayRewindCommand="{Binding RewindToZeroCommand}"
+                PlayIsPlaying="{Binding IsRunning}"
+                PlayTempo="{Binding Tempo, Mode=TwoWay}" />
             <!-- DO NOT FORGET ==> Mode=TwoWay -->
         </Border>
         <TextBlock Grid.Row="3" Text="{Binding Tempo}"></TextBlock>

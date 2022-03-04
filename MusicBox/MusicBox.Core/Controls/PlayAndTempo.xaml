@@ -13,13 +13,13 @@
     <Grid>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Height="80">
             <Grid>
-                <Button Content="Start" Command="{Binding MyStartCommand, ElementName=ucPlayAndTempo}"  Margin="20" Padding="10,3" FontSize="20"></Button>
-                <Button Content="Stop" Command="{Binding MyStopCommand, ElementName=ucPlayAndTempo}"  Visibility="{Binding IsPlaying, ElementName=ucPlayAndTempo, Converter={StaticResource BooleanToVisibilityConv}}"  Margin="20" Padding="10,3" FontSize="20"></Button>
+                <Button Content="Start" Command="{Binding PlayStartCommand, ElementName=ucPlayAndTempo}"  Margin="20" Padding="10,3" FontSize="20"></Button>
+                <Button Content="Stop" Command="{Binding PlayStopCommand, ElementName=ucPlayAndTempo}"  Visibility="{Binding PlayIsPlaying, ElementName=ucPlayAndTempo, Converter={StaticResource BooleanToVisibilityConv}}"  Margin="20" Padding="10,3" FontSize="20"></Button>
             </Grid>
-            <Button Content="Rewind" Command="{Binding RToZCommand, ElementName=ucPlayAndTempo}" Margin="20" Padding="10,3" FontSize="20"></Button>
+            <Button Content="Rewind" Command="{Binding PlayRewindCommand, ElementName=ucPlayAndTempo}" Margin="20" Padding="10,3" FontSize="20"></Button>
             <TextBlock Text="Tempo:" Margin="10,20,5,25"  Padding="10,0" FontSize="20"/>
-            <TextBlock Text="{Binding ElementName=ucPlayAndTempo, Path=Pat_Tempo}" Margin="0,22" FontSize="20" Width="40"/>
-            <Slider Value="{Binding  ElementName=ucPlayAndTempo, Path=Pat_Tempo, Delay=500}" AutoToolTipPlacement="TopLeft" AutoToolTipPrecision="0" Minimum="10" Maximum="200" Width="300" Margin="10,20,10,20" Height="20"></Slider>
+            <TextBlock Text="{Binding ElementName=ucPlayAndTempo, Path=PlayTempo}" Margin="0,22" FontSize="20" Width="40"/>
+            <Slider Value="{Binding  ElementName=ucPlayAndTempo, Path=PlayTempo, Delay=500}" AutoToolTipPlacement="TopLeft" AutoToolTipPrecision="0" Minimum="10" Maximum="200" Width="300" Margin="10,20,10,20" Height="20"></Slider>
         </StackPanel>
 
     </Grid>
