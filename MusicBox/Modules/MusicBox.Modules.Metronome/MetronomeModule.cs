@@ -17,7 +17,7 @@ namespace MusicBox.Modules.Metronome
 
         public void OnInitialized(IContainerProvider containerProvider)
         {
-            _regionManager.RequestNavigate(RegionNames.ContentRegion, "SimpleMetronome");
+            //_regionManager.RequestNavigate(RegionNames.ContentRegion, "SimpleMetronome");
 
         }
 
