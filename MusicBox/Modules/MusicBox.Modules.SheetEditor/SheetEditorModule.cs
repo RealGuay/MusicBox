@@ -1,5 +1,6 @@
 ﻿using MusicBox.Core;
 using MusicBox.Modules.SheetEditor.Views;
+using MusicBox.Services.Interfaces.MusicSheetModels;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Regions;
@@ -23,6 +24,7 @@ namespace MusicBox.Modules.SheetEditor
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterForNavigation<SheetEditorView>();
+//???            containerRegistry.Register<SheetInformation>();
         }
     }
 }
