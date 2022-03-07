@@ -5,14 +5,22 @@ using System.Text;
 
 namespace MusicBox.Modules.SheetEditor.ViewModels
 {
-    public class SegmentEditorViewModel : BindableBase
+
+    public class SegmentEditorViewModel : BindableBase, ISegmentEditorViewModel
     {
+        private const string DefaultName = "Segment1";
+
         private string segmentName;
 
         public string SegmentName
         {
             get { return segmentName; }
             set { SetProperty(ref segmentName, value); }
+        }
+
+        public SegmentEditorViewModel()
+        {
+            SegmentName = DefaultName;
         }
 
     }

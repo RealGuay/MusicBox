@@ -1,4 +1,5 @@
 ﻿using Prism.Commands;
+using Prism.Ioc;
 using Prism.Mvvm;
 using System;
 using System.Collections.ObjectModel;
@@ -10,19 +11,21 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
     {
         #region Properties
 
-        private ObservableCollection<SegmentEditorViewModel> segmentEditorVms;
+        private ObservableCollection<ISegmentEditorViewModel> segmentEditorVms;
 
-        public ObservableCollection<SegmentEditorViewModel> SegmentEditorVms { get => segmentEditorVms; set => SetProperty(ref segmentEditorVms, value); }
+        public ObservableCollection<ISegmentEditorViewModel> SegmentEditorVms { get => segmentEditorVms; set => SetProperty(ref segmentEditorVms, value); }
 
-        private SegmentEditorViewModel selectedSegmentEditorVm;
+        private ISegmentEditorViewModel selectedSegmentEditorVm;
 
-        public SegmentEditorViewModel SelectedSegmentEditorVm
+        public ISegmentEditorViewModel SelectedSegmentEditorVm
         {
             get { return selectedSegmentEditorVm; }
             set { SetProperty(ref selectedSegmentEditorVm, value); }
         }
 
         #endregion Properties
+
+        private readonly IContainerProvider _containerProvider;
 
         #region ICommand
 
@@ -37,9 +40,10 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         #endregion ICommand
 
-        public SegmentCollectionViewModel()
+        public SegmentCollectionViewModel(IContainerProvider containerProvider)
         {
-            SegmentEditorVms = new ObservableCollection<SegmentEditorViewModel>();
+            _containerProvider = containerProvider;
+            SegmentEditorVms = new ObservableCollection<ISegmentEditorViewModel>();
 
             NewSegmentCommand = new DelegateCommand(NewSegment);
             RepeatSegmentCommand = new DelegateCommand(RepeatSegment, IsNotNullSelectedSegmentEditorVm).ObservesProperty(() => SelectedSegmentEditorVm);
@@ -48,14 +52,13 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             DeleteSegmentCommand = new DelegateCommand(DeleteSegment, IsNotNullSelectedSegmentEditorVm).ObservesProperty(() => SelectedSegmentEditorVm); ;
             MoveUpSegmentCommand = new DelegateCommand(MoveUpSegment, IsNotNullSelectedSegmentEditorVm).ObservesProperty(() => SelectedSegmentEditorVm); ;
             MoveDownSegmentCommand = new DelegateCommand(MoveDownSegment, IsNotNullSelectedSegmentEditorVm).ObservesProperty(() => SelectedSegmentEditorVm); ;
-
-            // SIC
-            var sevm = new SegmentEditorViewModel() { SegmentName = "Segment 1" };
-            SegmentEditorVms.Add(sevm);
         }
 
         private void NewSegment()
         {
+            ISegmentEditorViewModel segmentEditorViewModel = _containerProvider.Resolve<ISegmentEditorViewModel>();
+            SegmentEditorVms.Add(segmentEditorViewModel);
+            SelectedSegmentEditorVm = segmentEditorViewModel;
         }
 
         private void RepeatSegment()

@@ -20,4 +20,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Modules\MusicBox.Modules.SheetEditor\MusicBox.Modules.SheetEditor.csproj" />
+  </ItemGroup>
+
 </Project>
