@@ -12,6 +12,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         #region Properties
 
         public SheetInformationViewModel SheetInformationVm { get; private set; }
+        public SegmentCollectionViewModel SegmentCollectionVm { get; private set; }
 
         public List<TimeSignature> TimeSignatures { get; set; }
 
@@ -38,6 +39,8 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         public SheetEditorViewModel(IContainerProvider containerProvider)
         {
             SheetInformationVm = containerProvider.Resolve<SheetInformationViewModel>();
+            SegmentCollectionVm = containerProvider.Resolve<SegmentCollectionViewModel>();
+
             LoadCommand = new DelegateCommand(Load);
             SaveCommand = new DelegateCommand(Save, CanSave);
             PlayCommand = new DelegateCommand(Play, CanPlay);
