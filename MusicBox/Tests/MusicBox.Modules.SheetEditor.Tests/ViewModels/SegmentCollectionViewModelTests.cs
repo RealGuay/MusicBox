@@ -6,18 +6,27 @@ namespace MusicBox.Modules.SheetEditor.Tests.ViewModels
 {
     public class SegmentCollectionViewModelTests
     {
+        private readonly  string _initialName = "Segment1";
+        private readonly SegmentCollectionViewModel _viewModel;
+
+
+        public SegmentCollectionViewModelTests()
+        {
+            Mock<ISegmentEditorViewModel> sevm = new Mock<ISegmentEditorViewModel>();
+            sevm.Setup(m => m.SegmentName).Returns(_initialName);
+            
+            _viewModel = new SegmentCollectionViewModel(() => sevm.Object);
+
+        }
+
         [Fact]
         public void CreateOneSegmentEditorOnNewCommand()
         {
-            string name = "Segment1";
-            var sevm = new Mock<ISegmentEditorViewModel>();
-            sevm.Setup(m => m.SegmentName).Returns(name);
+            _viewModel.NewSegmentCommand.Execute();
 
-            var viewModel = new SegmentCollectionViewModel(() => sevm.Object);
-            viewModel.NewSegmentCommand.Execute(null);
-
-            Assert.Collection(viewModel.SegmentEditorVms, item => Assert.Equal(name, item.SegmentName));
-            Assert.Equal(name, viewModel.SelectedSegmentEditorVm.SegmentName);
+            Assert.Collection(_viewModel.SegmentEditorVms, item => Assert.Equal(_initialName, item.SegmentName));
+            Assert.Equal(_initialName, _viewModel.SelectedSegmentEditorVm.SegmentName);
         }
+
     }
 }
