@@ -39,17 +39,17 @@
                     <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Title:" Margin="5,10" HorizontalAlignment="Right"/>
-                <TextBox   Grid.Row="0" Grid.Column="1" Text="{Binding SheetInfo.Title}" Height="20" />
+                <TextBox   Grid.Row="0" Grid.Column="1" Text="{Binding SheetInformationVm.Title}" Height="20" />
                 <TextBlock  Grid.Row="1" Grid.Column="0" Text="Lyrics by:" Margin="5,10" HorizontalAlignment="Right"/>
-                <TextBox  Grid.Row="1" Grid.Column="1" Text="{Binding SheetInfo.LyricsBy}"  Height="20"/>
+                <TextBox  Grid.Row="1" Grid.Column="1" Text="{Binding SheetInformationVm.LyricsBy}"  Height="20"/>
                 <TextBlock  Grid.Row="2" Grid.Column="0" Text="Music by:" Margin="5,10" HorizontalAlignment="Right"/>
-                <TextBox  Grid.Row="2" Grid.Column="1" Text="{Binding SheetInfo.MusicBy}"  Height="20"/>
+                <TextBox  Grid.Row="2" Grid.Column="1" Text="{Binding SheetInformationVm.MusicBy}"  Height="20"/>
                 <TextBlock  Grid.Row="3" Grid.Column="0" Text="Version:" Margin="5,10" HorizontalAlignment="Right"/>
-                <TextBox  Grid.Row="3" Grid.Column="1" Text="{Binding SheetInfo.Version}"  Height="20"/>
+                <TextBox  Grid.Row="3" Grid.Column="1" Text="{Binding SheetInformationVm.Version}"  Height="20"/>
                 <TextBlock  Grid.Row="4" Grid.Column="0" Text="Sheet File:" Margin="5,10" HorizontalAlignment="Right"/>
                 <TextBox  Grid.Row="4" Grid.Column="1" Text=""  Height="20"/>
                 <TextBlock  Grid.Row="5" Grid.Column="0" Text="Time Signature:" Margin="5,10"  HorizontalAlignment="Right"/>
-                <ComboBox Grid.Row="5" Grid.Column="2" ItemsSource="{Binding TimeSignatures}" SelectedItem="{Binding SheetInfo.TimeSignature}" DisplayMemberPath="Name"  Height="20"/>
+                <ComboBox Grid.Row="5" Grid.Column="2" ItemsSource="{Binding TimeSignatures}" SelectedItem="{Binding SheetInformationVm.TimeSignature}" DisplayMemberPath="Name"  Height="20"/>
 
                 <StackPanel Grid.Row="6" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="10" HorizontalAlignment="Center">
                     <Button Content="Load" Command="{Binding LoadCommand}" Margin="10" Width="80"/>
@@ -62,7 +62,7 @@
                         PlayStopCommand="{Binding PauseCommand}" 
                         PlayRewindCommand="{Binding RewindCommand}" 
                         PlayIsPlaying="{Binding IsPlaying}" 
-                        PlayTempo="{Binding SheetInfo.Tempo, Mode=TwoWay}" FontSize="12"></ctrl:PlayAndTempo>
+                        PlayTempo="{Binding SheetInformationVm.Tempo, Mode=TwoWay}" FontSize="12"></ctrl:PlayAndTempo>
                 </StackPanel>
             </Grid>
         </GroupBox>

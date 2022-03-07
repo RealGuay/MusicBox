@@ -1,9 +1,7 @@
-﻿using MusicBox.Modules.SheetEditor.Models;
-using MusicBox.Services.Interfaces.MusicSheetModels;
+﻿using MusicBox.Services.Interfaces.MusicSheetModels;
 using Prism.Commands;
 using Prism.Ioc;
 using Prism.Mvvm;
-using System;
 using System.Collections.Generic;
 using System.Windows.Input;
 
@@ -13,7 +11,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
     {
         #region Properties
 
-        public SheetInfo SheetInfo { get; private set; }
+        public SheetInformationViewModel SheetInformationVm { get; private set; }
 
         public List<TimeSignature> TimeSignatures { get; set; }
 
@@ -39,7 +37,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         public SheetEditorViewModel(IContainerProvider containerProvider)
         {
-            SheetInfo = containerProvider.Resolve<SheetInfo>();
+            SheetInformationVm = containerProvider.Resolve<SheetInformationViewModel>();
             LoadCommand = new DelegateCommand(Load);
             SaveCommand = new DelegateCommand(Save, CanSave);
             PlayCommand = new DelegateCommand(Play, CanPlay);
@@ -47,7 +45,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             RewindCommand = new DelegateCommand(Rewind);
 
             InitTimeSignatures();
-            SheetInfo.Tempo = 60;
+            SheetInformationVm.Tempo = 60;
         }
 
         private void InitTimeSignatures()
@@ -62,15 +60,15 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
                 TimeSignature.TS_9_8,
                 TimeSignature.TS_12_8
             };
-            SheetInfo.TimeSignature = TimeSignature.TS_4_4;
+            SheetInformationVm.TimeSignature = TimeSignature.TS_4_4;
         }
 
         #region Commands
 
         private void Load()
         {
-            //SheetInfo.Title = $"{DateTime.Now}";
-            //SheetInfo.LyricsBy = $"{DateTime.UtcNow}";
+            //SheetInformationVm.Title = $"{DateTime.Now}";
+            //SheetInformationVm.LyricsBy = $"{DateTime.UtcNow}";
         }
 
         private void Save()

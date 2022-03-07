@@ -11,4 +11,7 @@
     <ProjectReference Include="..\..\MusicBox.Core\MusicBox.Core.csproj" />
     <ProjectReference Include="..\..\Services\MusicBox.Services.Interfaces\MusicBox.Services.Interfaces.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
 </Project>

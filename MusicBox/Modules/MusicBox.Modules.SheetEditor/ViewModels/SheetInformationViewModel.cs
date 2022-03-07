@@ -4,9 +4,9 @@ using Prism.Mvvm;
 using System;
 using System.Runtime.CompilerServices;
 
-namespace MusicBox.Modules.SheetEditor.Models
+namespace MusicBox.Modules.SheetEditor.ViewModels
 {
-    public class SheetInfo : BindableBase
+    public class SheetInformationViewModel : BindableBase
     {
         private readonly SheetInformation _sheetInformation;
 
@@ -50,7 +50,7 @@ namespace MusicBox.Modules.SheetEditor.Models
 
         #endregion Properties
 
-        public SheetInfo(IContainerProvider containerProvider)
+        public SheetInformationViewModel(IContainerProvider containerProvider)
         {
             _sheetInformation = containerProvider.Resolve<SheetInformation>();
         }
@@ -59,7 +59,7 @@ namespace MusicBox.Modules.SheetEditor.Models
         {
             T dummy = current;
             setOutput(value);
-            SetProperty(ref dummy, value, propertyName);
+            _ = SetProperty(ref dummy, value, propertyName);
         }
     }
 }
