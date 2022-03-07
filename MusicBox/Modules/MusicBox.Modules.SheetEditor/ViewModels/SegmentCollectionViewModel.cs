@@ -25,7 +25,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         #endregion Properties
 
-        private readonly IContainerProvider _containerProvider;
+        private readonly Func<ISegmentEditorViewModel> _segmentEditorViewModelCreator;
 
         #region ICommand
 
@@ -40,9 +40,9 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         #endregion ICommand
 
-        public SegmentCollectionViewModel(IContainerProvider containerProvider)
+        public SegmentCollectionViewModel(Func<ISegmentEditorViewModel> segmentEditorViewModelCreator)
         {
-            _containerProvider = containerProvider;
+            _segmentEditorViewModelCreator = segmentEditorViewModelCreator;
             SegmentEditorVms = new ObservableCollection<ISegmentEditorViewModel>();
 
             NewSegmentCommand = new DelegateCommand(NewSegment);
@@ -56,7 +56,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         private void NewSegment()
         {
-            ISegmentEditorViewModel segmentEditorViewModel = _containerProvider.Resolve<ISegmentEditorViewModel>();
+            var segmentEditorViewModel = _segmentEditorViewModelCreator();
             SegmentEditorVms.Add(segmentEditorViewModel);
             SelectedSegmentEditorVm = segmentEditorViewModel;
         }
