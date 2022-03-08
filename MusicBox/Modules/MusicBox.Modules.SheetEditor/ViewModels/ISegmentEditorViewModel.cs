@@ -3,5 +3,6 @@
     public interface ISegmentEditorViewModel
     {
         string SegmentName { get; set; }
+        ISegmentEditorViewModel DeepCopy();
     }
 }

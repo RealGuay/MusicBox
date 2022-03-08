@@ -23,5 +23,12 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             SegmentName = DefaultName;
         }
 
+        public ISegmentEditorViewModel DeepCopy()
+        {
+            var copy = new SegmentEditorViewModel();
+            copy.SegmentName = SegmentName;
+            return copy;
+        }
+
     }
 }

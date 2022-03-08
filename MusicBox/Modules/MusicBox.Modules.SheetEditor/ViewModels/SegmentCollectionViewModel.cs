@@ -1,9 +1,7 @@
 ﻿using Prism.Commands;
-using Prism.Ioc;
 using Prism.Mvvm;
 using System;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
 
 namespace MusicBox.Modules.SheetEditor.ViewModels
 {
@@ -17,28 +15,24 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         private ISegmentEditorViewModel selectedSegmentEditorVm;
 
-        public ISegmentEditorViewModel SelectedSegmentEditorVm
-        {
-            get { return selectedSegmentEditorVm; }
-            set { SetProperty(ref selectedSegmentEditorVm, value); }
-        }
+        public ISegmentEditorViewModel SelectedSegmentEditorVm { get => selectedSegmentEditorVm; set => SetProperty(ref selectedSegmentEditorVm, value); }
 
         #endregion Properties
 
         private readonly Func<ISegmentEditorViewModel> _segmentEditorViewModelCreator;
 
-        #region ICommand
+        #region DelegateCommands
 
-        public ICommand NewSegmentCommand { get; set; }
-        public ICommand RepeatSegmentCommand { get; set; }
-        public ICommand CopySegmentCommand { get; set; }
-        public ICommand RemoveSegmentCommand { get; set; }
-        public ICommand DeleteSegmentCommand { get; set; }
+        public DelegateCommand NewSegmentCommand { get; set; }
+        public DelegateCommand RepeatSegmentCommand { get; set; }
+        public DelegateCommand CopySegmentCommand { get; set; }
+        public DelegateCommand RemoveSegmentCommand { get; set; }
+        public DelegateCommand DeleteSegmentCommand { get; set; }
 
-        public ICommand MoveUpSegmentCommand { get; set; }
-        public ICommand MoveDownSegmentCommand { get; set; }
+        public DelegateCommand MoveUpSegmentCommand { get; set; }
+        public DelegateCommand MoveDownSegmentCommand { get; set; }
 
-        #endregion ICommand
+        #endregion DelegateCommands
 
         public SegmentCollectionViewModel(Func<ISegmentEditorViewModel> segmentEditorViewModelCreator)
         {
@@ -46,12 +40,12 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             SegmentEditorVms = new ObservableCollection<ISegmentEditorViewModel>();
 
             NewSegmentCommand = new DelegateCommand(NewSegment);
-            RepeatSegmentCommand = new DelegateCommand(RepeatSegment, IsNotNullSelectedSegmentEditorVm).ObservesProperty(() => SelectedSegmentEditorVm);
-            CopySegmentCommand = new DelegateCommand(CopySegment, IsNotNullSelectedSegmentEditorVm).ObservesProperty(() => SelectedSegmentEditorVm); ;
-            RemoveSegmentCommand = new DelegateCommand(RemoveSegment, IsNotNullSelectedSegmentEditorVm).ObservesProperty(() => SelectedSegmentEditorVm); ;
-            DeleteSegmentCommand = new DelegateCommand(DeleteSegment, IsNotNullSelectedSegmentEditorVm).ObservesProperty(() => SelectedSegmentEditorVm); ;
-            MoveUpSegmentCommand = new DelegateCommand(MoveUpSegment, IsNotNullSelectedSegmentEditorVm).ObservesProperty(() => SelectedSegmentEditorVm); ;
-            MoveDownSegmentCommand = new DelegateCommand(MoveDownSegment, IsNotNullSelectedSegmentEditorVm).ObservesProperty(() => SelectedSegmentEditorVm); ;
+            RepeatSegmentCommand = new DelegateCommand(RepeatSegment, IsOneSegmentSelected).ObservesProperty(() => SelectedSegmentEditorVm);
+            CopySegmentCommand = new DelegateCommand(CopySegment, IsOneSegmentSelected).ObservesProperty(() => SelectedSegmentEditorVm); ;
+            RemoveSegmentCommand = new DelegateCommand(RemoveSegment, IsOneSegmentSelected).ObservesProperty(() => SelectedSegmentEditorVm); ;
+            DeleteSegmentCommand = new DelegateCommand(DeleteSegment, IsOneSegmentSelected).ObservesProperty(() => SelectedSegmentEditorVm); ;
+            MoveUpSegmentCommand = new DelegateCommand(MoveUpSegment, CanMoveUpSegment).ObservesProperty(() => SelectedSegmentEditorVm); ;
+            MoveDownSegmentCommand = new DelegateCommand(MoveDownSegment, CanMoveDownSegment).ObservesProperty(() => SelectedSegmentEditorVm); ;
         }
 
         private void NewSegment()
@@ -63,6 +57,10 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         private void RepeatSegment()
         {
+            var repeat = SelectedSegmentEditorVm.DeepCopy();
+            repeat.SegmentName = SelectedSegmentEditorVm.SegmentName + "Repeated";
+            SegmentEditorVms.Add(repeat);
+            SelectedSegmentEditorVm = repeat;
         }
 
         private void CopySegment()
@@ -79,13 +77,53 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         private void MoveUpSegment()
         {
+            int index = SegmentEditorVms.IndexOf(SelectedSegmentEditorVm);
+            if (index > 0)
+            {
+                SegmentEditorVms.Move(index, index - 1);
+                RefreshUpDownButtons();
+            }
+        }
+
+        private void RefreshUpDownButtons()
+        {
+            MoveUpSegmentCommand.RaiseCanExecuteChanged();
+            MoveDownSegmentCommand.RaiseCanExecuteChanged();
+        }
+
+        private bool CanMoveUpSegment()
+        {
+            if (!IsOneSegmentSelected()) return false;
+            return !IsSelectedSegmentFirst();
+        }
+
+        private bool IsSelectedSegmentFirst()
+        {
+            return SegmentEditorVms.IndexOf(SelectedSegmentEditorVm) == 0;
         }
 
         private void MoveDownSegment()
         {
+            int index = SegmentEditorVms.IndexOf(SelectedSegmentEditorVm);
+            if (index < SegmentEditorVms.Count - 1)
+            {
+                SegmentEditorVms.Move(index, index + 1);
+                RefreshUpDownButtons();
+            }
         }
 
-        private bool IsNotNullSelectedSegmentEditorVm()
+        private bool CanMoveDownSegment()
+        {
+            if (!IsOneSegmentSelected()) return false;
+            return !IsSelectedSegmentLast();
+        }
+
+        private bool IsSelectedSegmentLast()
+        {
+            return SegmentEditorVms.IndexOf(SelectedSegmentEditorVm) == SegmentEditorVms.Count - 1;
+        }
+
+        private bool IsOneSegmentSelected()
         {
             return SelectedSegmentEditorVm != null;
         }
