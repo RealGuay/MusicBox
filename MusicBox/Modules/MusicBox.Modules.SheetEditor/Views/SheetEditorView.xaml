@@ -84,7 +84,7 @@
                     <Button Content="Delete" Margin="10" Command="{Binding SegmentCollectionVm.DeleteSegmentCommand}"></Button>
                 </StackPanel>
 
-                <ListBox  Grid.Column="1" ItemsSource="{Binding SegmentCollectionVm.SegmentEditorVms}" DisplayMemberPath="SegmentName" SelectedItem="{Binding SegmentCollectionVm.SelectedSegmentEditorVm}" Margin="5" MinHeight="200" d:ItemsSource="{d:SampleData ItemCount=5}"></ListBox>
+                <ListBox  Grid.Column="1" ItemsSource="{Binding SegmentCollectionVm.SegmentEditorVms}" DisplayMemberPath="SegmentName" SelectedIndex="{Binding SegmentCollectionVm.SelectedSegmentIndex, Mode=TwoWay}" Margin="5" MinHeight="200" d:ItemsSource="{d:SampleData ItemCount=5}"></ListBox>
 
                 <StackPanel Grid.Column="2" VerticalAlignment="Center">
                     <Button Content="↑↑↑" Margin="10"  Command="{Binding SegmentCollectionVm.MoveUpSegmentCommand}"></Button>

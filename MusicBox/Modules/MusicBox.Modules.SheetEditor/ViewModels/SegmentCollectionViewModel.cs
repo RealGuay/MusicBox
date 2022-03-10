@@ -2,6 +2,7 @@
 using Prism.Mvvm;
 using System;
 using System.Collections.ObjectModel;
+using System.Runtime.CompilerServices;
 
 namespace MusicBox.Modules.SheetEditor.ViewModels
 {
@@ -16,6 +17,9 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         private ISegmentEditorViewModel selectedSegmentEditorVm;
 
         public ISegmentEditorViewModel SelectedSegmentEditorVm { get => selectedSegmentEditorVm; set => SetProperty(ref selectedSegmentEditorVm, value); }
+
+        private int selectedSegmentIndex;
+        public int SelectedSegmentIndex { get => selectedSegmentIndex; set => ChangeSelectedSegmentIndex(ref selectedSegmentIndex, value); }
 
         #endregion Properties
 
@@ -38,51 +42,60 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         {
             _segmentEditorViewModelCreator = segmentEditorViewModelCreator;
             SegmentEditorVms = new ObservableCollection<ISegmentEditorViewModel>();
+            selectedSegmentIndex = -1;
+            SelectedSegmentEditorVm = null;
 
             NewSegmentCommand = new DelegateCommand(NewSegment);
-            RepeatSegmentCommand = new DelegateCommand(RepeatSegment, IsOneSegmentSelected).ObservesProperty(() => SelectedSegmentEditorVm);
-            CopySegmentCommand = new DelegateCommand(CopySegment, IsOneSegmentSelected).ObservesProperty(() => SelectedSegmentEditorVm); ;
-            RemoveSegmentCommand = new DelegateCommand(RemoveSegment, IsOneSegmentSelected).ObservesProperty(() => SelectedSegmentEditorVm); ;
-            DeleteSegmentCommand = new DelegateCommand(DeleteSegment, IsOneSegmentSelected).ObservesProperty(() => SelectedSegmentEditorVm); ;
-            MoveUpSegmentCommand = new DelegateCommand(MoveUpSegment, CanMoveUpSegment).ObservesProperty(() => SelectedSegmentEditorVm); ;
-            MoveDownSegmentCommand = new DelegateCommand(MoveDownSegment, CanMoveDownSegment).ObservesProperty(() => SelectedSegmentEditorVm); ;
+            RepeatSegmentCommand = new DelegateCommand(RepeatSegment, IsOneSegmentSelected).ObservesProperty(() => SelectedSegmentIndex);
+            CopySegmentCommand = new DelegateCommand(CopySegment, IsOneSegmentSelected).ObservesProperty(() => SelectedSegmentIndex);
+            RemoveSegmentCommand = new DelegateCommand(RemoveSegment, IsOneSegmentSelected).ObservesProperty(() => SelectedSegmentIndex);
+            DeleteSegmentCommand = new DelegateCommand(DeleteSegment, IsOneSegmentSelected).ObservesProperty(() => SelectedSegmentIndex);
+            MoveUpSegmentCommand = new DelegateCommand(MoveUpSegment, CanMoveUpSegment).ObservesProperty(() => SelectedSegmentIndex);
+            MoveDownSegmentCommand = new DelegateCommand(MoveDownSegment, CanMoveDownSegment).ObservesProperty(() => SelectedSegmentIndex);
+        }
+
+        private void ChangeSelectedSegmentIndex(ref int currentIndex, int value, [CallerMemberName] string propertyName = null)
+        {
+            SetProperty(ref currentIndex, value, propertyName);
+            SelectedSegmentEditorVm = SegmentEditorVms[currentIndex];
+            ///            RefreshUpDownButtons();
         }
 
         private void NewSegment()
         {
             var segmentEditorViewModel = _segmentEditorViewModelCreator();
             SegmentEditorVms.Add(segmentEditorViewModel);
-            SelectedSegmentEditorVm = segmentEditorViewModel;
+            SelectedSegmentIndex = SegmentEditorVms.Count - 1;
         }
 
         private void RepeatSegment()
         {
-            var repeat = SelectedSegmentEditorVm.DeepCopy();
-            repeat.SegmentName = SelectedSegmentEditorVm.SegmentName + "Repeated";
-            SegmentEditorVms.Add(repeat);
-            SelectedSegmentEditorVm = repeat;
+            SegmentEditorVms.Add(SelectedSegmentEditorVm);
+            SelectedSegmentIndex = SegmentEditorVms.Count - 1;
         }
 
         private void CopySegment()
         {
+            var copy = SelectedSegmentEditorVm.DeepCopy();
+            copy.SegmentName = SelectedSegmentEditorVm.SegmentName + "Copied";
+            SegmentEditorVms.Add(copy);
+            SelectedSegmentIndex = SegmentEditorVms.Count - 1;
         }
 
         private void RemoveSegment()
         {
+            SelectedSegmentIndex--;
         }
 
         private void DeleteSegment()
         {
+            SelectedSegmentIndex++;
         }
 
         private void MoveUpSegment()
         {
-            int index = SegmentEditorVms.IndexOf(SelectedSegmentEditorVm);
-            if (index > 0)
-            {
-                SegmentEditorVms.Move(index, index - 1);
-                RefreshUpDownButtons();
-            }
+            SegmentEditorVms.Move(SelectedSegmentIndex, SelectedSegmentIndex - 1);
+            //            RefreshUpDownButtons();
         }
 
         private void RefreshUpDownButtons()
@@ -99,17 +112,13 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         private bool IsSelectedSegmentFirst()
         {
-            return SegmentEditorVms.IndexOf(SelectedSegmentEditorVm) == 0;
+            return SelectedSegmentIndex == 0;
         }
 
         private void MoveDownSegment()
         {
-            int index = SegmentEditorVms.IndexOf(SelectedSegmentEditorVm);
-            if (index < SegmentEditorVms.Count - 1)
-            {
-                SegmentEditorVms.Move(index, index + 1);
-                RefreshUpDownButtons();
-            }
+            SegmentEditorVms.Move(SelectedSegmentIndex, SelectedSegmentIndex + 1);
+            //                RefreshUpDownButtons();
         }
 
         private bool CanMoveDownSegment()
@@ -120,7 +129,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         private bool IsSelectedSegmentLast()
         {
-            return SegmentEditorVms.IndexOf(SelectedSegmentEditorVm) == SegmentEditorVms.Count - 1;
+            return SelectedSegmentIndex == SegmentEditorVms.Count - 1;
         }
 
         private bool IsOneSegmentSelected()
