@@ -71,13 +71,6 @@ namespace MusicBox.Modules.SheetEditor.Tests.ViewModels
                 item => Assert.Equal($"{_initialName}{1}", item.SegmentName),
                 item => Assert.Equal($"{_initialName}{2}", item.SegmentName));
             Assert.Equal($"{_initialName}{3}", _viewModel.SelectedSegmentEditorVm.SegmentName);
-
-            _viewModel.MoveUpSegmentCommand.Execute();
-            Assert.Collection(_viewModel.SegmentEditorVms,
-                item => Assert.Equal($"{_initialName}{3}", item.SegmentName),
-                item => Assert.Equal($"{_initialName}{1}", item.SegmentName),
-                item => Assert.Equal($"{_initialName}{2}", item.SegmentName));
-            Assert.Equal($"{_initialName}{3}", _viewModel.SelectedSegmentEditorVm.SegmentName);
         }
 
         [Fact]
@@ -103,13 +96,6 @@ namespace MusicBox.Modules.SheetEditor.Tests.ViewModels
                 item => Assert.Equal($"{_initialName}{3}", item.SegmentName),
                 item => Assert.Equal($"{_initialName}{1}", item.SegmentName));
             Assert.Equal($"{_initialName}{1}", _viewModel.SelectedSegmentEditorVm.SegmentName);
-
-            _viewModel.MoveDownSegmentCommand.Execute();
-            Assert.Collection(_viewModel.SegmentEditorVms,
-                item => Assert.Equal($"{_initialName}{2}", item.SegmentName),
-                item => Assert.Equal($"{_initialName}{3}", item.SegmentName),
-                item => Assert.Equal($"{_initialName}{1}", item.SegmentName));
-            Assert.Equal($"{_initialName}{1}", _viewModel.SelectedSegmentEditorVm.SegmentName);
         }
 
         [Fact]
@@ -122,23 +108,59 @@ namespace MusicBox.Modules.SheetEditor.Tests.ViewModels
             Assert.False(canMoveDown);
         }
 
-        [Fact]
-        public void CallCanMoveDownSegmentOnSegmentSelectionChanges()  /// tttt
+        // StaFact is required because the RaiseCanExecuteChanged of Prism uses another thread to call the delegates in CanExecuteChanged
+        /* from Prism.Commands DelegateCommandBase
+        // <summary>
+        /// Raises <see cref="ICommand.CanExecuteChanged"/> so every 
+        /// command invoker can requery <see cref="ICommand.CanExecute"/>.
+        /// </summary>
+        protected virtual void OnCanExecuteChanged()
+        {
+            var handler = CanExecuteChanged;
+            if (handler != null)
+            {
+                if (_synchronizationContext != null && _synchronizationContext != SynchronizationContext.Current)
+                    _synchronizationContext.Post((o) => handler.Invoke(this, EventArgs.Empty), null); // <<<<<<<<<<   Post   <<<<<<<<<<<<<<<<<
+                else
+                    handler.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Raises <see cref="CanExecuteChanged"/> so every command invoker
+        /// can requery to check if the command can execute.
+        /// </summary>
+        /// <remarks>Note that this will trigger the execution of <see cref="CanExecuteChanged"/> once for each invoker.</remarks>
+        [SuppressMessage("Microsoft.Design", "CA1030:UseEventsWhereAppropriate")]
+        public void RaiseCanExecuteChanged()
+        {
+            OnCanExecuteChanged();
+        }
+        
+         */
+        // StaFact ensures that everything runs on the same thread
+        [StaFact]  
+        public void CallCanMoveDownSegmentOnSegmentSelectionChanges()
         {
             int canMoveDownCount = 0;
             _viewModel.MoveDownSegmentCommand.CanExecuteChanged += (sender, args) => canMoveDownCount++;
 
             _viewModel.NewSegmentCommand.Execute();
+            Assert.Equal(1, canMoveDownCount);
             _viewModel.NewSegmentCommand.Execute();
+            Assert.Equal(2, canMoveDownCount);
             _viewModel.NewSegmentCommand.Execute();
+
+            Assert.Equal(3, canMoveDownCount);
 
             _viewModel.SelectedSegmentIndex = 0;
+            Assert.Equal(4, canMoveDownCount);
 
             _viewModel.SelectedSegmentIndex = 1;
+            Assert.Equal(5, canMoveDownCount);
 
             _viewModel.MoveDownSegmentCommand.Execute();
-
-            Assert.Equal(5, canMoveDownCount);
+            Assert.Equal(6, canMoveDownCount);
         }
 
         [Fact]
