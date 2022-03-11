@@ -58,7 +58,6 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         {
             SetProperty(ref currentIndex, value, propertyName);
             SelectedSegmentEditorVm = SegmentEditorVms[currentIndex];
-            ///            RefreshUpDownButtons();
         }
 
         private void NewSegment()
@@ -84,25 +83,19 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         private void RemoveSegment()
         {
-            SelectedSegmentIndex--;
         }
 
         private void DeleteSegment()
         {
-            SelectedSegmentIndex++;
         }
 
         private void MoveUpSegment()
         {
-            SegmentEditorVms.Move(SelectedSegmentIndex, SelectedSegmentIndex - 1);
-            //            RefreshUpDownButtons();
+            int newSelectedIndex = SelectedSegmentIndex - 1;
+            SegmentEditorVms.Move(SelectedSegmentIndex, newSelectedIndex);
+            SelectedSegmentIndex = newSelectedIndex;
         }
 
-        private void RefreshUpDownButtons()
-        {
-            MoveUpSegmentCommand.RaiseCanExecuteChanged();
-            MoveDownSegmentCommand.RaiseCanExecuteChanged();
-        }
 
         private bool CanMoveUpSegment()
         {
@@ -117,8 +110,9 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         private void MoveDownSegment()
         {
-            SegmentEditorVms.Move(SelectedSegmentIndex, SelectedSegmentIndex + 1);
-            //                RefreshUpDownButtons();
+            int newSelectedIndex = SelectedSegmentIndex + 1;
+            SegmentEditorVms.Move(SelectedSegmentIndex, newSelectedIndex);
+            SelectedSegmentIndex = newSelectedIndex;
         }
 
         private bool CanMoveDownSegment()
