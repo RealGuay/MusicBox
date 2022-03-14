@@ -9,7 +9,7 @@ namespace MusicBox.Modules.SheetEditor.Tests.ViewModels
         private int _segmentCount = 1;
         private Mock<ISegmentEditorViewModel> _copySevm;
         private readonly string _initialName = "Segment";
-        private readonly string _copyName = "SegmentTestCopy";
+        private readonly string _copyName = "SegmentTestCopied";
         private readonly SegmentCollectionViewModel _viewModel;
 
         public SegmentCollectionViewModelTests()
@@ -49,6 +49,30 @@ namespace MusicBox.Modules.SheetEditor.Tests.ViewModels
                 item => Assert.Equal($"{_initialName}{2}", item.SegmentName),
                 item => Assert.Equal($"{_initialName}{3}", item.SegmentName));
             Assert.Equal($"{_initialName}{3}", _viewModel.SelectedSegmentEditorVm.SegmentName);
+        }
+
+        [Theory]
+        [InlineData(0, -1, false, false)]
+        [InlineData(1, 0, false, false)]
+        [InlineData(2, 0, false, true)]
+        [InlineData(2, 1, true, false)]
+        [InlineData(3, 0, false, true)]
+        [InlineData(3, 1, true, true)]
+        [InlineData(3, 2, true, false)]
+        public void DisableMoveSegmentUpMoveSegmentDownButtonsOnViewModelCreation(int segmentsToCreate, int selectSegementIndex, bool canUp, bool canDown)
+        {
+            for (int i = 0; i < segmentsToCreate; i++)
+            {
+                _viewModel.NewSegmentCommand.Execute();
+            }
+
+            _viewModel.SelectedSegmentIndex = selectSegementIndex;
+
+            bool canMoveUp = _viewModel.MoveUpSegmentCommand.CanExecute();
+            bool canMoveDown = _viewModel.MoveDownSegmentCommand.CanExecute();
+
+            Assert.Equal(canUp, canMoveUp);
+            Assert.Equal(canDown, canMoveDown);
         }
 
         [Fact]
@@ -98,20 +122,10 @@ namespace MusicBox.Modules.SheetEditor.Tests.ViewModels
             Assert.Equal($"{_initialName}{1}", _viewModel.SelectedSegmentEditorVm.SegmentName);
         }
 
-        [Fact]
-        public void MoveSegmentUpMoveSegmentDownButtonsDisabledOnViewModelCreation()
-        {
-            bool canMoveUp = _viewModel.MoveUpSegmentCommand.CanExecute();
-            bool canMoveDown = _viewModel.MoveDownSegmentCommand.CanExecute();
-
-            Assert.False(canMoveUp);
-            Assert.False(canMoveDown);
-        }
-
-        // StaFact is required because the RaiseCanExecuteChanged of Prism uses another thread to call the delegates in CanExecuteChanged
+        // StaFact is required because the RaiseCanExecuteChanged of Prism uses another thread to call the delegate in CanExecuteChanged
         /* from Prism.Commands DelegateCommandBase
         // <summary>
-        /// Raises <see cref="ICommand.CanExecuteChanged"/> so every 
+        /// Raises <see cref="ICommand.CanExecuteChanged"/> so every
         /// command invoker can requery <see cref="ICommand.CanExecute"/>.
         /// </summary>
         protected virtual void OnCanExecuteChanged()
@@ -136,44 +150,39 @@ namespace MusicBox.Modules.SheetEditor.Tests.ViewModels
         {
             OnCanExecuteChanged();
         }
-        
-         */
+        */
+
         // StaFact ensures that everything runs on the same thread
-        [StaFact]  
-        public void CallCanMoveDownSegmentOnSegmentSelectionChanges()
+        [StaFact]
+        public void CallCanMoveUpDownSegmentOnSegmentSelectionChanges()
         {
+            int canMoveUpCount = 0;
             int canMoveDownCount = 0;
+            _viewModel.NewSegmentCommand.Execute();
+            _viewModel.NewSegmentCommand.Execute();
+            _viewModel.NewSegmentCommand.Execute();
+            _viewModel.MoveUpSegmentCommand.CanExecuteChanged += (sender, args) => canMoveUpCount++;
             _viewModel.MoveDownSegmentCommand.CanExecuteChanged += (sender, args) => canMoveDownCount++;
 
-            _viewModel.NewSegmentCommand.Execute();
-            Assert.Equal(1, canMoveDownCount);
-            _viewModel.NewSegmentCommand.Execute();
-            Assert.Equal(2, canMoveDownCount);
-            _viewModel.NewSegmentCommand.Execute();
-
-            Assert.Equal(3, canMoveDownCount);
-
             _viewModel.SelectedSegmentIndex = 0;
-            Assert.Equal(4, canMoveDownCount);
+            Assert.Equal(1, canMoveUpCount);
+            Assert.Equal(1, canMoveDownCount);
 
             _viewModel.SelectedSegmentIndex = 1;
+            Assert.Equal(2, canMoveUpCount);
+            Assert.Equal(2, canMoveDownCount);
+
+            _viewModel.SelectedSegmentIndex = 2;
+            Assert.Equal(3, canMoveUpCount);
+            Assert.Equal(3, canMoveDownCount);
+
+            _viewModel.SelectedSegmentIndex = 1;
+            Assert.Equal(4, canMoveUpCount);
+            Assert.Equal(4, canMoveDownCount);
+
+            _viewModel.SelectedSegmentIndex = 0;
+            Assert.Equal(5, canMoveUpCount);
             Assert.Equal(5, canMoveDownCount);
-
-            _viewModel.MoveDownSegmentCommand.Execute();
-            Assert.Equal(6, canMoveDownCount);
-        }
-
-        [Fact]
-        public void CreateOneDeepCopyOnCopyCommand()
-        {
-            _viewModel.NewSegmentCommand.Execute();
-
-            _viewModel.CopySegmentCommand.Execute();
-            Assert.Collection(_viewModel.SegmentEditorVms,
-                item => Assert.Equal($"{_initialName}{1}", item.SegmentName),
-                item => Assert.Equal(_copyName, item.SegmentName)
-                );
-            Assert.Equal(_copyName, _viewModel.SelectedSegmentEditorVm.SegmentName);
         }
 
         [Fact]
@@ -193,6 +202,79 @@ namespace MusicBox.Modules.SheetEditor.Tests.ViewModels
                                 item => Assert.Equal($"{_initialName}{3}", item.SegmentName),
                                 item => Assert.Equal($"{_initialName}{2}", item.SegmentName));
             Assert.Equal($"{_initialName}{2}", _viewModel.SelectedSegmentEditorVm.SegmentName);
+        }
+
+        [Fact]
+        public void CanMoveTheSameSegmentDependingOfItsPosition()
+        {
+            _viewModel.NewSegmentCommand.Execute();
+            _viewModel.NewSegmentCommand.Execute();
+            _viewModel.NewSegmentCommand.Execute();
+
+            _viewModel.SelectedSegmentIndex = 1;
+
+            _viewModel.RepeatSegmentCommand.Execute();
+
+            Assert.Collection(_viewModel.SegmentEditorVms,
+                                item => Assert.Equal($"{_initialName}{1}", item.SegmentName),
+                                item => Assert.Equal($"{_initialName}{2}", item.SegmentName),
+                                item => Assert.Equal($"{_initialName}{3}", item.SegmentName),
+                                item => Assert.Equal($"{_initialName}{2}", item.SegmentName));
+            Assert.Equal($"{_initialName}{2}", _viewModel.SelectedSegmentEditorVm.SegmentName);
+
+            bool canMoveUp = _viewModel.MoveUpSegmentCommand.CanExecute();
+            bool canMoveDown = _viewModel.MoveDownSegmentCommand.CanExecute();
+            Assert.True(canMoveUp);
+            Assert.False(canMoveDown);
+
+            _viewModel.SelectedSegmentIndex = 1;
+            canMoveUp = _viewModel.MoveUpSegmentCommand.CanExecute();
+            canMoveDown = _viewModel.MoveDownSegmentCommand.CanExecute();
+            Assert.True(canMoveUp);
+            Assert.True(canMoveDown);
+        }
+
+        [Fact]
+        public void CreateOneDeepCopyOnCopyCommand()
+        {
+            _viewModel.NewSegmentCommand.Execute();
+
+            _viewModel.CopySegmentCommand.Execute();
+            Assert.Collection(_viewModel.SegmentEditorVms,
+                item => Assert.Equal($"{_initialName}{1}", item.SegmentName),
+                item => Assert.Equal(_copyName, item.SegmentName)
+                );
+            Assert.Equal(_copyName, _viewModel.SelectedSegmentEditorVm.SegmentName);
+        }
+
+        [Fact]
+        public void CanMoveTheCopiedSegmentDependingOfItsPosition()
+        {
+            _viewModel.NewSegmentCommand.Execute();
+            _viewModel.NewSegmentCommand.Execute();
+            _viewModel.NewSegmentCommand.Execute();
+
+            _viewModel.SelectedSegmentIndex = 1;
+
+            _viewModel.CopySegmentCommand.Execute();
+
+            Assert.Collection(_viewModel.SegmentEditorVms,
+                                item => Assert.Equal($"{_initialName}{1}", item.SegmentName),
+                                item => Assert.Equal($"{_initialName}{2}", item.SegmentName),
+                                item => Assert.Equal($"{_initialName}{3}", item.SegmentName),
+                                item => Assert.Equal(_copyName, item.SegmentName));
+            Assert.Equal(_copyName, _viewModel.SelectedSegmentEditorVm.SegmentName);
+
+            bool canMoveUp = _viewModel.MoveUpSegmentCommand.CanExecute();
+            bool canMoveDown = _viewModel.MoveDownSegmentCommand.CanExecute();
+            Assert.True(canMoveUp);
+            Assert.False(canMoveDown);
+
+            _viewModel.SelectedSegmentIndex = 1;
+            canMoveUp = _viewModel.MoveUpSegmentCommand.CanExecute();
+            canMoveDown = _viewModel.MoveDownSegmentCommand.CanExecute();
+            Assert.True(canMoveUp);
+            Assert.True(canMoveDown);
         }
     }
 }

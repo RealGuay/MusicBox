@@ -56,8 +56,10 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         private void ChangeSelectedSegmentIndex(ref int currentIndex, int value, [CallerMemberName] string propertyName = null)
         {
-            SetProperty(ref currentIndex, value, propertyName);
-            SelectedSegmentEditorVm = SegmentEditorVms[currentIndex];
+            if (SetProperty(ref currentIndex, value, propertyName))
+            {
+                SelectedSegmentEditorVm = SegmentEditorVms[currentIndex];
+            }
         }
 
         private void NewSegment()
