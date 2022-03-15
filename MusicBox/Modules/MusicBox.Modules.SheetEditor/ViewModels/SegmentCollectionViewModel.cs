@@ -42,7 +42,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         {
             _segmentEditorViewModelCreator = segmentEditorViewModelCreator;
             SegmentEditorVms = new ObservableCollection<ISegmentEditorViewModel>();
-            selectedSegmentIndex = -1;
+            SelectedSegmentIndex = -1;    //  !!!!!!!!!
             SelectedSegmentEditorVm = null;
 
             NewSegmentCommand = new DelegateCommand(NewSegment);
@@ -58,7 +58,14 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         {
             if (SetProperty(ref currentIndex, value, propertyName))
             {
-                SelectedSegmentEditorVm = SegmentEditorVms[currentIndex];
+                if (currentIndex > -1)
+                {
+                    SelectedSegmentEditorVm = SegmentEditorVms[currentIndex];
+                }
+                else
+                {
+                    SelectedSegmentEditorVm = null;
+                }
             }
         }
 
@@ -85,6 +92,9 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         private void RemoveSegment()
         {
+            int removedIndex = SelectedSegmentIndex;
+            SegmentEditorVms.RemoveAt(removedIndex);
+            SelectedSegmentIndex = removedIndex < SegmentEditorVms.Count ? removedIndex : removedIndex - 1;
         }
 
         private void DeleteSegment()
@@ -97,7 +107,6 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             SegmentEditorVms.Move(SelectedSegmentIndex, newSelectedIndex);
             SelectedSegmentIndex = newSelectedIndex;
         }
-
 
         private bool CanMoveUpSegment()
         {

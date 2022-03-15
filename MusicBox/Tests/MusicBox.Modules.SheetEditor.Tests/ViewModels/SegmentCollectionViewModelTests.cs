@@ -59,14 +59,14 @@ namespace MusicBox.Modules.SheetEditor.Tests.ViewModels
         [InlineData(3, 0, false, true)]
         [InlineData(3, 1, true, true)]
         [InlineData(3, 2, true, false)]
-        public void DisableMoveSegmentUpMoveSegmentDownButtonsOnViewModelCreation(int segmentsToCreate, int selectSegementIndex, bool canUp, bool canDown)
+        public void EnableMoveUpMoveDownButtonsOnSegmentSelection (int segmentsToCreate, int selectSegmentIndex, bool canUp, bool canDown)
         {
             for (int i = 0; i < segmentsToCreate; i++)
             {
                 _viewModel.NewSegmentCommand.Execute();
             }
 
-            _viewModel.SelectedSegmentIndex = selectSegementIndex;
+            _viewModel.SelectedSegmentIndex = selectSegmentIndex;
 
             bool canMoveUp = _viewModel.MoveUpSegmentCommand.CanExecute();
             bool canMoveDown = _viewModel.MoveDownSegmentCommand.CanExecute();
@@ -275,6 +275,26 @@ namespace MusicBox.Modules.SheetEditor.Tests.ViewModels
             canMoveDown = _viewModel.MoveDownSegmentCommand.CanExecute();
             Assert.True(canMoveUp);
             Assert.True(canMoveDown);
+        }
+
+        [Fact]
+        public void RemoveSegmentEditorUpOnRemoveCommand()
+        {
+            _viewModel.NewSegmentCommand.Execute();
+            _viewModel.NewSegmentCommand.Execute();
+            _viewModel.NewSegmentCommand.Execute();
+
+            Assert.Collection(_viewModel.SegmentEditorVms,
+                                item => Assert.Equal($"{_initialName}{1}", item.SegmentName),
+                                item => Assert.Equal($"{_initialName}{2}", item.SegmentName),
+                                item => Assert.Equal($"{_initialName}{3}", item.SegmentName));
+
+            _viewModel.SelectedSegmentIndex = 1;
+            _viewModel.RemoveSegmentCommand.Execute();
+
+            Assert.Collection(_viewModel.SegmentEditorVms,
+                                item => Assert.Equal($"{_initialName}{1}", item.SegmentName),
+                                item => Assert.Equal($"{_initialName}{3}", item.SegmentName));
         }
     }
 }
