@@ -57,9 +57,11 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         private void ChangeProperty<T>(T current, T value, Action<T> setOutput, [CallerMemberName] string propertyName = null)
         {
-            T dummy = current;
-            setOutput(value);
-            _ = SetProperty(ref dummy, value, propertyName);
+            T storage = current;
+            if (SetProperty(ref storage, value, propertyName))
+            {
+                setOutput(value);
+            }
         }
     }
 }
