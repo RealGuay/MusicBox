@@ -30,7 +30,6 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         public DelegateCommand NewSegmentCommand { get; set; }
         public DelegateCommand RepeatSegmentCommand { get; set; }
         public DelegateCommand CopySegmentCommand { get; set; }
-        public DelegateCommand RemoveSegmentCommand { get; set; }
         public DelegateCommand DeleteSegmentCommand { get; set; }
 
         public DelegateCommand MoveUpSegmentCommand { get; set; }
@@ -42,13 +41,12 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         {
             _segmentEditorViewModelCreator = segmentEditorViewModelCreator;
             SegmentEditorVms = new ObservableCollection<ISegmentEditorViewModel>();
-            SelectedSegmentIndex = -1;    //  !!!!!!!!!
+            SelectedSegmentIndex = -1;
             SelectedSegmentEditorVm = null;
 
             NewSegmentCommand = new DelegateCommand(NewSegment);
             RepeatSegmentCommand = new DelegateCommand(RepeatSegment, IsOneSegmentSelected).ObservesProperty(() => SelectedSegmentIndex);
             CopySegmentCommand = new DelegateCommand(CopySegment, IsOneSegmentSelected).ObservesProperty(() => SelectedSegmentIndex);
-            RemoveSegmentCommand = new DelegateCommand(RemoveSegment, IsOneSegmentSelected).ObservesProperty(() => SelectedSegmentIndex);
             DeleteSegmentCommand = new DelegateCommand(DeleteSegment, IsOneSegmentSelected).ObservesProperty(() => SelectedSegmentIndex);
             MoveUpSegmentCommand = new DelegateCommand(MoveUpSegment, CanMoveUpSegment).ObservesProperty(() => SelectedSegmentIndex);
             MoveDownSegmentCommand = new DelegateCommand(MoveDownSegment, CanMoveDownSegment).ObservesProperty(() => SelectedSegmentIndex);
@@ -90,15 +88,11 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             SelectedSegmentIndex = SegmentEditorVms.Count - 1;
         }
 
-        private void RemoveSegment()
+        private void DeleteSegment()
         {
             int removedIndex = SelectedSegmentIndex;
             SegmentEditorVms.RemoveAt(removedIndex);
             SelectedSegmentIndex = removedIndex < SegmentEditorVms.Count ? removedIndex : removedIndex - 1;
-        }
-
-        private void DeleteSegment()
-        {
         }
 
         private void MoveUpSegment()

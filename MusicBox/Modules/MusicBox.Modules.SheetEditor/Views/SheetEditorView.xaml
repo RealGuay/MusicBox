@@ -80,7 +80,6 @@
                     <Button Content="New"    Margin="10" Command="{Binding SegmentCollectionVm.NewSegmentCommand}"></Button>
                     <Button Content="Repeat" Margin="10" Command="{Binding SegmentCollectionVm.RepeatSegmentCommand}"></Button>
                     <Button Content="Copy"   Margin="10" Command="{Binding SegmentCollectionVm.CopySegmentCommand}"></Button>
-                    <Button Content="Remove" Margin="10" Command="{Binding SegmentCollectionVm.RemoveSegmentCommand}"></Button>
                     <Button Content="Delete" Margin="10" Command="{Binding SegmentCollectionVm.DeleteSegmentCommand}"></Button>
                 </StackPanel>
 
