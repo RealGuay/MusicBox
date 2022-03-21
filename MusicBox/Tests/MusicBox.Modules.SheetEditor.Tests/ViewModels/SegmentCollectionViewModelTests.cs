@@ -1,5 +1,7 @@
 ﻿using Moq;
 using MusicBox.Modules.SheetEditor.ViewModels;
+using Prism.Services.Dialogs;
+using System;
 using Xunit;
 
 namespace MusicBox.Modules.SheetEditor.Tests.ViewModels
@@ -11,13 +13,17 @@ namespace MusicBox.Modules.SheetEditor.Tests.ViewModels
         private readonly string _initialName = "Segment";
         private readonly string _copyName = "SegmentTestCopied";
         private readonly SegmentCollectionViewModel _viewModel;
+        private readonly Mock<IDialogService> _dialogService;
 
         public SegmentCollectionViewModelTests()
         {
             _copySevm = new Mock<ISegmentEditorViewModel>();
             _copySevm.Setup(m => m.SegmentName).Returns(_copyName);
 
-            _viewModel = new SegmentCollectionViewModel(GetNewSevm);
+            _dialogService = new Mock<IDialogService>();
+            _viewModel = new SegmentCollectionViewModel(GetNewSevm, _dialogService.Object);
+
+            //            _dialogService.Setup(m => m.ShowDialog(It.IsAny<string>(), It.IsAny<DialogParameters>(),It.IsAny<Action<IDialogResult>>()));
         }
 
         private ISegmentEditorViewModel GetNewSevm()
@@ -59,7 +65,7 @@ namespace MusicBox.Modules.SheetEditor.Tests.ViewModels
         [InlineData(3, 0, false, true)]
         [InlineData(3, 1, true, true)]
         [InlineData(3, 2, true, false)]
-        public void EnableMoveUpMoveDownButtonsOnSegmentSelection (int segmentsToCreate, int selectSegmentIndex, bool canUp, bool canDown)
+        public void EnableMoveUpMoveDownButtonsOnSegmentSelection(int segmentsToCreate, int selectSegmentIndex, bool canUp, bool canDown)
         {
             for (int i = 0; i < segmentsToCreate; i++)
             {
@@ -278,7 +284,31 @@ namespace MusicBox.Modules.SheetEditor.Tests.ViewModels
         }
 
         [Fact]
-        public void RemoveSegmentEditorUpOnRemoveCommand()
+        public void RemoveSegmentEditorUpOnDeleteCommand()
+        {
+            _viewModel.NewSegmentCommand.Execute();
+            _viewModel.NewSegmentCommand.Execute();
+            _viewModel.NewSegmentCommand.Execute();
+            _viewModel.SelectedSegmentIndex = 1;
+            _viewModel.RepeatSegmentCommand.Execute();
+
+            Assert.Collection(_viewModel.SegmentEditorVms,
+                                item => Assert.Equal($"{_initialName}{1}", item.SegmentName),
+                                item => Assert.Equal($"{_initialName}{2}", item.SegmentName),
+                                item => Assert.Equal($"{_initialName}{3}", item.SegmentName),
+                                item => Assert.Equal($"{_initialName}{2}", item.SegmentName));
+
+            _viewModel.SelectedSegmentIndex = 1;
+            _viewModel.DeleteSegmentCommand.Execute();
+
+            Assert.Collection(_viewModel.SegmentEditorVms,
+                                item => Assert.Equal($"{_initialName}{1}", item.SegmentName),
+                                item => Assert.Equal($"{_initialName}{3}", item.SegmentName),
+                                item => Assert.Equal($"{_initialName}{2}", item.SegmentName));
+        }
+
+        [Fact]
+        private void ShowYesNoDialogOnRemoveLastInstanceOfTheSelectedSegment()
         {
             _viewModel.NewSegmentCommand.Execute();
             _viewModel.NewSegmentCommand.Execute();
@@ -290,11 +320,23 @@ namespace MusicBox.Modules.SheetEditor.Tests.ViewModels
                                 item => Assert.Equal($"{_initialName}{3}", item.SegmentName));
 
             _viewModel.SelectedSegmentIndex = 1;
-            _viewModel.RemoveSegmentCommand.Execute();
+
+            IDialogResult result = new DialogResult(ButtonResult.Yes);
+            //_dialogService.Setup(m => m.ShowDialog(It.IsAny<string>(), It.IsAny<DialogParameters>(), It.IsIn<Action<IDialogResult>>()))
+            //    .Callback((Action<IDialogResult> a) => a.Invoke(result));
+
+
+            //_dialogService.Setup(m => m.ShowDialog(It.IsAny<string>(), It.IsAny<DialogParameters>(), It.IsIn<Action<IDialogResult>>()))
+            //.Callback((string s, IDialogParameters p, Action<IDialogResult> a) => a.Invoke(result));
+
+            _dialogService.Setup(m => m.ShowDialog(It.IsAny<string>(), It.IsAny<DialogParameters>(), It.IsAny<Action<IDialogResult>>()))
+                            .Callback<string, IDialogParameters, Action<IDialogResult>>((s, p, a) => a.Invoke(result));
+
+            _viewModel.DeleteSegmentCommand.Execute();
 
             Assert.Collection(_viewModel.SegmentEditorVms,
-                                item => Assert.Equal($"{_initialName}{1}", item.SegmentName),
-                                item => Assert.Equal($"{_initialName}{3}", item.SegmentName));
+                    item => Assert.Equal($"{_initialName}{1}", item.SegmentName),
+                    item => Assert.Equal($"{_initialName}{3}", item.SegmentName));
         }
     }
 }

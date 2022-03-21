@@ -1,4 +1,5 @@
-﻿using MusicBox.Modules.Metronome;
+﻿using MusicBox.Core.Dialogs;
+using MusicBox.Modules.Metronome;
 using MusicBox.Modules.ModuleName;
 using MusicBox.Modules.SheetEditor;
 using MusicBox.Services;
@@ -29,6 +30,8 @@ namespace MusicBox
             containerRegistry.Register<WrapAroundCounter>();
             containerRegistry.RegisterSingleton<IMidiTimer, MidiTimer>();
             containerRegistry.RegisterSingleton<IBeatMaker, BeatMaker>();
+
+            containerRegistry.RegisterDialog<MessageDialog, MessageDialogViewModel>();
         }
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)

@@ -1,7 +1,9 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
+using Prism.Services.Dialogs;
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace MusicBox.Modules.SheetEditor.ViewModels
@@ -24,6 +26,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         #endregion Properties
 
         private readonly Func<ISegmentEditorViewModel> _segmentEditorViewModelCreator;
+        private readonly IDialogService _dialogService;
 
         #region DelegateCommands
 
@@ -37,9 +40,10 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         #endregion DelegateCommands
 
-        public SegmentCollectionViewModel(Func<ISegmentEditorViewModel> segmentEditorViewModelCreator)
+        public SegmentCollectionViewModel(Func<ISegmentEditorViewModel> segmentEditorViewModelCreator, IDialogService dialogService)
         {
             _segmentEditorViewModelCreator = segmentEditorViewModelCreator;
+            _dialogService = dialogService;
             SegmentEditorVms = new ObservableCollection<ISegmentEditorViewModel>();
             SelectedSegmentIndex = -1;
             SelectedSegmentEditorVm = null;
@@ -89,6 +93,28 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         }
 
         private void DeleteSegment()
+        {
+            IDialogResult result = null;
+          
+            if (segmentEditorVms.Count(s => s == SelectedSegmentEditorVm) >  1) 
+            {
+                result = new DialogResult(ButtonResult.Yes);
+            }
+            else
+            {
+                DialogParameters parameters = new DialogParameters();
+                parameters.Add("title", "Delete Confirmation");
+                parameters.Add("message", "Do you really want to delete this segment ?");
+                _dialogService.ShowDialog("MessageDialog", parameters, (r) => result = r);
+            }
+
+            if (result.Result == ButtonResult.Yes)
+            {
+                DoDeleteSegment();
+            }
+        }
+
+        private void DoDeleteSegment()
         {
             int removedIndex = SelectedSegmentIndex;
             SegmentEditorVms.RemoveAt(removedIndex);
