@@ -14,6 +14,8 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         public SheetInformationViewModel SheetInformationVm { get; private set; }
         public SegmentCollectionViewModel SegmentCollectionVm { get; private set; }
 
+        public bool IsSegmentSelected { get => SegmentCollectionVm.SelectedSegmentEditorVm != null; }
+
         public List<TimeSignature> TimeSignatures { get; set; }
 
         private bool isPlaying;
@@ -41,6 +43,8 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             SheetInformationVm = containerProvider.Resolve<SheetInformationViewModel>();
             SegmentCollectionVm = containerProvider.Resolve<SegmentCollectionViewModel>();
 
+            SegmentCollectionVm.PropertyChanged += SegmentCollectionVm_PropertyChanged;
+
             LoadCommand = new DelegateCommand(Load);
             SaveCommand = new DelegateCommand(Save, CanSave);
             PlayCommand = new DelegateCommand(Play, CanPlay);
@@ -49,6 +53,14 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
             InitTimeSignatures();
             SheetInformationVm.Tempo = 60;
+        }
+
+        private void SegmentCollectionVm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (Equals(e.PropertyName, nameof(SegmentCollectionVm.SelectedSegmentEditorVm)))
+            {
+                RaisePropertyChanged(nameof(IsSegmentSelected));
+            }
         }
 
         private void InitTimeSignatures()
@@ -95,7 +107,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         private void Pause()
         {
-            IsPlaying=false;
+            IsPlaying = false;
         }
 
         private void Rewind()

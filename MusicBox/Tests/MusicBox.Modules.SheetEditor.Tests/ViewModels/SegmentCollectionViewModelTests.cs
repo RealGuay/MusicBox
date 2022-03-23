@@ -322,13 +322,6 @@ namespace MusicBox.Modules.SheetEditor.Tests.ViewModels
             _viewModel.SelectedSegmentIndex = 1;
 
             IDialogResult result = new DialogResult(ButtonResult.Yes);
-            //_dialogService.Setup(m => m.ShowDialog(It.IsAny<string>(), It.IsAny<DialogParameters>(), It.IsIn<Action<IDialogResult>>()))
-            //    .Callback((Action<IDialogResult> a) => a.Invoke(result));
-
-
-            //_dialogService.Setup(m => m.ShowDialog(It.IsAny<string>(), It.IsAny<DialogParameters>(), It.IsIn<Action<IDialogResult>>()))
-            //.Callback((string s, IDialogParameters p, Action<IDialogResult> a) => a.Invoke(result));
-
             _dialogService.Setup(m => m.ShowDialog(It.IsAny<string>(), It.IsAny<DialogParameters>(), It.IsAny<Action<IDialogResult>>()))
                             .Callback<string, IDialogParameters, Action<IDialogResult>>((s, p, a) => a.Invoke(result));
 

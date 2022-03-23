@@ -8,11 +8,15 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-            <TextBlock Text="Segment Name:"/>
-            <TextBox Text="{Binding SegmentName}" Width="180"/>
+        <ListBox ItemsSource="{Binding BarEditorVms}" SelectedItem="{Binding SelectedBarEditorVm}" />
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
+            <TextBlock Text="Segment Name:" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding SegmentName}" Width="180" Height="20"/>
+            <Button Content="Add Bar" Command="{Binding AddBarCommand}" Margin="10"/>
+            <Button Content="Delete Bar" Command="{Binding DeleteBarCommand}" Margin="10"/>
         </StackPanel>
             
     </Grid>
