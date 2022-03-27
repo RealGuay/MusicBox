@@ -10,7 +10,6 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         private const string DefaultName = "Segment1";
 
         private readonly Func<IBarEditorViewModel> _barEditorVmCreator;
-//        private readonly Func<Func<BarEditorViewModel>, SegmentEditorViewModel> _segmentEditorViewModelCreator;
         private string segmentName;
 
         public string SegmentName { get => segmentName; set => SetProperty(ref segmentName, value); }

@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.2">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>380</x>
+      <y>330</y>
+      <w>520</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>Defines the Midi interfaces used by Services components
+(.Net Standard 2.0)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>380</x>
+      <y>140</y>
+      <w>520</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>Defines components implementing the service interfaces
+(.Net Standard 2.1)
+These components are instantiated only by the application.
+The module components only use their interfaces defined in 
+MusicBox.Services.Interfaces
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>380</x>
+      <y>40</y>
+      <w>520</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>Defines the interfaces used by the components in the modules of the application
+(.Net Standard 2.1)
+This is the only project referenced by the modules !!!???
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>380</x>
+      <y>430</y>
+      <w>520</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>Uses the Sanford package to implement the MidiInterfaces
+(.Net 4.7.2)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>40</x>
+      <y>40</y>
+      <w>280</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>MusicBox.Services.Interfaces
+--
+IBeatMaker
+halign=left</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>40</x>
+      <y>140</y>
+      <w>280</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>MusicBox.Services
+--
+BeatMaker
+halign=left</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>40</x>
+      <y>330</y>
+      <w>280</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>MusicBox.Services.MidiInterfaces
+--
+IMidiTimer
+halign=left</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>40</x>
+      <y>420</y>
+      <w>280</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>MusicBox.Services.MidiSanford
+--
+MidiTimer
+halign=left</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>310</x>
+      <y>60</y>
+      <w>90</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=-
+</panel_attributes>
+    <additional_attributes>10.0;20.0;70.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>310</x>
+      <y>160</y>
+      <w>90</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=-
+</panel_attributes>
+    <additional_attributes>10.0;20.0;70.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>310</x>
+      <y>350</y>
+      <w>90</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=-
+</panel_attributes>
+    <additional_attributes>10.0;20.0;70.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>310</x>
+      <y>440</y>
+      <w>90</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=-
+</panel_attributes>
+    <additional_attributes>10.0;20.0;70.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>120</x>
+      <y>540</y>
+      <w>220</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>Sanford.Multimedia.Midi
+--
+ITimer
+halign=left
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>180</x>
+      <y>480</y>
+      <w>30</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=(+)-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;60.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLHierarchy</id>
+    <coordinates>
+      <x>40</x>
+      <y>720</y>
+      <w>450</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>type=Package
+MusicBox.Services
+	MusicBox.Services.Interfaces
+	MusicBox.Services.MidiSanford
+		MusicBox.Services.MidiInterfaces
+		Sanford.Multimedia.Midi
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

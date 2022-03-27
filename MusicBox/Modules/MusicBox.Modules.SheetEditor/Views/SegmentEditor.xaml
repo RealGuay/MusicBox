@@ -4,14 +4,35 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MusicBox.Modules.SheetEditor.Views"
+             xmlns:conv="clr-namespace:MusicBox.Modules.SheetEditor.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <conv:ItemIndexConverter x:Key="ItemIndexConv" />
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition></RowDefinition>
             <RowDefinition Height="40"></RowDefinition>
         </Grid.RowDefinitions>
-        <ListBox ItemsSource="{Binding BarEditorVms}" SelectedItem="{Binding SelectedBarEditorVm}" />
+
+        <ListBox x:Name="MusicSheetBars"  ItemsSource="{Binding BarEditorVms}" SelectedItem="{Binding SelectedBarEditorVm}" AlternationCount="5000" MinHeight="500" Height="520">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplatedParent.(ItemsControl.AlternationIndex), Converter={StaticResource ItemIndexConv}}" HorizontalAlignment="Left"/>
+                        <local:BarEditor Margin="0"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
             <TextBlock Text="Segment Name:" VerticalAlignment="Center"/>
             <TextBox Text="{Binding SegmentName}" Width="180" Height="20"/>
