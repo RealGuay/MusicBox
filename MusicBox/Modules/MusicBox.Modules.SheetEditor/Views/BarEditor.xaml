@@ -1,11 +1,11 @@
 ﻿<UserControl x:Class="MusicBox.Modules.SheetEditor.Views.BarEditor"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:MusicBox.Modules.SheetEditor.Views"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:conv="clr-namespace:MusicBox.Modules.SheetEditor.Converters"
-             mc:Ignorable="d" 
+             xmlns:local="clr-namespace:MusicBox.Modules.SheetEditor.Views"
+             mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <conv:TimePixelBackgroundConverter x:Key="TimePixelBackConv" />
@@ -66,18 +66,19 @@
             </Setter>
         </Style>
     </UserControl.Resources>
-        <StackPanel>
-            <Border BorderThickness="2" BorderBrush="Azure">
-                <ListBox x:Name="TimePixels" ItemsSource="{Binding TimePixels}">
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <UniformGrid Columns="{Binding TimePixelPerLine}" Margin="2" />
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <Button Command="{Binding RelativeSource={RelativeSource AncestorType=local:BarEditor}, Path=DataContext.ActivatePixelCommand}"
+    <Grid>
+        
+        <Border BorderThickness="2" BorderBrush="Azure">
+            <ListBox x:Name="TimePixels" ItemsSource="{Binding TimePixels}">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="{Binding TimePixelPerLine}" Margin="2" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Command="{Binding RelativeSource={RelativeSource AncestorType=local:BarEditor}, Path=DataContext.ActivatePixelCommand}"
                                         CommandParameter="{Binding}"
                                         Background="{Binding Status,Converter={StaticResource TimePixelBackConv}}"
                                         BorderThickness="0"
@@ -85,26 +86,27 @@
                                         Margin="-4"
                                         Style="{DynamicResource TimePixelButtonStyle}"
                                         ToolTip="{Binding NoteTooltip}">
-                                    <Button.InputBindings>
-                                        <MouseBinding Gesture="Shift+LeftClick"
+                                <Button.InputBindings>
+                                    <MouseBinding Gesture="Shift+LeftClick"
                                          Command="{Binding RelativeSource={RelativeSource AncestorType=local:BarEditor}, Path=DataContext.ExpandPixelCommand}"
                                          CommandParameter="{Binding}" />
-                                        <MouseBinding Gesture="Shift+LeftDoubleClick"
+                                    <MouseBinding Gesture="Shift+LeftDoubleClick"
                                          Command="{Binding RelativeSource={RelativeSource AncestorType=local:BarEditor}, Path=DataContext.ExpandPixelCommand}"
                                          CommandParameter="{Binding}" />
-                                        <MouseBinding Gesture="WheelClick"
+                                    <MouseBinding Gesture="WheelClick"
                                          Command="{Binding RelativeSource={RelativeSource AncestorType=local:BarEditor}, Path=DataContext.AlterPixelCommand}"
                                          CommandParameter="{Binding}" />
-                                        <MouseBinding Gesture="Shift+WheelClick"
+                                    <MouseBinding Gesture="Shift+WheelClick"
                                          Command="{Binding RelativeSource={RelativeSource AncestorType=local:BarEditor}, Path=DataContext.AlterPixelCommand}"
                                          CommandParameter="{Binding}" />
-                                    </Button.InputBindings>
-                                </Button>
-                                <Rectangle Height="5" Width="3" Fill="{Binding Path=IsExpandedToNextPixel, Converter={StaticResource IsExpandedConv}}" Margin="4,0,-6,0" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </Border>
-        </StackPanel>
+                                </Button.InputBindings>
+                            </Button>
+                            <Rectangle Height="5" Width="3" Fill="{Binding Path=IsExpandedToNextPixel, Converter={StaticResource IsExpandedConv}}" Margin="4,0,-6,0" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Border>
+
+    </Grid>
 </UserControl>
