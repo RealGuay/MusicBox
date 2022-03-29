@@ -11,7 +11,7 @@
         <conv:TimePixelBackgroundConverter x:Key="TimePixelBackConv" />
         <conv:IsExpandedTotNextPixelConverter x:Key="IsExpandedConv" />
     </UserControl.Resources>
-    <Grid Visibility="Visible">
+    <Grid>
         <Border BorderThickness="2" BorderBrush="Green">
             <ListBox x:Name="RectTimePixels" ItemsSource="{Binding TimePixels}" Visibility="Visible">
                 <ListBox.ItemsPanel>
@@ -32,6 +32,7 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </Border>
+        <Button Opacity="0.2" Command="{Binding ChangeSelectedBarCommand}"></Button>
     </Grid>
 
 </UserControl>

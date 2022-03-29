@@ -1,4 +1,6 @@
-﻿using Prism.Commands;
+﻿using MusicBox.Modules.SheetEditor.Models;
+using Prism.Commands;
+using Prism.Events;
 using Prism.Mvvm;
 using System;
 using System.Collections.ObjectModel;
@@ -8,7 +10,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
     public class SegmentEditorViewModel : BindableBase, ISegmentEditorViewModel
     {
         private const string DefaultName = "Segment1";
-
+        private readonly IEventAggregator _eventAggregator;
         private readonly Func<IBarEditorViewModel> _barEditorVmCreator;
         private string segmentName;
 
@@ -23,13 +25,23 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         public DelegateCommand AddBarCommand { get; set; }
         public DelegateCommand DeleteBarCommand { get; set; }
 
-        public SegmentEditorViewModel(Func<IBarEditorViewModel> barEditorVmCreator)
+        public SegmentEditorViewModel(Func<IBarEditorViewModel> barEditorVmCreator, IEventAggregator evenAggregator)
         {
+            _eventAggregator = evenAggregator;
             _barEditorVmCreator = barEditorVmCreator;
             SegmentName = DefaultName;
             BarEditorVms = new ObservableCollection<IBarEditorViewModel>();
             AddBarCommand = new DelegateCommand(AddBar);
             DeleteBarCommand = new DelegateCommand(DeleteBar, CanDeleteBar).ObservesProperty(() => SelectedBarEditorVm);
+            _eventAggregator.GetEvent<SelectedBarChanged>().Subscribe(OnSelectedBarChanged);
+        }
+
+        private void OnSelectedBarChanged(IBarEditorViewModel newSelectedBarVm)
+        {
+            if (SelectedBarEditorVm != newSelectedBarVm)
+            {
+                SelectedBarEditorVm = newSelectedBarVm;
+            }
         }
 
         private void AddBar()
@@ -60,7 +72,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         public ISegmentEditorViewModel DeepCopy()
         {
-            SegmentEditorViewModel copy = new SegmentEditorViewModel(_barEditorVmCreator)
+            SegmentEditorViewModel copy = new SegmentEditorViewModel(_barEditorVmCreator, _eventAggregator)
             {
                 SegmentName = SegmentName
             };

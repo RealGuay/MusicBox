@@ -1,6 +1,7 @@
 ﻿using MusicBox.Modules.SheetEditor.Models;
 using MusicBox.Services.Interfaces.MusicSheetModels;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
@@ -45,25 +46,36 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         }
 
         public int TimePixelIncrement { get; private set; }
+
+        private readonly IEventAggregator _eventAggregator;
+
         public DelegateCommand<TimePixel> ActivatePixelCommand { get; set; }
         public DelegateCommand<TimePixel> ExpandPixelCommand { get; set; }
-
         public DelegateCommand<TimePixel> AlterPixelCommand { get; set; }
+        public DelegateCommand ChangeSelectedBarCommand { get; set; }
 
-        public BarEditorViewModel()
+
+        public BarEditorViewModel(IEventAggregator eventAggregator)
         {
+            _eventAggregator = eventAggregator;
             ActivatePixelCommand = new DelegateCommand<TimePixel>(ActivatePixel);
             ExpandPixelCommand = new DelegateCommand<TimePixel>(ExpandPixel);
             AlterPixelCommand = new DelegateCommand<TimePixel>(AlterPixel);
+            ChangeSelectedBarCommand = new DelegateCommand(ChangeSelectedBar);
             SelectedPixel = new TimePixel(0, StaffPart.GLine2, BarAlteration) { Line = StaffPart.GLine2 };  /// ???????????????
             TimePixels = new List<TimePixel>();
             BarAlteration = BarAlteration.None;
             CreateSheetStaff();
         }
 
+        private void ChangeSelectedBar()
+        {
+            _eventAggregator.GetEvent<SelectedBarChanged>().Publish(this);
+        }
+
         public IBarEditorViewModel DeepCopy()
         {
-            BarEditorViewModel newModel = new BarEditorViewModel();
+            BarEditorViewModel newModel = new BarEditorViewModel(_eventAggregator);
             //            newModel.TimeSignature = TimeSignature;
             return newModel;
         }
