@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace MusicBox.Services.Interfaces.MusicSheetModels
 {
@@ -12,9 +10,12 @@ namespace MusicBox.Services.Interfaces.MusicSheetModels
         public string Version { get; set; }
         public Context Context { get; set; }
 
+        public List<Segment> Segments { get; set; }
+
         public SheetInformation(Context context)
         {
             Context = context;
+            Segments = new List<Segment>();
         }
     }
 }

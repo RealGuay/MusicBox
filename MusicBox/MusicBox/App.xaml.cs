@@ -27,10 +27,11 @@ namespace MusicBox
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterSingleton<IMessageService, MessageService>();
+
             containerRegistry.Register<WrapAroundCounter>();
             containerRegistry.RegisterSingleton<IMidiTimer, MidiTimer>();
+            containerRegistry.RegisterSingleton<IMidiOutputDevice, MidiOutputDevice>();
             containerRegistry.RegisterSingleton<IBeatMaker, BeatMaker>();
-
             containerRegistry.RegisterDialog<MessageDialog, MessageDialogViewModel>();
         }
 
@@ -44,8 +45,12 @@ namespace MusicBox
         protected override void OnExit(ExitEventArgs e)
         {
             base.OnExit(e);
+
             IBeatMaker beatMaker = Container.Resolve<IBeatMaker>();
             beatMaker?.Dispose();
+
+            IMidiOutputDevice outputDevice = Container.Resolve<IMidiOutputDevice>();
+            outputDevice?.Dispose();
         }
     }
 }
