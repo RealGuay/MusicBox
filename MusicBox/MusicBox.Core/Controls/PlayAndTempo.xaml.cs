@@ -14,8 +14,6 @@ namespace MusicBox.Core.Controls
             InitializeComponent();
         }
 
-
-
         public int PlayTempo
         {
             get { return (int)GetValue(PlayTempoProperty); }
@@ -25,7 +23,6 @@ namespace MusicBox.Core.Controls
         // Using a DependencyProperty as the backing store for PlayTempo.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty PlayTempoProperty =
             DependencyProperty.Register("PlayTempo", typeof(int), typeof(PlayAndTempo), new PropertyMetadata(0));
-
 
         public ICommand PlayStartCommand
         {
@@ -37,7 +34,6 @@ namespace MusicBox.Core.Controls
         public static readonly DependencyProperty PlayStartCommandProperty =
             DependencyProperty.Register("PlayStartCommand", typeof(ICommand), typeof(PlayAndTempo), new PropertyMetadata(null));
 
-
         public ICommand PlayStopCommand
         {
             get { return (ICommand)GetValue(PlayStopCommandProperty); }
@@ -47,7 +43,6 @@ namespace MusicBox.Core.Controls
         // Using a DependencyProperty as the backing store for PlayStopCommand.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty PlayStopCommandProperty =
             DependencyProperty.Register("PlayStopCommand", typeof(ICommand), typeof(PlayAndTempo), new PropertyMetadata(null));
-
 
         public bool PlayIsPlaying
         {
@@ -59,9 +54,6 @@ namespace MusicBox.Core.Controls
         public static readonly DependencyProperty PlayIsPlayingProperty =
             DependencyProperty.Register("PlayIsPlaying", typeof(bool), typeof(PlayAndTempo), new PropertyMetadata(false));
 
-
-
-
         public ICommand PlayRewindCommand
         {
             get { return (ICommand)GetValue(PlayRewindCommandProperty); }
@@ -71,9 +63,5 @@ namespace MusicBox.Core.Controls
         // Using a DependencyProperty as the backing store for PlayRewindCommand.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty PlayRewindCommandProperty =
             DependencyProperty.Register("PlayRewindCommand", typeof(ICommand), typeof(PlayAndTempo), new PropertyMetadata(null));
-
-
-
-
     }
 }
