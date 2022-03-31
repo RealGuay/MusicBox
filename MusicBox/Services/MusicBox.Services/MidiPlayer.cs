@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using MusicBox.Services.Interfaces;
+﻿using MusicBox.Services.Interfaces;
 using MusicBox.Services.Interfaces.MusicSheetModels;
 using MusicBox.Services.MidiInterfaces;
-
+using System;
+using System.Collections.Generic;
 
 namespace MusicBox.Services
 {
-    public class MidiPlayer
+    public class MidiPlayer : IMidiPlayer
     {
         private readonly List<MidiNoteToPlay> _midiNotes;
         private readonly IBeatMaker _beatMaker;
@@ -18,6 +16,7 @@ namespace MusicBox.Services
         private const int default_Tempo = 60;
 
         public event Action<int, int> PlayingProgress;
+        public event Action<bool> PlayingState;
 
         public MidiPlayer(IBeatMaker beatMaker, IMidiOutputDevice midiOutputDevice)
         {
@@ -26,6 +25,7 @@ namespace MusicBox.Services
             _beatMaker.SetParams(TimeSignature.TS_4_4, default_Tempo, TickResolution.Normal);
             _beatMaker.TickReached += _beatMaker_TickBeatReached;
             _midiOutputDevice = midiOutputDevice;
+            _noteIndex = 0;
         }
 
         private void _beatMaker_TickBeatReached(object sender, TickReachedEventArgs e)
@@ -51,14 +51,15 @@ namespace MusicBox.Services
         private void StopAndRewind()
         {
             _beatMaker.Stop();
+            PlayingState?.Invoke(false);
             _beatMaker.RewindToZero();
         }
 
-        public void PlaySheet(SheetInformation sheetInfo)
+        public void PlaySheet(SheetInformation sheetInfo, int tempo)
         {
             _midiNotes.Clear();
             ConvertToMidiNotes(sheetInfo);
-            PlayMidiNotes();
+            PlayMidiNotes(tempo);
         }
 
         private void ConvertToMidiNotes(SheetInformation sheetInfo)
@@ -70,29 +71,33 @@ namespace MusicBox.Services
             }
         }
 
-        public void PlaySegment(Segment segment)
+        public void PlaySegment(Segment segment, int tempo)
         {
             _midiNotes.Clear();
             ConvertToMidiNotes(segment, 0);
-            PlayMidiNotes();
+            PlayMidiNotes(tempo);
         }
 
-        private void PlayMidiNotes()
+        private void PlayMidiNotes(int tempo)
         {
-            StopAndRewind();
 
             _midiNotes.Sort((a, b) => a.TickTimeToPlay.CompareTo(b.TickTimeToPlay));
             if (_midiNotes.Count > 0)
             {
                 _noteIndex = 0;
                 _lastNoteIndex = _midiNotes.Count - 1;
-                _beatMaker.Start();
             }
+
+            _beatMaker.Stop();
+            _beatMaker.SetTempo(tempo);
+            _beatMaker.Start();
+            PlayingState?.Invoke(true);
+
         }
 
         private int ConvertToMidiNotes(Segment segment, int firstBarOffset)
         {
-            int tickPerBar = (int)TickResolution.Normal;  // SIC true only for 4:4
+            int tickPerBar = (int)TickResolution.Normal * 4;  // SIC true only for 4:4
 
             foreach (Bar bar in segment.Bars)
             {
@@ -109,18 +114,16 @@ namespace MusicBox.Services
                 }
             }
             return segment.Bars.Count;
-
         }
 
         public void Pause()
         {
+            _beatMaker.Stop();
+            PlayingState?.Invoke(false);
         }
 
         public void ReturnToStart()
         {
         }
-
     }
-
 }
-

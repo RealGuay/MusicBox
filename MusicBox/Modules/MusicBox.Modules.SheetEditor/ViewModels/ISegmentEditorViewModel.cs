@@ -1,4 +1,5 @@
-﻿using Prism.Commands;
+﻿using MusicBox.Services.Interfaces.MusicSheetModels;
+using Prism.Commands;
 using System.Collections.ObjectModel;
 
 namespace MusicBox.Modules.SheetEditor.ViewModels
@@ -15,5 +16,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         IBarEditorViewModel SelectedBarEditorVm { get; set; }
 
         ISegmentEditorViewModel DeepCopy();
+
+        void ExtractSegmentInfo(Segment currentSegment);
     }
 }

@@ -1,4 +1,5 @@
-﻿using MusicBox.Services.Interfaces.MusicSheetModels;
+﻿using MusicBox.Services.Interfaces;
+using MusicBox.Services.Interfaces.MusicSheetModels;
 using Prism.Commands;
 using Prism.Ioc;
 using Prism.Mvvm;
@@ -9,6 +10,9 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 {
     public class SheetEditorViewModel : BindableBase
     {
+        private IMidiPlayer _midiPlayer;
+        private SheetInformation _sheetInformation;
+
         #region Properties
 
         public SheetInformationViewModel SheetInformationVm { get; private set; }
@@ -42,6 +46,8 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         {
             SheetInformationVm = containerProvider.Resolve<SheetInformationViewModel>();
             SegmentCollectionVm = containerProvider.Resolve<SegmentCollectionViewModel>();
+            _midiPlayer = containerProvider.Resolve<IMidiPlayer>();
+            _sheetInformation = new SheetInformation(null); // sic Context
 
             SegmentCollectionVm.PropertyChanged += SegmentCollectionVm_PropertyChanged;
 
@@ -97,12 +103,36 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         private void Play()
         {
+            ExtractSheetInfo();
+            _midiPlayer.PlaySheet(_sheetInformation, 60);   // tempo
             IsPlaying = true;
         }
 
         private bool CanPlay()
         {
             return !IsPlaying;
+        }
+
+        private void ExtractSheetInfo()
+        {
+            Dictionary<ISegmentEditorViewModel, Segment> processedSegments = new Dictionary<ISegmentEditorViewModel, Segment>();
+
+            _sheetInformation.Segments.Clear();
+            foreach (ISegmentEditorViewModel segmentEditorVm in SegmentCollectionVm.SegmentEditorVms)
+            {
+                Segment currentSegment;
+                if (!processedSegments.ContainsKey(segmentEditorVm))
+                {
+                    currentSegment = new Segment();
+                    segmentEditorVm.ExtractSegmentInfo(currentSegment);
+                    processedSegments.Add(segmentEditorVm, currentSegment);
+                }
+                else
+                {
+                    currentSegment = processedSegments[segmentEditorVm];
+                }
+                _sheetInformation.Segments.Add(currentSegment);
+            }
         }
 
         private void Pause()

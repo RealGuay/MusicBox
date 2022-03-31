@@ -32,6 +32,7 @@ namespace MusicBox
             containerRegistry.RegisterSingleton<IMidiTimer, MidiTimer>();
             containerRegistry.RegisterSingleton<IMidiOutputDevice, MidiOutputDevice>();
             containerRegistry.RegisterSingleton<IBeatMaker, BeatMaker>();
+            containerRegistry.RegisterSingleton<IMidiPlayer, MidiPlayer>();
             containerRegistry.RegisterDialog<MessageDialog, MessageDialogViewModel>();
         }
 
