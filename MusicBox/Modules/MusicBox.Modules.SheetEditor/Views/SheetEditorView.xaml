@@ -64,11 +64,11 @@
 
                 <StackPanel Grid.Row="7" Grid.ColumnSpan="2" Orientation="Horizontal">
                     <ctrl:PlayAndTempo
-                        PlayStartCommand="{Binding PlayCommand}"
-                        PlayStopCommand="{Binding PauseCommand}"
-                        PlayRewindCommand="{Binding RewindCommand}"
-                        PlayIsPlaying="{Binding IsPlaying}"
-                        PlayTempo="{Binding SheetInformationVm.Tempo, Mode=TwoWay}" FontSize="12"></ctrl:PlayAndTempo>
+                        PlayCommand="{Binding PlayCommand}"
+                        PauseCommand="{Binding PauseCommand}"
+                        RewindCommand="{Binding RewindCommand}"
+                        IsPlaying="{Binding IsPlaying}"
+                        Tempo="{Binding SheetInformationVm.Tempo, Mode=TwoWay}" FontSize="12"></ctrl:PlayAndTempo>
                 </StackPanel>
             </Grid>
         </GroupBox>

@@ -14,54 +14,54 @@ namespace MusicBox.Core.Controls
             InitializeComponent();
         }
 
-        public int PlayTempo
+        public int Tempo
         {
-            get { return (int)GetValue(PlayTempoProperty); }
-            set { SetValue(PlayTempoProperty, value); }
+            get { return (int)GetValue(TempoProperty); }
+            set { SetValue(TempoProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for PlayTempo.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty PlayTempoProperty =
-            DependencyProperty.Register("PlayTempo", typeof(int), typeof(PlayAndTempo), new PropertyMetadata(0));
+        // Using a DependencyProperty as the backing store for Tempo.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty TempoProperty =
+            DependencyProperty.Register("Tempo", typeof(int), typeof(PlayAndTempo), new PropertyMetadata(60));
 
-        public ICommand PlayStartCommand
+        public ICommand PlayCommand
         {
-            get { return (ICommand)GetValue(PlayStartCommandProperty); }
-            set { SetValue(PlayStartCommandProperty, value); }
+            get { return (ICommand)GetValue(PlayCommandProperty); }
+            set { SetValue(PlayCommandProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for PlayStartCommand.This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty PlayStartCommandProperty =
-            DependencyProperty.Register("PlayStartCommand", typeof(ICommand), typeof(PlayAndTempo), new PropertyMetadata(null));
+        // Using a DependencyProperty as the backing store for PlayCommand.This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty PlayCommandProperty =
+            DependencyProperty.Register("PlayCommand", typeof(ICommand), typeof(PlayAndTempo), new PropertyMetadata(null));
 
-        public ICommand PlayStopCommand
+        public ICommand PauseCommand
         {
-            get { return (ICommand)GetValue(PlayStopCommandProperty); }
-            set { SetValue(PlayStopCommandProperty, value); }
+            get { return (ICommand)GetValue(PauseCommandProperty); }
+            set { SetValue(PauseCommandProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for PlayStopCommand.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty PlayStopCommandProperty =
-            DependencyProperty.Register("PlayStopCommand", typeof(ICommand), typeof(PlayAndTempo), new PropertyMetadata(null));
+        // Using a DependencyProperty as the backing store for PauseCommand.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty PauseCommandProperty =
+            DependencyProperty.Register("PauseCommand", typeof(ICommand), typeof(PlayAndTempo), new PropertyMetadata(null));
 
-        public bool PlayIsPlaying
+        public bool IsPlaying
         {
-            get { return (bool)GetValue(PlayIsPlayingProperty); }
-            set { SetValue(PlayIsPlayingProperty, value); }
+            get { return (bool)GetValue(IsPlayingProperty); }
+            set { SetValue(IsPlayingProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for PlayIsPlaying.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty PlayIsPlayingProperty =
-            DependencyProperty.Register("PlayIsPlaying", typeof(bool), typeof(PlayAndTempo), new PropertyMetadata(false));
+        // Using a DependencyProperty as the backing store for IsPlaying.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsPlayingProperty =
+            DependencyProperty.Register("IsPlaying", typeof(bool), typeof(PlayAndTempo), new PropertyMetadata(false));
 
-        public ICommand PlayRewindCommand
+        public ICommand RewindCommand
         {
-            get { return (ICommand)GetValue(PlayRewindCommandProperty); }
-            set { SetValue(PlayRewindCommandProperty, value); }
+            get { return (ICommand)GetValue(RewindCommandProperty); }
+            set { SetValue(RewindCommandProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for PlayRewindCommand.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty PlayRewindCommandProperty =
-            DependencyProperty.Register("PlayRewindCommand", typeof(ICommand), typeof(PlayAndTempo), new PropertyMetadata(null));
+        // Using a DependencyProperty as the backing store for RewindCommand.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty RewindCommandProperty =
+            DependencyProperty.Register("RewindCommand", typeof(ICommand), typeof(PlayAndTempo), new PropertyMetadata(null));
     }
 }

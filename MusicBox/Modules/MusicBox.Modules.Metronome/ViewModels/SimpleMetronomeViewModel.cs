@@ -7,8 +7,8 @@ namespace MusicBox.Modules.Metronome.ViewModels
 {
     public class SimpleMetronomeViewModel : BindableBase
     {
-        public DelegateCommand StartCommand { get; set; }
-        public DelegateCommand StopCommand { get; set; }
+        public DelegateCommand PlayCommand { get; set; }
+        public DelegateCommand PauseCommand { get; set; }
         public DelegateCommand RewindToZeroCommand { get; set; }
 
         private readonly IBeatMaker _beatMaker;
@@ -18,9 +18,8 @@ namespace MusicBox.Modules.Metronome.ViewModels
         public string TimeSignatureName
         {
             get { return timeSignatureName; }
-            set {SetProperty(ref timeSignatureName , value); }
+            set { SetProperty(ref timeSignatureName, value); }
         }
-
 
         private int tempo;
 
@@ -35,16 +34,16 @@ namespace MusicBox.Modules.Metronome.ViewModels
 
         private void ChangeTempo(int value)
         {
-            SetProperty(ref tempo, value, nameof(Tempo));  // do NOT forget to set the property name with nameof(...) 
+            SetProperty(ref tempo, value, nameof(Tempo));  // do NOT forget to set the property name with nameof(...)
             _beatMaker.SetTempo(tempo);
         }
 
-        private bool isRunning;
+        private bool isPlaying;
 
-        public bool IsRunning
+        public bool IsPlaying
         {
-            get { return isRunning; }
-            set { SetProperty(ref isRunning, value); }
+            get { return isPlaying; }
+            set { SetProperty(ref isPlaying, value); }
         }
 
         private int barCount;
@@ -92,11 +91,11 @@ namespace MusicBox.Modules.Metronome.ViewModels
             TimeSignatureName = $"({ts.Name})";
             _beatMaker.SetParams(ts, Tempo, TickResolution.Normal);
 
-            StartCommand = new DelegateCommand(Start);
-            StopCommand = new DelegateCommand(Stop);
+            PlayCommand = new DelegateCommand(Play);
+            PauseCommand = new DelegateCommand(Pause);
             RewindToZeroCommand = new DelegateCommand(RewindToZero);
 
-            IsRunning = false;
+            IsPlaying = false;
         }
 
         private void BarReached(object sender, BarReachedEventArgs e)
@@ -119,16 +118,16 @@ namespace MusicBox.Modules.Metronome.ViewModels
             TickCount = e.TickInSubBeatCount;
         }
 
-        private void Start()
+        private void Play()
         {
             _beatMaker.Start();
-            IsRunning = true;
+            IsPlaying = true;
         }
 
-        private void Stop()
+        private void Pause()
         {
             _beatMaker.Stop();
-            IsRunning = false;
+            IsPlaying = false;
         }
 
         private void RewindToZero()

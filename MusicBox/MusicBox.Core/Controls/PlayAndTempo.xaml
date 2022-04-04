@@ -12,13 +12,13 @@
     <Border BorderBrush="Green" BorderThickness="2">
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="2">
             <Grid>
-                <Button Content="Play"  Command="{Binding PlayStartCommand, ElementName=ucPlayAndTempo}"  Width="50" VerticalAlignment="Center"></Button>
-                <Button Content="Pause" Command="{Binding PlayStopCommand,  ElementName=ucPlayAndTempo}"  Visibility="{Binding PlayIsPlaying, ElementName=ucPlayAndTempo, Converter={StaticResource BooleanToVisibilityConv}}" Width="50" VerticalAlignment="Center"></Button>
+                <Button Content="Play"  Command="{Binding PlayCommand, ElementName=ucPlayAndTempo}" Width="{Binding ElementName=RewindButton, Path=ActualWidth}" VerticalAlignment="Center"></Button>
+                <Button Content="Pause" Command="{Binding PauseCommand,  ElementName=ucPlayAndTempo}"  Visibility="{Binding IsPlaying, ElementName=ucPlayAndTempo, Converter={StaticResource BooleanToVisibilityConv}}" Width="{Binding ElementName=RewindButton, Path=ActualWidth}" VerticalAlignment="Center"></Button>
             </Grid>
-            <Button Content="Rewind" Command="{Binding PlayRewindCommand, ElementName=ucPlayAndTempo}" VerticalAlignment="Center" Margin="10,0" Width="50"></Button>
+            <Button x:Name="RewindButton" Content="Rewind" Command="{Binding RewindCommand, ElementName=ucPlayAndTempo}" VerticalAlignment="Center" Margin="10,0" ></Button>
             <TextBlock Text="Tempo:" VerticalAlignment="Center" />
-            <TextBlock Text="{Binding ElementName=ucPlayAndTempo, Path=PlayTempo}" Width="25" VerticalAlignment="Center" TextAlignment="Center"/>
-            <Slider   Value="{Binding ElementName=ucPlayAndTempo, Path=PlayTempo, Delay=500}" AutoToolTipPlacement="TopLeft" IsSnapToTickEnabled="True" AutoToolTipPrecision="0" Minimum="10" Maximum="200" Width="150" VerticalAlignment="Center"></Slider>
+            <TextBlock Text="{Binding ElementName=ucPlayAndTempo, Path=Tempo}" Margin="2"  VerticalAlignment="Center" TextAlignment="Center" />
+            <Slider   Value="{Binding ElementName=ucPlayAndTempo, Path=Tempo, Delay=500}" AutoToolTipPlacement="TopLeft" IsSnapToTickEnabled="True" AutoToolTipPrecision="0" Minimum="10" Maximum="200" Width="150" VerticalAlignment="Center"></Slider>
         </StackPanel>
     </Border>
 </UserControl>

@@ -56,12 +56,12 @@
         </Border>
 
         <Border  Grid.Row="2" Grid.ColumnSpan="4">
-            <ctrl:PlayAndTempo 
-                PlayStartCommand="{Binding StartCommand}" 
-                PlayStopCommand="{Binding StopCommand}"  
-                PlayRewindCommand="{Binding RewindToZeroCommand}"
-                PlayIsPlaying="{Binding IsRunning}"
-                PlayTempo="{Binding Tempo, Mode=TwoWay}" />
+            <ctrl:PlayAndTempo FontSize="30"
+                PlayCommand="{Binding PlayCommand}" 
+                PauseCommand="{Binding PauseCommand}"  
+                RewindCommand="{Binding RewindToZeroCommand}"
+                IsPlaying="{Binding IsPlaying}"
+                Tempo="{Binding Tempo, Mode=TwoWay}" />
             <!-- DO NOT FORGET ==> Mode=TwoWay -->
         </Border>
         <TextBlock Grid.Row="3" Text="{Binding Tempo}"></TextBlock>

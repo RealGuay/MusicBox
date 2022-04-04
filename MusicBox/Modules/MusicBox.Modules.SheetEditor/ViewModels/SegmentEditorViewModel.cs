@@ -34,8 +34,8 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         public DelegateCommand AddBarCommand { get; set; }
         public DelegateCommand DeleteBarCommand { get; set; }
-        public DelegateCommand StartCommand { get; set; }
-        public DelegateCommand StopCommand { get; set; }
+        public DelegateCommand PlayCommand { get; set; }
+        public DelegateCommand PauseCommand { get; set; }
         public DelegateCommand RewindToZeroCommand { get; set; }
 
         public SegmentEditorViewModel(Func<IBarEditorViewModel> barEditorVmCreator, IMidiPlayer midiPlayer, IEventAggregator evenAggregator)
@@ -47,8 +47,8 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             BarEditorVms = new ObservableCollection<IBarEditorViewModel>();
             AddBarCommand = new DelegateCommand(AddBar);
             DeleteBarCommand = new DelegateCommand(DeleteBar, CanDeleteBar).ObservesProperty(() => SelectedBarEditorVm);
-            StartCommand = new DelegateCommand(StartPlaying, CanStartPlaying).ObservesProperty(() => IsPlaying);
-            StopCommand = new DelegateCommand(StopPlaying, CanStopPlaying).ObservesProperty(() => IsPlaying);
+            PlayCommand = new DelegateCommand(Play, CanPlay).ObservesProperty(() => IsPlaying);
+            PauseCommand = new DelegateCommand(Pause, CanPause).ObservesProperty(() => IsPlaying);
             RewindToZeroCommand = new DelegateCommand(RewindToZero, CanRewindToZero);
             Tempo = 60;
             _eventAggregator.GetEvent<SelectedBarChanged>().Subscribe(OnSelectedBarChanged);
@@ -62,23 +62,23 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             IsPlaying = isPlaying;
         }
 
-        private void StartPlaying()
+        private void Play()
         {
              ExtractSegmentInfo(_segment);
             _midiPlayer.PlaySegment(_segment, Tempo);
         }
 
-        private bool CanStartPlaying()
+        private bool CanPlay()
         {
             return !IsPlaying && BarEditorVms.Count > 0;
         }
 
-        private void StopPlaying()
+        private void Pause()
         {
             _midiPlayer.Pause();
         }
 
-        private bool CanStopPlaying()
+        private bool CanPause()
         {
             return IsPlaying;
         }
@@ -105,7 +105,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             var newBarEditorVm = _barEditorVmCreator();
             BarEditorVms.Add(newBarEditorVm);
             SelectedBarEditorVm = newBarEditorVm;
-            StartCommand.RaiseCanExecuteChanged();
+            PlayCommand.RaiseCanExecuteChanged();
         }
 
         private void DeleteBar()
