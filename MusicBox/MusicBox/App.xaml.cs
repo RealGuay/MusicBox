@@ -34,6 +34,7 @@ namespace MusicBox
             containerRegistry.RegisterSingleton<IBeatMaker, BeatMaker>();
             containerRegistry.RegisterSingleton<IMidiPlayer, MidiPlayer>();
             containerRegistry.RegisterDialog<MessageDialog, MessageDialogViewModel>();
+            containerRegistry.RegisterSingleton<ISheetInformationRepo, TextFileSheetInfoRepo>(); 
         }
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)

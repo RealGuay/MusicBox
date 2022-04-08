@@ -64,7 +64,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         private void Play()
         {
-             ExtractSegmentInfo(_segment);
+            ExtractSegmentInfo(_segment);
             _midiPlayer.PlaySegment(_segment, Tempo);
         }
 
@@ -142,7 +142,6 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             return copy;
         }
 
-
         public void ExtractSegmentInfo(Segment segment)
         {
             int barId = 0;
@@ -155,6 +154,17 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
                 barId++;
             }
             segment.Name = SegmentName;
+        }
+
+        public void LoadSegmentInfo(Segment segment)
+        {
+            SegmentName = segment.Name;
+            foreach (var bar in segment.Bars)
+            {
+                var newBarEditorVm = _barEditorVmCreator();
+                newBarEditorVm.LoadBarInfo(bar);
+                BarEditorVms.Add(newBarEditorVm);
+            }
         }
     }
 }

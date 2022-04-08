@@ -54,7 +54,6 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         public DelegateCommand<TimePixel> AlterPixelCommand { get; set; }
         public DelegateCommand ChangeSelectedBarCommand { get; set; }
 
-
         public BarEditorViewModel(IEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
@@ -113,6 +112,45 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
                 {
                     currentBar.SheetNotes.Add(sheetNote);
                 }
+            }
+        }
+
+        public void LoadBarInfo(Bar bar)
+        {
+            foreach (var note in bar.SheetNotes)
+            {
+                SetTimePixelsFromNote(note);
+            }
+        }
+
+        private void SetTimePixelsFromNote(SheetNote note)
+        {
+            StaffPart line;
+            NoteAlteration noteAlteration;
+            ScaleInformation.GetTimePixelInfoFromKey(note.Key, BarAlteration, out line, out noteAlteration);
+            TimePixel timePixel = TimePixels.Find(p => p.Line == line && p.StartPosition == note.PositionInBar);
+            if (timePixel == null)
+            {
+                throw new InvalidOperationException("Cannot find TimePixel from note!!!");
+            }
+            while (timePixel != null && note.Duration > 0)
+            {
+                SetTimePixelStatusFromNoteAlteration(timePixel, noteAlteration);
+                note.Duration -= TimePixelIncrement;
+                timePixel.IsExpandedToNextPixel = note.Duration > 0;
+                timePixel = timePixel.NextPixelInBar;
+            }
+        }
+
+        private void SetTimePixelStatusFromNoteAlteration(TimePixel timePixel, NoteAlteration noteAlteration)
+        {
+            if (noteAlteration == NoteAlteration.None)
+            {
+                timePixel.Status = TimePixelStatus.PixelOn;
+            }
+            else
+            {
+                timePixel.Status = noteAlteration == NoteAlteration.Flat ? TimePixelStatus.PixelOnAndFlat : TimePixelStatus.PixelOnAndSharp;
             }
         }
 

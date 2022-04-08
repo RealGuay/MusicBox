@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MusicBox.Services.Interfaces.MusicSheetModels
 {
@@ -45,6 +43,25 @@ namespace MusicBox.Services.Interfaces.MusicSheetModels
         public static NoteKey GetKey(StaffPart line, BarAlteration barAlteration, NoteAlteration noteAlteration)
         {
             return AllScales[(int)barAlteration][(int)line] + (int)noteAlteration;
+        }
+
+        public static void GetTimePixelInfoFromKey(int key, BarAlteration barAlteration, out StaffPart line, out NoteAlteration noteAlteration)
+        {
+            noteAlteration = NoteAlteration.None;
+            NoteKey noteKey = (NoteKey)key;
+
+            int lineIndex = Array.IndexOf(AllScales[(int)barAlteration], noteKey);
+            if (lineIndex == -1)
+            {
+                noteAlteration = barAlteration < BarAlteration.None ? NoteAlteration.Flat : NoteAlteration.Sharp;
+                NoteKey alteredNoteKey = (NoteKey)((int)noteKey + (int)noteAlteration);
+                lineIndex = Array.IndexOf(AllScales[(int)barAlteration], alteredNoteKey);
+                if (lineIndex == -1)
+                {
+                    throw new InvalidOperationException("Unable to find staff line from note key!");
+                }
+            }
+            line = (StaffPart)lineIndex;
         }
 
         public enum ScaleSelector
@@ -530,7 +547,5 @@ namespace MusicBox.Services.Interfaces.MusicSheetModels
             G9b = 126,
             G9 = 127,
         }
-
-
     }
 }

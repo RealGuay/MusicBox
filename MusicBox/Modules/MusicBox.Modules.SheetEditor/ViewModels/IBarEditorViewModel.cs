@@ -18,5 +18,6 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         List<TimePixel> TimePixels { get; set; }
 
         IBarEditorViewModel DeepCopy();
+        void LoadBarInfo(Bar bar);
     }
 }

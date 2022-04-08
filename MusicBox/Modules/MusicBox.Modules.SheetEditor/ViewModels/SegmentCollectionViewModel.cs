@@ -1,7 +1,9 @@
-﻿using Prism.Commands;
+﻿using MusicBox.Services.Interfaces.MusicSheetModels;
+using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -92,11 +94,33 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             SelectedSegmentIndex = SegmentEditorVms.Count - 1;
         }
 
+        public void LoadSegments(List<Segment> segments)
+        {
+            ISegmentEditorViewModel segmentEditorVm;
+            Dictionary<string, ISegmentEditorViewModel> distinctSegments = new Dictionary<string, ISegmentEditorViewModel>();
+
+            SegmentEditorVms.Clear();
+            foreach (var segment in segments)
+            {
+                if (!distinctSegments.ContainsKey(segment.Name))
+                {
+                    segmentEditorVm = _segmentEditorViewModelCreator();
+                    segmentEditorVm.LoadSegmentInfo(segment);
+                    distinctSegments.Add(segment.Name, segmentEditorVm);
+                }
+                else
+                {
+                    segmentEditorVm = distinctSegments[segment.Name];
+                }
+                SegmentEditorVms.Add(segmentEditorVm);
+            }
+        }
+
         private void DeleteSegment()
         {
             IDialogResult result = null;
-          
-            if (segmentEditorVms.Count(s => s == SelectedSegmentEditorVm) >  1) 
+
+            if (segmentEditorVms.Count(s => s == SelectedSegmentEditorVm) > 1)
             {
                 result = new DialogResult(ButtonResult.Yes);
             }

@@ -16,6 +16,7 @@ namespace MusicBox.Services
         private const int default_Tempo = 60;
 
         public event Action<int, int> PlayingProgress;
+
         public event Action<bool> PlayingState;
 
         public MidiPlayer(IBeatMaker beatMaker, IMidiOutputDevice midiOutputDevice)
@@ -80,7 +81,6 @@ namespace MusicBox.Services
 
         private void PlayMidiNotes(int tempo)
         {
-
             _midiNotes.Sort((a, b) => a.TickTimeToPlay.CompareTo(b.TickTimeToPlay));
             if (_midiNotes.Count > 0)
             {
@@ -92,7 +92,6 @@ namespace MusicBox.Services
             _beatMaker.SetTempo(tempo);
             _beatMaker.Start();
             PlayingState?.Invoke(true);
-
         }
 
         private int ConvertToMidiNotes(Segment segment, int firstBarOffset)

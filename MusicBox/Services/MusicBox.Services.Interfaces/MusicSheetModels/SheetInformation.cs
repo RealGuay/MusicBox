@@ -12,6 +12,7 @@ namespace MusicBox.Services.Interfaces.MusicSheetModels
 
         public List<Segment> Segments { get; set; }
 
+       
         public SheetInformation(Context context)
         {
             Context = context;

@@ -12,6 +12,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
     {
         private IMidiPlayer _midiPlayer;
         private SheetInformation _sheetInformation;
+        private readonly ISheetInformationRepo _sheetInfoRepo;
 
         #region Properties
 
@@ -48,6 +49,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             SegmentCollectionVm = containerProvider.Resolve<SegmentCollectionViewModel>();
             _midiPlayer = containerProvider.Resolve<IMidiPlayer>();
             _sheetInformation = new SheetInformation(null); // sic Context
+            _sheetInfoRepo = containerProvider.Resolve<ISheetInformationRepo>();
 
             SegmentCollectionVm.PropertyChanged += SegmentCollectionVm_PropertyChanged;
 
@@ -88,12 +90,35 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         private void Load()
         {
-            //SheetInformationVm.Title = $"{DateTime.Now}";
-            //SheetInformationVm.LyricsBy = $"{DateTime.UtcNow}";
+            _sheetInformation = new SheetInformation(null);
+            _sheetInfoRepo.Load(_sheetInformation);
+            LoadSheetInfo();
+        }
+
+        private void LoadSheetInfo()
+        {
+            LoadGeneralInfo();
+            LoadSegments();
+        }
+
+        private void LoadGeneralInfo()
+        {
+            SheetInformationVm.Title = _sheetInformation.Title;
+            SheetInformationVm.LyricsBy = _sheetInformation.LyricsBy;
+            SheetInformationVm.MusicBy = _sheetInformation.MusicBy;
+            SheetInformationVm.Version = _sheetInformation.Version;
+            RaisePropertyChanged(null);
+        }
+
+        private void LoadSegments()
+        {
+            SegmentCollectionVm.LoadSegments(_sheetInformation.Segments);
         }
 
         private void Save()
         {
+            ExtractSheetInfo();
+            _sheetInfoRepo.Save(_sheetInformation);
         }
 
         private bool CanSave()
@@ -114,6 +139,20 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         }
 
         private void ExtractSheetInfo()
+        {
+            ExtractGeneralInfo();
+            ExtractSegments();
+        }
+
+        private void ExtractGeneralInfo()
+        {
+            _sheetInformation.Title = SheetInformationVm.Title;
+            _sheetInformation.LyricsBy = SheetInformationVm.LyricsBy;
+            _sheetInformation.MusicBy = SheetInformationVm.MusicBy;
+            _sheetInformation.Version = SheetInformationVm.Version;
+        }
+
+        private void ExtractSegments()
         {
             Dictionary<ISegmentEditorViewModel, Segment> processedSegments = new Dictionary<ISegmentEditorViewModel, Segment>();
 
