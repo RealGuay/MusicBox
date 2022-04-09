@@ -114,6 +114,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
                 }
                 SegmentEditorVms.Add(segmentEditorVm);
             }
+            SelectedSegmentIndex = segmentEditorVms.Count > 0 ? 0 : -1;
         }
 
         private void DeleteSegment()

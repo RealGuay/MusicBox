@@ -11,11 +11,11 @@
     <UserControl.Resources>
         <conv:ItemIndexConverter x:Key="ItemIndexConv" />
     </UserControl.Resources>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-            </Grid.RowDefinitions>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
 
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <Grid>
@@ -23,8 +23,8 @@
                     <ColumnDefinition Width="Auto" MinWidth="450"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-        
-                    <local:BarEditor DataContext="{Binding SelectedBarEditorVm}" />
+
+                <local:BarEditor DataContext="{Binding SelectedBarEditorVm}" />
 
                 <ListBox Grid.Column="1" x:Name="MusicSheetBars" ItemsSource="{Binding BarEditorVms}" SelectedItem="{Binding SelectedBarEditorVm}" AlternationCount="5000">
                     <ListBox.ItemsPanel>
@@ -41,20 +41,20 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-        </Grid>
+            </Grid>
         </ScrollViewer>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center">
-                <TextBlock Text="Segment Name:" VerticalAlignment="Center" />
-                <TextBox Text="{Binding SegmentName}" Width="120" Height="20" />
-                <Button Content="Add Bar" Command="{Binding AddBarCommand}" Margin="10,0" VerticalAlignment="Center" Width="60" />
-                <Button Content="Delete Bar" Command="{Binding DeleteBarCommand}" Margin="5,0,10,0"  VerticalAlignment="Center"  Width="60" />
-                <ctrl:PlayAndTempo
+            <TextBlock Text="Segment Name:" VerticalAlignment="Center" />
+            <TextBox Text="{Binding SegmentName}" Width="120" Height="20" />
+            <Button Content="Add Bar" Command="{Binding AddBarCommand}" Margin="10,0" VerticalAlignment="Center" Width="60" />
+            <Button Content="Delete Bar" Command="{Binding DeleteBarCommand}" Margin="5,0,10,0"  VerticalAlignment="Center"  Width="60" />
+            <ctrl:PlayAndTempo
                 PlayCommand="{Binding PlayCommand}"
                 PauseCommand="{Binding PauseCommand}"
                 RewindCommand="{Binding RewindToZeroCommand}"
                 IsPlaying="{Binding IsPlaying}"
                 Tempo="{Binding Tempo, Mode=TwoWay}" />
-            </StackPanel>
-        </Grid>
+        </StackPanel>
+    </Grid>
 </UserControl>

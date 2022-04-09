@@ -165,6 +165,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
                 newBarEditorVm.LoadBarInfo(bar);
                 BarEditorVms.Add(newBarEditorVm);
             }
+            SelectedBarEditorVm = BarEditorVms.Count > 0 ? BarEditorVms[0] : null;
         }
     }
 }
