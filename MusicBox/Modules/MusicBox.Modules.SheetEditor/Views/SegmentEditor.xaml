@@ -45,8 +45,11 @@
         </ScrollViewer>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center">
-            <TextBlock Text="Segment Name:" VerticalAlignment="Center" />
-            <TextBox Text="{Binding SegmentName}" Width="120" Height="20" />
+            <TextBlock Text="Segment Name:" VerticalAlignment="Center"  Margin="5,0,2,0"/>
+            <TextBox Text="{Binding SegmentName}" Width="120" VerticalAlignment="Center" />
+            <TextBlock Text="Time Signature:" VerticalAlignment="Center" Margin="5,0,2,0"/>
+            <ComboBox ItemsSource="{Binding TimeSignatures}" SelectedItem="{Binding TimeSignature}" DisplayMemberPath="Name"  Height="20" />
+
             <Button Content="Add Bar" Command="{Binding AddBarCommand}" Margin="10,0" VerticalAlignment="Center" Width="60" />
             <Button Content="Delete Bar" Command="{Binding DeleteBarCommand}" Margin="5,0,10,0"  VerticalAlignment="Center"  Width="60" />
             <ctrl:PlayAndTempo

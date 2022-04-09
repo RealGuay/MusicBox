@@ -21,8 +21,6 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         public bool IsSegmentSelected { get => SegmentCollectionVm.SelectedSegmentEditorVm != null; }
 
-        public List<TimeSignature> TimeSignatures { get; set; }
-
         private bool isPlaying;
 
         public bool IsPlaying
@@ -59,7 +57,6 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             PauseCommand = new DelegateCommand(Pause);
             RewindCommand = new DelegateCommand(Rewind);
 
-            InitTimeSignatures();
             SheetInformationVm.Tempo = 60;
         }
 
@@ -69,21 +66,6 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             {
                 RaisePropertyChanged(nameof(IsSegmentSelected));
             }
-        }
-
-        private void InitTimeSignatures()
-        {
-            TimeSignatures = new List<TimeSignature>
-            {
-                TimeSignature.TS_2_4,
-                TimeSignature.TS_3_4,
-                TimeSignature.TS_4_4,
-                TimeSignature.TS_3_8,
-                TimeSignature.TS_6_8,
-                TimeSignature.TS_9_8,
-                TimeSignature.TS_12_8
-            };
-            SheetInformationVm.TimeSignature = TimeSignature.TS_4_4;
         }
 
         #region Commands

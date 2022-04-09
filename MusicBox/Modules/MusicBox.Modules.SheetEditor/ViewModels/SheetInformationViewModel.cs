@@ -36,12 +36,6 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             set { ChangeProperty(_sheetInformation.Version, value, value => _sheetInformation.Version = value); }
         }
 
-        public TimeSignature TimeSignature
-        {
-            get { return _sheetInformation.Context.TimeSignature; }
-            set { ChangeProperty(_sheetInformation.Context.TimeSignature, value, value => _sheetInformation.Context.TimeSignature = value); }
-        }
-
         public  int Tempo
         {
             get { return _sheetInformation.Context.Tempo; }

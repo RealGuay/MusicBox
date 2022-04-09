@@ -5,6 +5,7 @@ using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace MusicBox.Modules.SheetEditor.ViewModels
@@ -26,6 +27,11 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         private IBarEditorViewModel selectedBarEditorVm;
         public IBarEditorViewModel SelectedBarEditorVm { get => selectedBarEditorVm; set => SetProperty(ref selectedBarEditorVm, value); }
 
+        public List<TimeSignature> TimeSignatures { get; set; }
+
+        private TimeSignature timeSignature;
+        public TimeSignature TimeSignature { get => timeSignature; set => SetProperty(ref timeSignature, value); }
+
         private bool isPlaying;
         public bool IsPlaying { get => isPlaying; set => SetProperty(ref isPlaying, value); }
 
@@ -40,6 +46,8 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         public SegmentEditorViewModel(Func<IBarEditorViewModel> barEditorVmCreator, IMidiPlayer midiPlayer, IEventAggregator evenAggregator)
         {
+            InitTimeSignatures();
+
             _barEditorVmCreator = barEditorVmCreator;
             _midiPlayer = midiPlayer;
             _eventAggregator = evenAggregator;
@@ -55,6 +63,21 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             _segment = new Segment();
             _midiPlayer.PlayingState += _midiPlayer_PlayingState;
             IsPlaying = false;
+        }
+
+        private void InitTimeSignatures()
+        {
+            TimeSignatures = new List<TimeSignature>
+            {
+                TimeSignature.TS_2_4,
+                TimeSignature.TS_3_4,
+                TimeSignature.TS_4_4,
+                TimeSignature.TS_3_8,
+                TimeSignature.TS_6_8,
+                TimeSignature.TS_9_8,
+                TimeSignature.TS_12_8
+            };
+            TimeSignature = TimeSignature.TS_4_4;
         }
 
         private void _midiPlayer_PlayingState(bool isPlaying)
