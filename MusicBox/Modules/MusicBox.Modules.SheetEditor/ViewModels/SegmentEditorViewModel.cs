@@ -29,14 +29,21 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         public List<TimeSignature> TimeSignatures { get; set; }
 
-        private TimeSignature timeSignature;
-        public TimeSignature TimeSignature { get => timeSignature; set => SetProperty(ref timeSignature, value); }
+        private TimeSignature selectedTimeSignature;
+        public TimeSignature SelectedTimeSignature { get => selectedTimeSignature; set => SetProperty(ref selectedTimeSignature, value); }
+
+        public List<KeySignature> KeySignatures { get; private set; }
+
+        private KeySignature selectedKeySignature;
+        public KeySignature SelectedKeySignature { get => selectedKeySignature; set => SetProperty(ref selectedKeySignature , value); }
 
         private bool isPlaying;
         public bool IsPlaying { get => isPlaying; set => SetProperty(ref isPlaying, value); }
 
         private int tempo;
         public int Tempo { get => tempo; set => SetProperty(ref tempo, value); }
+
+        public bool IsSegmentEmpty { get => BarEditorVms.Count == 0; }
 
         public DelegateCommand AddBarCommand { get; set; }
         public DelegateCommand DeleteBarCommand { get; set; }
@@ -46,8 +53,6 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         public SegmentEditorViewModel(Func<IBarEditorViewModel> barEditorVmCreator, IMidiPlayer midiPlayer, IEventAggregator evenAggregator)
         {
-            InitTimeSignatures();
-
             _barEditorVmCreator = barEditorVmCreator;
             _midiPlayer = midiPlayer;
             _eventAggregator = evenAggregator;
@@ -63,21 +68,15 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             _segment = new Segment();
             _midiPlayer.PlayingState += _midiPlayer_PlayingState;
             IsPlaying = false;
+            InitSignatures();
         }
 
-        private void InitTimeSignatures()
+        private void InitSignatures()
         {
-            TimeSignatures = new List<TimeSignature>
-            {
-                TimeSignature.TS_2_4,
-                TimeSignature.TS_3_4,
-                TimeSignature.TS_4_4,
-                TimeSignature.TS_3_8,
-                TimeSignature.TS_6_8,
-                TimeSignature.TS_9_8,
-                TimeSignature.TS_12_8
-            };
-            TimeSignature = TimeSignature.TS_4_4;
+            KeySignatures = KeySignature.AllKeySignatures;
+            SelectedKeySignature = KeySignature.Natural;
+            TimeSignatures = TimeSignature.AllTimeSignatures;
+            SelectedTimeSignature = TimeSignature.TS_4_4;
         }
 
         private void _midiPlayer_PlayingState(bool isPlaying)
@@ -129,6 +128,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             BarEditorVms.Add(newBarEditorVm);
             SelectedBarEditorVm = newBarEditorVm;
             PlayCommand.RaiseCanExecuteChanged();
+            RaisePropertyChanged(nameof(IsSegmentEmpty));
         }
 
         private void DeleteBar()
@@ -143,6 +143,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
                 SelectedBarEditorVm = BarEditorVms[newSelectedIndex];
             }
             DeleteBarCommand?.RaiseCanExecuteChanged();
+            RaisePropertyChanged(nameof(IsSegmentEmpty));
         }
 
         private bool CanDeleteBar()

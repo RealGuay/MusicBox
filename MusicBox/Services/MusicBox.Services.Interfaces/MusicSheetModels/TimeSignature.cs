@@ -1,8 +1,10 @@
-﻿namespace MusicBox.Services.Interfaces.MusicSheetModels
+﻿using System.Collections.Generic;
+
+namespace MusicBox.Services.Interfaces.MusicSheetModels
 {
     public class TimeSignature
     {
-        public string  Name { get; set; }
+        public string Name { get; set; }
         public int TopNumber { get; }
         public int BottomNumber { get; }
         public int BeatsPerBar { get; }
@@ -24,10 +26,21 @@
         public static TimeSignature TS_2_4 { get; } = new TimeSignature("2:4", 2, 4, 2, 4, 1, 1);
         public static TimeSignature TS_3_4 { get; } = new TimeSignature("3:4", 3, 4, 3, 4, 1, 1);
         public static TimeSignature TS_4_4 { get; } = new TimeSignature("4:4", 4, 4, 4, 4, 1, 1);
-                                                                        
+
         public static TimeSignature TS_3_8 { get; } = new TimeSignature("3:8", 3, 8, 1, 3, 2, 3);
         public static TimeSignature TS_6_8 { get; } = new TimeSignature("6:8", 6, 8, 2, 3, 2, 3);
         public static TimeSignature TS_9_8 { get; } = new TimeSignature("9:8", 9, 8, 3, 3, 2, 3);
         public static TimeSignature TS_12_8 { get; } = new TimeSignature("12:8", 12, 8, 4, 3, 2, 3);
+
+        public static List<TimeSignature> AllTimeSignatures = new List<TimeSignature>()
+        {
+            TS_2_4,
+            TS_3_4,
+            TS_4_4,
+            TS_3_8,
+            TS_6_8,
+            TS_9_8,
+            TS_12_8
+        };
     }
 }
