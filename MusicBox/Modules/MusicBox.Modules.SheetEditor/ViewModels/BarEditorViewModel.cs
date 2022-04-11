@@ -48,13 +48,15 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         public int TimePixelIncrement { get; private set; }
 
         private readonly IEventAggregator _eventAggregator;
+        private readonly TimeSignature _timeSignature;
+        private readonly KeySignature _keySignature;
 
         public DelegateCommand<TimePixel> ActivatePixelCommand { get; set; }
         public DelegateCommand<TimePixel> ExpandPixelCommand { get; set; }
         public DelegateCommand<TimePixel> AlterPixelCommand { get; set; }
         public DelegateCommand ChangeSelectedBarCommand { get; set; }
 
-        public BarEditorViewModel(IEventAggregator eventAggregator)
+        public BarEditorViewModel(IEventAggregator eventAggregator, TimeSignature timeSignature, KeySignature keySignature)
         {
             _eventAggregator = eventAggregator;
             ActivatePixelCommand = new DelegateCommand<TimePixel>(ActivatePixel);
@@ -64,6 +66,8 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             SelectedPixel = new TimePixel(0, StaffPart.GLine2, BarAlteration) { Line = StaffPart.GLine2 };  /// ???????????????
             TimePixels = new List<TimePixel>();
             BarAlteration = BarAlteration.None;
+            _timeSignature = timeSignature;
+            _keySignature = keySignature;
             CreateSheetStaff();
         }
 
@@ -74,7 +78,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         public IBarEditorViewModel DeepCopy()
         {
-            BarEditorViewModel newModel = new BarEditorViewModel(_eventAggregator);
+            BarEditorViewModel newModel = new BarEditorViewModel(_eventAggregator, _timeSignature, _keySignature);
             //            newModel.TimeSignature = TimeSignature;
             return newModel;
         }
@@ -163,12 +167,11 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         private void CreateSheetStaff()
         {
-            const int TicksPerQuarterNote = 24;
-            const int SignatureNotesPerBar = 4;
-            const int SignatureTypeOfNote = 4;
+            const int timePixelPerQuarter = 4; // 1 tp par double-croche
+            int notesPerBar = _timeSignature.NotesPerBeat * _timeSignature.BeatsPerBar;
 
-            TimePixelPerLine = SignatureNotesPerBar * SignatureTypeOfNote; // signature 4:4 * 4 double croches par noire
-            TimePixelIncrement = SignatureNotesPerBar * TicksPerQuarterNote / TimePixelPerLine;
+            TimePixelPerLine = notesPerBar * timePixelPerQuarter/ _timeSignature.NotesPerQuarter; 
+            TimePixelIncrement = notesPerBar * (int) TickResolution.Normal / TimePixelPerLine;
 
             // blanks line above the staff
             CreateOneBlankLine(StaffPart.GLine14, TimePixelPerLine, TimePixelIncrement);  // top line

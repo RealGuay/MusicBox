@@ -14,7 +14,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
     {
         private const string DefaultName = "Segment1";
         private readonly IEventAggregator _eventAggregator;
-        private readonly Func<IBarEditorViewModel> _barEditorVmCreator;
+        private readonly Func<TimeSignature, KeySignature, IBarEditorViewModel> _barEditorVmCreator;
         private readonly IMidiPlayer _midiPlayer;
         private readonly Segment _segment;
         private string segmentName;
@@ -51,7 +51,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         public DelegateCommand PauseCommand { get; set; }
         public DelegateCommand RewindToZeroCommand { get; set; }
 
-        public SegmentEditorViewModel(Func<IBarEditorViewModel> barEditorVmCreator, IMidiPlayer midiPlayer, IEventAggregator evenAggregator)
+        public SegmentEditorViewModel(Func<TimeSignature, KeySignature, IBarEditorViewModel> barEditorVmCreator, IMidiPlayer midiPlayer, IEventAggregator evenAggregator)
         {
             _barEditorVmCreator = barEditorVmCreator;
             _midiPlayer = midiPlayer;
@@ -124,7 +124,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         private void AddBar()
         {
-            var newBarEditorVm = _barEditorVmCreator();
+            var newBarEditorVm = _barEditorVmCreator(SelectedTimeSignature, SelectedKeySignature);
             BarEditorVms.Add(newBarEditorVm);
             SelectedBarEditorVm = newBarEditorVm;
             PlayCommand.RaiseCanExecuteChanged();
@@ -185,7 +185,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             SegmentName = segment.Name;
             foreach (var bar in segment.Bars)
             {
-                var newBarEditorVm = _barEditorVmCreator();
+                var newBarEditorVm = _barEditorVmCreator(TimeSignature.TS_4_4, KeySignature.Natural); // sic save and load each value
                 newBarEditorVm.LoadBarInfo(bar);
                 BarEditorVms.Add(newBarEditorVm);
             }

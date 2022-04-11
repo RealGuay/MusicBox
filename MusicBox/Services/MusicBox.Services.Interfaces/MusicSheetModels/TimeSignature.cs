@@ -4,7 +4,7 @@ namespace MusicBox.Services.Interfaces.MusicSheetModels
 {
     public class TimeSignature
     {
-        public string Name { get; set; }
+        public string Name { get; }
         public int TopNumber { get; }
         public int BottomNumber { get; }
         public int BeatsPerBar { get; }

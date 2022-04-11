@@ -41,11 +41,11 @@ namespace MusicBox.Services.Interfaces.MusicSheetModels
         private static NoteKey[] BMajor { get; } = new NoteKey[] { NoteKey.C8s, NoteKey.B7, NoteKey.A7s, NoteKey.G7s, NoteKey.F7s, NoteKey.E7, NoteKey.D7s, NoteKey.C7s, NoteKey.B6, NoteKey.A6s, NoteKey.G6s, NoteKey.F6s, NoteKey.E6, NoteKey.D6s, NoteKey.C6s, NoteKey.B5, NoteKey.A5s, NoteKey.G5s, NoteKey.F5s, NoteKey.E5, NoteKey.D5s, NoteKey.C5s, NoteKey.B4, NoteKey.A4s, NoteKey.G4s, NoteKey.F4s, NoteKey.E4, NoteKey.D4s, NoteKey.C4s, NoteKey.B3, NoteKey.A3s, NoteKey.G3s, NoteKey.F3s, NoteKey.E3, NoteKey.D3s, NoteKey.C3s, NoteKey.B2, NoteKey.A2s, NoteKey.G2s, NoteKey.F2s, NoteKey.E2, NoteKey.D2s, NoteKey.C2s, NoteKey.B1, NoteKey.A1s, NoteKey.G1s, NoteKey.F1s, NoteKey.E1, NoteKey.D1s, NoteKey.C1s, NoteKey.B0, NoteKey.A0s };
 
 
-        public static NoteKey[][] KeySignatures { get; } = new NoteKey[][] { DFlatMajor, AFlatMajor, EFlatMajor, BFlatMajor, FMajor, CMajor, GMajor, DMajor, AMajor, EMajor, BMajor };
+        public static NoteKey[][] AllScales { get; } = new NoteKey[][] { DFlatMajor, AFlatMajor, EFlatMajor, BFlatMajor, FMajor, CMajor, GMajor, DMajor, AMajor, EMajor, BMajor };
 
         public static NoteKey GetKey(StaffPart line, BarAlteration barAlteration, NoteAlteration noteAlteration)
         {
-            return KeySignatures[(int)barAlteration][(int)line] + (int)noteAlteration;
+            return AllScales[(int)barAlteration][(int)line] + (int)noteAlteration;
         }
 
         public static void GetTimePixelInfoFromKey(int key, BarAlteration barAlteration, out StaffPart line, out NoteAlteration noteAlteration)
@@ -53,12 +53,12 @@ namespace MusicBox.Services.Interfaces.MusicSheetModels
             noteAlteration = NoteAlteration.None;
             NoteKey noteKey = (NoteKey)key;
 
-            int lineIndex = Array.IndexOf(KeySignatures[(int)barAlteration], noteKey);
+            int lineIndex = Array.IndexOf(AllScales[(int)barAlteration], noteKey);
             if (lineIndex == -1)
             {
                 noteAlteration = barAlteration < BarAlteration.None ? NoteAlteration.Flat : NoteAlteration.Sharp;
                 NoteKey alteredNoteKey = (NoteKey)((int)noteKey + (int)noteAlteration);
-                lineIndex = Array.IndexOf(KeySignatures[(int)barAlteration], alteredNoteKey);
+                lineIndex = Array.IndexOf(AllScales[(int)barAlteration], alteredNoteKey);
                 if (lineIndex == -1)
                 {
                     throw new InvalidOperationException("Unable to find staff line from note key!");

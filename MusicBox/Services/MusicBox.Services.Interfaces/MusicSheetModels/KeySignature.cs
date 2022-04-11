@@ -5,10 +5,10 @@ namespace MusicBox.Services.Interfaces.MusicSheetModels
 {
     public class KeySignature
     {
-        public string Name { get; set; }
-        public BarAlteration BarAlteration { get; set; }
+        public string Name { get; }
+        public BarAlteration BarAlteration { get; }
 
-        public KeySignature(string name, BarAlteration barAlteration)
+        private KeySignature(string name, BarAlteration barAlteration)
         {
             Name = name;
             BarAlteration = barAlteration;
