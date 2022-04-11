@@ -58,7 +58,7 @@ namespace MusicBox.Services.Interfaces.MusicSheetModels
             if (lineIndex == -1)
             {
                 noteAlteration = barAlteration < BarAlteration.None ? NoteAlteration.Flat : NoteAlteration.Sharp;
-                NoteKey alteredNoteKey = noteKey.AddAlteration(noteAlteration); // (NoteKey)((int)noteKey + (int)noteAlteration);
+                NoteKey alteredNoteKey = noteKey.AddAlteration(noteAlteration);
                 lineIndex = Array.IndexOf(AllScales[(int)barAlteration], alteredNoteKey);
                 if (lineIndex == -1)
                 {

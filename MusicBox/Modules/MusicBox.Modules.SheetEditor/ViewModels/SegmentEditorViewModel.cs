@@ -172,20 +172,25 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             segment.Bars.Clear();
             foreach (BarEditorViewModel barEditorVm in BarEditorVms)
             {
-                Bar currentBar = new Bar() { Id = barId, PlayOrder = barId };
+                Bar currentBar = new Bar() { Id = barId, PlayOrder = barId};
                 barEditorVm.ExtractBarInfo(currentBar);
                 segment.Bars.Add(currentBar);
                 barId++;
             }
             segment.Name = SegmentName;
+            segment.TimeSignature = SelectedTimeSignature;
+            segment.KeySignature = SelectedKeySignature;
         }
 
         public void LoadSegmentInfo(Segment segment)
         {
             SegmentName = segment.Name;
+            SelectedTimeSignature = segment.TimeSignature;
+            SelectedKeySignature = segment.KeySignature;    
+
             foreach (var bar in segment.Bars)
             {
-                var newBarEditorVm = _barEditorVmCreator(TimeSignature.TS_4_4, KeySignature.Natural); // sic save and load each value
+                var newBarEditorVm = _barEditorVmCreator(SelectedTimeSignature, SelectedKeySignature); 
                 newBarEditorVm.LoadBarInfo(bar);
                 BarEditorVms.Add(newBarEditorVm);
             }

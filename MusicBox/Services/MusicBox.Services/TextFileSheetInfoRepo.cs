@@ -33,6 +33,9 @@ namespace MusicBox.Services
                 var segment = new Segment();
                 segment.Name = inputFile.ReadLine();
                 segment.MidiChannel = int.Parse(inputFile.ReadLine());
+                //outputFile.WriteLine(segment.Context);
+                segment.TimeSignature = TimeSignature.FromName(inputFile.ReadLine());
+                segment.KeySignature = KeySignature.FromName(inputFile.ReadLine());
                 ReadBars(inputFile, segment);
                 distinctSegments[segment.Name] = segment;
             }
@@ -104,6 +107,8 @@ namespace MusicBox.Services
                     outputFile.WriteLine(segment.Name);
                     outputFile.WriteLine(segment.MidiChannel);
                     //outputFile.WriteLine(segment.Context);
+                    outputFile.WriteLine(segment.TimeSignature.Name);
+                    outputFile.WriteLine(segment.KeySignature.Name);
                     WriteBars(outputFile, segment);
                 }
             }

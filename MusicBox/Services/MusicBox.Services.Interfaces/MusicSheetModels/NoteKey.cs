@@ -222,7 +222,6 @@ namespace MusicBox.Services.Interfaces.MusicSheetModels
         public static NoteKey G9b {get;} = new NoteKey("G9b", 126);
         public static NoteKey G9 {get;} = new NoteKey("G9", 127);
 
-
         public static NoteKey[] NoteKeys = new NoteKey[]
         {
             Cm1,

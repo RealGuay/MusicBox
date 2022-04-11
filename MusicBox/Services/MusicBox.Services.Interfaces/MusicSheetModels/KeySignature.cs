@@ -42,5 +42,10 @@ namespace MusicBox.Services.Interfaces.MusicSheetModels
             FourSharp,
             FiveSharp
         };
+
+        public static KeySignature FromName(string name)
+        {
+            return AllKeySignatures.Find(ks => ks.Name == name);
+        }
     }
 }

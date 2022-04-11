@@ -14,15 +14,5 @@ namespace MusicBox.Services.Interfaces.MusicSheetModels
         {
             SheetNotes = new List<SheetNote>();
         }
-
-        //internal string TraceDetails()
-        //{
-        //    string barDetails = $"Bar Id : {Id} PlayOrder : {PlayOrder} \n";
-        //    foreach (SheetNote note in SheetNotes)
-        //    {
-        //        barDetails += note.TraceDetails();
-        //    }
-        //    return barDetails;
-        //}
     }
 }

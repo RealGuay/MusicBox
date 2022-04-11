@@ -13,14 +13,6 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 {
     public class BarEditorViewModel : BindableBase, IBarEditorViewModel
     {
-        //private BarAlteration barAlteration;
-
-        //public BarAlteration BarAlteration
-        //{
-        //    get { return barAlteration; }
-        //    set { SetProperty(ref barAlteration, value); }
-        //}
-
         private List<TimePixel> timePixels;
 
         public List<TimePixel> TimePixels
@@ -28,14 +20,6 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             get { return timePixels; }
             set { SetProperty(ref timePixels, value); }
         }
-
-        //private TimePixel selectedPixel;
-
-        //public TimePixel SelectedPixel
-        //{
-        //    get { return selectedPixel; }
-        //    set { SetProperty(ref selectedPixel, value); }
-        //}
 
         private int timePixelPerLine;
 
@@ -63,9 +47,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             ExpandPixelCommand = new DelegateCommand<TimePixel>(ExpandPixel);
             AlterPixelCommand = new DelegateCommand<TimePixel>(AlterPixel);
             ChangeSelectedBarCommand = new DelegateCommand(ChangeSelectedBar);
-            //SelectedPixel = new TimePixel(0, StaffPart.GLine2, BarAlteration) { Line = StaffPart.GLine2 };  /// ???????????????
             TimePixels = new List<TimePixel>();
-//            BarAlteration = BarAlteration.None;
             _timeSignature = timeSignature;
             _keySignature = keySignature;
             CreateSheetStaff();
@@ -79,7 +61,6 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         public IBarEditorViewModel DeepCopy()
         {
             BarEditorViewModel newModel = new BarEditorViewModel(_eventAggregator, _timeSignature, _keySignature);
-            //            newModel.TimeSignature = TimeSignature;
             return newModel;
         }
 
@@ -89,7 +70,11 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             {
                 throw new ArgumentNullException(nameof(currentBar));
             }
+            ExtractBarNotes(currentBar);
+        }
 
+        private void ExtractBarNotes(Bar currentBar)
+        {
             IEnumerable<TimePixel> pixelsOn = TimePixels.Where(p => p.Status >= TimePixelStatus.PixelOn);
 
             bool isExpandedToNextPixel = false;
@@ -173,8 +158,8 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             const int timePixelPerQuarter = 4; // 1 tp par double-croche
             int notesPerBar = _timeSignature.NotesPerBeat * _timeSignature.BeatsPerBar;
 
-            TimePixelPerLine = notesPerBar * timePixelPerQuarter/ _timeSignature.NotesPerQuarter; 
-            TimePixelIncrement = notesPerBar * (int) TickResolution.Normal / TimePixelPerLine;
+            TimePixelPerLine = notesPerBar * timePixelPerQuarter / _timeSignature.NotesPerQuarter;
+            TimePixelIncrement = notesPerBar * (int)TickResolution.Normal / TimePixelPerLine;
 
             // blanks line above the staff
             CreateOneBlankLine(StaffPart.GLine14, TimePixelPerLine, TimePixelIncrement);  // top line

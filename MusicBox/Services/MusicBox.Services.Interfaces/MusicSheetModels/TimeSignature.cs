@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace MusicBox.Services.Interfaces.MusicSheetModels
 {
@@ -42,5 +43,10 @@ namespace MusicBox.Services.Interfaces.MusicSheetModels
             TS_9_8,
             TS_12_8
         };
+
+        public static TimeSignature FromName(string name)
+        {
+            return AllTimeSignatures.Find((ts => ts.Name == name));
+        }
     }
 }
