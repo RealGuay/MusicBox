@@ -13,13 +13,13 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 {
     public class BarEditorViewModel : BindableBase, IBarEditorViewModel
     {
-        private BarAlteration barAlteration;
+        //private BarAlteration barAlteration;
 
-        public BarAlteration BarAlteration
-        {
-            get { return barAlteration; }
-            set { SetProperty(ref barAlteration, value); }
-        }
+        //public BarAlteration BarAlteration
+        //{
+        //    get { return barAlteration; }
+        //    set { SetProperty(ref barAlteration, value); }
+        //}
 
         private List<TimePixel> timePixels;
 
@@ -29,13 +29,13 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             set { SetProperty(ref timePixels, value); }
         }
 
-        private TimePixel selectedPixel;
+        //private TimePixel selectedPixel;
 
-        public TimePixel SelectedPixel
-        {
-            get { return selectedPixel; }
-            set { SetProperty(ref selectedPixel, value); }
-        }
+        //public TimePixel SelectedPixel
+        //{
+        //    get { return selectedPixel; }
+        //    set { SetProperty(ref selectedPixel, value); }
+        //}
 
         private int timePixelPerLine;
 
@@ -63,9 +63,9 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             ExpandPixelCommand = new DelegateCommand<TimePixel>(ExpandPixel);
             AlterPixelCommand = new DelegateCommand<TimePixel>(AlterPixel);
             ChangeSelectedBarCommand = new DelegateCommand(ChangeSelectedBar);
-            SelectedPixel = new TimePixel(0, StaffPart.GLine2, BarAlteration) { Line = StaffPart.GLine2 };  /// ???????????????
+            //SelectedPixel = new TimePixel(0, StaffPart.GLine2, BarAlteration) { Line = StaffPart.GLine2 };  /// ???????????????
             TimePixels = new List<TimePixel>();
-            BarAlteration = BarAlteration.None;
+//            BarAlteration = BarAlteration.None;
             _timeSignature = timeSignature;
             _keySignature = keySignature;
             CreateSheetStaff();
@@ -98,9 +98,12 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             {
                 if (!isExpandedToNextPixel)
                 {
+                    NoteKey noteKey = GetKey(pixel.Line, _keySignature.BarAlteration, ToNoteAlteration(pixel.Status));
+
                     sheetNote = new SheetNote
                     {
-                        Key = (int)GetKey(pixel.Line, BarAlteration, ToNoteAlteration(pixel.Status)),
+                        Name = noteKey.Name,
+                        Key = noteKey.Key,
                         TiedTo = Tie.ToNone,
                         Volume = 100,
                         PositionInBar = pixel.StartPosition
@@ -131,7 +134,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         {
             StaffPart line;
             NoteAlteration noteAlteration;
-            ScaleInformation.GetTimePixelInfoFromKey(note.Key, BarAlteration, out line, out noteAlteration);
+            ScaleInformation.GetTimePixelInfoFromKey(note.Name, _keySignature.BarAlteration, out line, out noteAlteration);
             TimePixel timePixel = TimePixels.Find(p => p.Line == line && p.StartPosition == note.PositionInBar);
             if (timePixel == null)
             {
@@ -264,8 +267,8 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         private TimePixel CreateNewPixel(bool isPixelOnStaffLine, StaffPart line, int startPosition, int timePixelIncrement)
         {
             return isPixelOnStaffLine
-                ? new TimePixel(timePixelIncrement, line, BarAlteration) { OnStaffLine = true, StartPosition = startPosition, Status = TimePixelStatus.OnStaffLine, IsExpandedToNextPixel = false }
-                : new TimePixel(timePixelIncrement, line, BarAlteration) { OnStaffLine = false, StartPosition = startPosition, Status = TimePixelStatus.OnBlankLine, IsExpandedToNextPixel = false };
+                ? new TimePixel(timePixelIncrement, line, _keySignature.BarAlteration) { OnStaffLine = true, StartPosition = startPosition, Status = TimePixelStatus.OnStaffLine, IsExpandedToNextPixel = false }
+                : new TimePixel(timePixelIncrement, line, _keySignature.BarAlteration) { OnStaffLine = false, StartPosition = startPosition, Status = TimePixelStatus.OnBlankLine, IsExpandedToNextPixel = false };
         }
 
         private void ActivatePixel(TimePixel timePixel)
@@ -295,8 +298,8 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         private void SetTimePixelStatus(TimePixel timePixel, TimePixelStatus status)
         {
             timePixel.Status = status;
-            NoteKey noteKey = GetKey(timePixel.Line, BarAlteration, ToNoteAlteration(timePixel.Status));
-            timePixel.NoteTooltip = Enum.GetName(typeof(NoteKey), noteKey);
+            NoteKey noteKey = GetKey(timePixel.Line, _keySignature.BarAlteration, ToNoteAlteration(timePixel.Status));
+            timePixel.NoteTooltip = noteKey.Name;
         }
 
         private TimePixel FindFirstTimePixel(TimePixel timePixel)

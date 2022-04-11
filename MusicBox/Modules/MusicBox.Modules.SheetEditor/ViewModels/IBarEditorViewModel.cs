@@ -10,9 +10,9 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
     {
         DelegateCommand<TimePixel> ActivatePixelCommand { get; set; }
         DelegateCommand<TimePixel> AlterPixelCommand { get; set; }
-        BarAlteration BarAlteration { get; set; }
+        //BarAlteration BarAlteration { get; set; }
         DelegateCommand<TimePixel> ExpandPixelCommand { get; set; }
-        TimePixel SelectedPixel { get; set; }
+        //TimePixel SelectedPixel { get; set; }
         int TimePixelIncrement { get; }
         int TimePixelPerLine { get; set; }
         List<TimePixel> TimePixels { get; set; }

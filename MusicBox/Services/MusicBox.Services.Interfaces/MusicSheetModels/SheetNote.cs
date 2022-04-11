@@ -6,6 +6,7 @@ namespace MusicBox.Services.Interfaces.MusicSheetModels
 {
     public class SheetNote
     {
+        public string Name { get; set; }
         public int Key { get; set; }
         public int PositionInBar { get; set; }
         public int Duration { get; set; }
@@ -19,11 +20,5 @@ namespace MusicBox.Services.Interfaces.MusicSheetModels
             ToBoth,
             ToNone
         }
-
-        //internal string TraceDetails()
-        //{
-        //    string noteDetails = $"Key : {Key}, PositionInBar : {PositionInBar}, Duration : {Duration}, TiedTo : {TiedTo} \n";
-        //    return noteDetails;
-        //}
     }
 }

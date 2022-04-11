@@ -38,8 +38,8 @@ namespace MusicBox.Modules.SheetEditor.Models
         {
             Duration = duration;
             Line = line;
-            NoteKey key = GetKey(line, barAlteration, NoteAlteration.None);
-            NoteTooltip = Enum.GetName(typeof(NoteKey), key);
+            NoteKey noteKey = GetKey(line, barAlteration, NoteAlteration.None);
+            NoteTooltip = noteKey.Name;
         }
     }
 }

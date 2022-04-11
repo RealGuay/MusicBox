@@ -66,6 +66,7 @@ namespace MusicBox.Services
             for (int i = 0; i < totalSheetNoteCount; i++)
             {
                 SheetNote note = new SheetNote();
+                note.Name = inputFile.ReadLine();
                 note.Key = int.Parse(inputFile.ReadLine());
                 note.PositionInBar = int.Parse(inputFile.ReadLine());
                 note.Duration = int.Parse(inputFile.ReadLine());
@@ -134,6 +135,7 @@ namespace MusicBox.Services
 
             foreach (SheetNote note in bar.SheetNotes)
             {
+                outputFile.WriteLine(note.Name);
                 outputFile.WriteLine(note.Key);
                 outputFile.WriteLine(note.PositionInBar);
                 outputFile.WriteLine(note.Duration);
