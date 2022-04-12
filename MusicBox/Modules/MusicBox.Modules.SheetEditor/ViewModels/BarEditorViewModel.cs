@@ -119,7 +119,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         {
             StaffPart line;
             NoteAlteration noteAlteration;
-            ScaleInformation.GetTimePixelInfoFromKey(note.Name, _keySignature.BarAlteration, out line, out noteAlteration);
+            ScaleInformation.GetTimePixelInfoFromName(note.Name, _keySignature.BarAlteration, out line, out noteAlteration);
             TimePixel timePixel = TimePixels.Find(p => p.Line == line && p.StartPosition == note.PositionInBar);
             if (timePixel == null)
             {

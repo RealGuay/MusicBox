@@ -49,21 +49,22 @@ namespace MusicBox.Services.Interfaces.MusicSheetModels
             return  noteKey.AddAlteration(noteAlteration);
         }
 
-        public static void GetTimePixelInfoFromKey(string noteName, BarAlteration barAlteration, out StaffPart line, out NoteAlteration noteAlteration)
+        public static void GetTimePixelInfoFromName(string noteName, BarAlteration barAlteration, out StaffPart line, out NoteAlteration noteAlteration)
         {
+            int scaleIndex = (int)barAlteration;
             noteAlteration = NoteAlteration.None;
             NoteKey noteKey = NoteKey.FindFromName(noteName);
 
-            int lineIndex = Array.IndexOf(AllScales[(int)barAlteration], noteKey);
+            int lineIndex = Array.IndexOf(AllScales[scaleIndex], noteKey);
             if (lineIndex == -1)
             {
-                noteAlteration = barAlteration < BarAlteration.None ? NoteAlteration.Flat : NoteAlteration.Sharp;
-                NoteKey alteredNoteKey = noteKey.AddAlteration(noteAlteration);
-                lineIndex = Array.IndexOf(AllScales[(int)barAlteration], alteredNoteKey);
+                lineIndex = Array.FindIndex(AllScales[scaleIndex], n => n.Name[..2] == noteName[..2]);
                 if (lineIndex == -1)
                 {
                     throw new InvalidOperationException("Unable to find staff line from note key!");
                 }
+                NoteKey NoteOnLine = AllScales[scaleIndex][lineIndex];
+                noteAlteration =  noteKey.Key < NoteOnLine.Key ? NoteAlteration.Flat : NoteAlteration.Sharp;
             }
             line = (StaffPart)lineIndex;
         }
