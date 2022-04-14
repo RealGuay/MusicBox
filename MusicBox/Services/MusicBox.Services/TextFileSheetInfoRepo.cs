@@ -3,22 +3,34 @@ using MusicBox.Services.Interfaces.MusicSheetModels;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Win32.Services.Interfaces;
 
 namespace MusicBox.Services
 {
     public class TextFileSheetInfoRepo : ISheetInformationRepo
     {
+        private readonly IWin32DialogsService _dlgService;
+
+        public TextFileSheetInfoRepo(IWin32DialogsService win32DialogService)
+        {
+            _dlgService = win32DialogService;
+        }
+
         public void Load(SheetInformation sheetInformation)
         {
             string fileName = "MusicBox1.txt";
+            bool? res = _dlgService.ShowOpenFileDialog(ref fileName, ".txt", "Text documents (.txt)|*.txt");
 
-            using (StreamReader inputFile = new StreamReader(fileName, false))
+            if (res.HasValue && res.Value)
             {
-                sheetInformation.Title = inputFile.ReadLine();
-                sheetInformation.LyricsBy = inputFile.ReadLine();
-                sheetInformation.MusicBy = inputFile.ReadLine();
-                sheetInformation.Version = inputFile.ReadLine();
-                ReadSegments(inputFile, sheetInformation);
+                using (StreamReader inputFile = new StreamReader(fileName, false))
+                {
+                    sheetInformation.Title = inputFile.ReadLine();
+                    sheetInformation.LyricsBy = inputFile.ReadLine();
+                    sheetInformation.MusicBy = inputFile.ReadLine();
+                    sheetInformation.Version = inputFile.ReadLine();
+                    ReadSegments(inputFile, sheetInformation);
+                }
             }
         }
 
@@ -82,13 +94,17 @@ namespace MusicBox.Services
         {
             string fileName = "MusicBox1.txt";
 
-            using (StreamWriter outputFile = new StreamWriter(fileName, false))
+            bool? res = _dlgService.ShowSaveFileDialog(ref fileName, ".txt", "Text documents (.txt)|*.txt");
+            if (res.HasValue && res.Value)
             {
-                outputFile.WriteLine(sheetInformation.Title);
-                outputFile.WriteLine(sheetInformation.LyricsBy);
-                outputFile.WriteLine(sheetInformation.MusicBy);
-                outputFile.WriteLine(sheetInformation.Version);
-                WriteSegments(outputFile, sheetInformation);
+                using (StreamWriter outputFile = new StreamWriter(fileName, false))
+                {
+                    outputFile.WriteLine(sheetInformation.Title);
+                    outputFile.WriteLine(sheetInformation.LyricsBy);
+                    outputFile.WriteLine(sheetInformation.MusicBy);
+                    outputFile.WriteLine(sheetInformation.Version);
+                    WriteSegments(outputFile, sheetInformation);
+                }
             }
         }
 

@@ -15,5 +15,6 @@
     <ProjectReference Include="..\Modules\MusicBox.Modules.ModuleName\MusicBox.Modules.ModuleName.csproj" />
     <ProjectReference Include="..\Services\MusicBox.Services.Interfaces\MusicBox.Services.Interfaces.csproj" />
     <ProjectReference Include="..\Services\MusicBox.Services\MusicBox.Services.csproj" />
+    <ProjectReference Include="..\Services\Win32.Services\Win32.Services.csproj" />
   </ItemGroup>
 </Project>

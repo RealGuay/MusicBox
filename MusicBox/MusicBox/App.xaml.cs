@@ -11,6 +11,8 @@ using MusicBox.Views;
 using Prism.Ioc;
 using Prism.Modularity;
 using System.Windows;
+using Win32.Services;
+using Win32.Services.Interfaces;
 
 namespace MusicBox
 {
@@ -34,7 +36,8 @@ namespace MusicBox
             containerRegistry.RegisterSingleton<IBeatMaker, BeatMaker>();
             containerRegistry.RegisterSingleton<IMidiPlayer, MidiPlayer>();
             containerRegistry.RegisterDialog<MessageDialog, MessageDialogViewModel>();
-            containerRegistry.RegisterSingleton<ISheetInformationRepo, TextFileSheetInfoRepo>(); 
+            containerRegistry.RegisterSingleton<ISheetInformationRepo, TextFileSheetInfoRepo>();
+            containerRegistry.RegisterSingleton<IWin32DialogsService, Win32DialogsService>();
         }
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
