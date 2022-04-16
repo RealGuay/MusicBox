@@ -36,7 +36,13 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             set { ChangeProperty(_sheetInformation.Version, value, value => _sheetInformation.Version = value); }
         }
 
-        public  int Tempo
+        public string Filename
+        {
+            get { return _sheetInformation.Filename; }
+            set { ChangeProperty(_sheetInformation.Filename, value, value => _sheetInformation.Filename = value); }
+        }
+
+        public int Tempo
         {
             get { return _sheetInformation.Context.Tempo; }
             set { ChangeProperty(_sheetInformation.Context.Tempo, value, value => _sheetInformation.Context.Tempo = value); }
@@ -52,10 +58,8 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         private void ChangeProperty<T>(T current, T value, Action<T> setOutput, [CallerMemberName] string propertyName = null)
         {
             T storage = current;
-            if (SetProperty(ref storage, value, propertyName))
-            {
-                setOutput(value);
-            }
+            setOutput(value);
+            _ = SetProperty(ref storage, value, propertyName);
         }
     }
 }

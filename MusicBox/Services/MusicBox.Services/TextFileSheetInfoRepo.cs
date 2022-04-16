@@ -29,6 +29,7 @@ namespace MusicBox.Services
                     sheetInformation.LyricsBy = inputFile.ReadLine();
                     sheetInformation.MusicBy = inputFile.ReadLine();
                     sheetInformation.Version = inputFile.ReadLine();
+                    sheetInformation.Filename = fileName;
                     ReadSegments(inputFile, sheetInformation);
                 }
             }
@@ -94,6 +95,11 @@ namespace MusicBox.Services
         {
             string fileName = "MusicBox1.txt";
 
+            if (!string.IsNullOrEmpty(sheetInformation.Filename))
+            {
+                fileName = sheetInformation.Filename;
+            }
+
             bool? res = _dlgService.ShowSaveFileDialog(ref fileName, ".txt", "Text documents (.txt)|*.txt");
             if (res.HasValue && res.Value)
             {
@@ -103,6 +109,7 @@ namespace MusicBox.Services
                     outputFile.WriteLine(sheetInformation.LyricsBy);
                     outputFile.WriteLine(sheetInformation.MusicBy);
                     outputFile.WriteLine(sheetInformation.Version);
+                    sheetInformation.Filename = fileName;
                     WriteSegments(outputFile, sheetInformation);
                 }
             }

@@ -52,8 +52,8 @@
                 <TextBox   Grid.Row="2" Grid.Column="1" Text="{Binding SheetInformationVm.MusicBy}"  Height="20" />
                 <TextBlock Grid.Row="3" Grid.Column="0" Text="Version:" Margin="5,5" HorizontalAlignment="Right" />
                 <TextBox   Grid.Row="3" Grid.Column="1" Text="{Binding SheetInformationVm.Version}"  Height="20" />
-                <TextBlock Grid.Row="4" Grid.Column="0" Text="Sheet File:" Margin="5,5" HorizontalAlignment="Right" />
-                <TextBox   Grid.Row="4" Grid.Column="1" Text=""  Height="20" />
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="File:" Margin="5,5" HorizontalAlignment="Right" />
+                <TextBox   Grid.Row="4" Grid.Column="1" Text="{Binding SheetInformationVm.Filename, Mode=TwoWay}" IsEnabled="False" Height="20" />
 
                 <StackPanel Grid.Row="6" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="5" HorizontalAlignment="Center">
                     <Button Content="Load" Command="{Binding LoadCommand}" Margin="10" Width="80" />

@@ -8,10 +8,10 @@ namespace MusicBox.Services.Interfaces.MusicSheetModels
         public string LyricsBy { get; set; }
         public string MusicBy { get; set; }
         public string Version { get; set; }
+        public string Filename { get; set; }
         public Context Context { get; set; }
 
         public List<Segment> Segments { get; set; }
-
        
         public SheetInformation(Context context)
         {

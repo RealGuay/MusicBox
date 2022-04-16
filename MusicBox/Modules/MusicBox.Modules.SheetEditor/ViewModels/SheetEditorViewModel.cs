@@ -89,7 +89,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             SheetInformationVm.LyricsBy = _sheetInformation.LyricsBy;
             SheetInformationVm.MusicBy = _sheetInformation.MusicBy;
             SheetInformationVm.Version = _sheetInformation.Version;
-            RaisePropertyChanged(null);
+            SheetInformationVm.Filename = _sheetInformation.Filename;
         }
 
         private void LoadSegments()
@@ -101,6 +101,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         {
             ExtractSheetInfo();
             _sheetInfoRepo.Save(_sheetInformation);
+            SheetInformationVm.Filename = _sheetInformation.Filename;
         }
 
         private bool CanSave()
@@ -132,6 +133,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             _sheetInformation.LyricsBy = SheetInformationVm.LyricsBy;
             _sheetInformation.MusicBy = SheetInformationVm.MusicBy;
             _sheetInformation.Version = SheetInformationVm.Version;
+            _sheetInformation.Filename = SheetInformationVm.Filename;
         }
 
         private void ExtractSegments()
