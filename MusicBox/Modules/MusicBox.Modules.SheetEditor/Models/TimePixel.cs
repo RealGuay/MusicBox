@@ -23,7 +23,7 @@ namespace MusicBox.Modules.SheetEditor.Models
         public bool OnStaffLine { get => onStaffLine; set => SetProperty(ref onStaffLine, value); }
 
         private TimePixelStatus status;
-        public TimePixelStatus Status { get => status; set => SetProperty(ref status, value); }
+        public TimePixelStatus Status { get => status; private set => SetProperty(ref status, value); }
 
         private TimePixel previousPixelInBar;
         public TimePixel PreviousPixelInBar { get => previousPixelInBar; set => SetProperty(ref previousPixelInBar, value); }
@@ -34,12 +34,22 @@ namespace MusicBox.Modules.SheetEditor.Models
         private bool isExpandedToNextPixel;
         public bool IsExpandedToNextPixel { get => isExpandedToNextPixel; set => SetProperty(ref isExpandedToNextPixel, value); }
 
-        public TimePixel(int duration, StaffPart line, BarAlteration barAlteration)
+        private PlayingHand hand;
+        public PlayingHand Hand { get => hand; set => SetProperty(ref hand, value); }
+
+        public TimePixel(int duration, StaffPart line, BarAlteration barAlteration, TimePixelStatus status)
         {
             Duration = duration;
             Line = line;
             NoteKey noteKey = GetKey(line, barAlteration, NoteAlteration.None);
             NoteTooltip = noteKey.Name;
+            Status = status;
+        }
+
+        public void SetStatus(TimePixelStatus status, PlayingHand hand)
+        {
+            Status = status;
+            Hand = hand;
         }
     }
 }

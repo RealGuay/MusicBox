@@ -10,6 +10,7 @@
     <UserControl.Resources>
         <conv:TimePixelBackgroundConverter x:Key="TimePixelBackConv" />
         <conv:IsExpandedTotNextPixelConverter x:Key="IsExpandedConv" />
+        <conv:TimePixelEnableConverter x:Key="TimePixelEnableConv" />
         <Style x:Key="FocusVisual">
             <Setter Property="Control.Template">
                 <Setter.Value>
@@ -25,7 +26,7 @@
         <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#FF3C7FB1" />
         <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FFC4E5F6" />
         <SolidColorBrush x:Key="Button.Pressed.Border" Color="#FF2C628B" />
-        <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4" />
+        <SolidColorBrush x:Key="Button.Disabled.Background" Color="Goldenrod" />
         <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5" />
         <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383" />
         <Style x:Key="TimePixelButtonStyle" TargetType="{x:Type Button}">
@@ -67,18 +68,18 @@
         </Style>
     </UserControl.Resources>
     <Grid>
-        
-        <Border BorderThickness="2" BorderBrush="Azure">
-            <ListBox x:Name="TimePixels" ItemsSource="{Binding TimePixels}">
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid Columns="{Binding TimePixelPerLine}" Margin="2" />
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <Button Command="{Binding RelativeSource={RelativeSource AncestorType=local:BarEditor}, Path=DataContext.ActivatePixelCommand}"
+        <StackPanel>
+            <Border BorderThickness="2" BorderBrush="Azure">
+                <ListBox x:Name="TimePixels" ItemsSource="{Binding TimePixels}">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="{Binding TimePixelPerLine}" Margin="2" />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Command="{Binding RelativeSource={RelativeSource AncestorType=local:BarEditor}, Path=DataContext.ActivatePixelCommand}"
                                         CommandParameter="{Binding}"
                                         Background="{Binding Status,Converter={StaticResource TimePixelBackConv}}"
                                         BorderThickness="0"
@@ -86,27 +87,40 @@
                                         Margin="-4"
                                         Style="{DynamicResource TimePixelButtonStyle}"
                                         ToolTip="{Binding NoteTooltip}">
-                                <Button.InputBindings>
-                                    <MouseBinding Gesture="Shift+LeftClick"
+                                    <Button.IsEnabled>
+                                        <MultiBinding Converter="{StaticResource TimePixelEnableConv}">
+                                            <Binding RelativeSource="{RelativeSource AncestorType=local:BarEditor}" Path="DataContext.Hand"  />
+                                            <Binding />
+                                        </MultiBinding>
+                                    </Button.IsEnabled>
+                                    <Button.InputBindings>
+                                        <MouseBinding Gesture="Shift+LeftClick"
                                          Command="{Binding RelativeSource={RelativeSource AncestorType=local:BarEditor}, Path=DataContext.ExpandPixelCommand}"
                                          CommandParameter="{Binding}" />
-                                    <MouseBinding Gesture="Shift+LeftDoubleClick"
+                                        <MouseBinding Gesture="Shift+LeftDoubleClick"
                                          Command="{Binding RelativeSource={RelativeSource AncestorType=local:BarEditor}, Path=DataContext.ExpandPixelCommand}"
                                          CommandParameter="{Binding}" />
-                                    <MouseBinding Gesture="WheelClick"
+                                        <MouseBinding Gesture="WheelClick"
                                          Command="{Binding RelativeSource={RelativeSource AncestorType=local:BarEditor}, Path=DataContext.AlterPixelCommand}"
                                          CommandParameter="{Binding}" />
-                                    <MouseBinding Gesture="Shift+WheelClick"
+                                        <MouseBinding Gesture="Shift+WheelClick"
                                          Command="{Binding RelativeSource={RelativeSource AncestorType=local:BarEditor}, Path=DataContext.AlterPixelCommand}"
                                          CommandParameter="{Binding}" />
-                                </Button.InputBindings>
-                            </Button>
-                            <Rectangle Height="5" Width="3" Fill="{Binding Path=IsExpandedToNextPixel, Converter={StaticResource IsExpandedConv}}" Margin="4,0,-6,0" />
-                        </StackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </Border>
-
+                                    </Button.InputBindings>
+                                </Button>
+                                <Rectangle Height="5" Width="3" Fill="{Binding Path=IsExpandedToNextPixel, Converter={StaticResource IsExpandedConv}}" Margin="4,0,-6,0" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Border>
+            <Border BorderBrush="Black" BorderThickness="1" Margin="5">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Hand:" Margin="5,0,0,0" />
+                    <RadioButton Content="Left" IsChecked="{Binding IsLeftHandSelected}" Margin="15,0,0,0" />
+                    <RadioButton Content="Right" IsChecked="{Binding IsRightHandSelected}" Margin="15,0,0,0" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
     </Grid>
 </UserControl>

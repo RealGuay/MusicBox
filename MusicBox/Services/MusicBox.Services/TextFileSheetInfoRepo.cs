@@ -1,5 +1,6 @@
 ﻿using MusicBox.Services.Interfaces;
 using MusicBox.Services.Interfaces.MusicSheetModels;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -87,6 +88,7 @@ namespace MusicBox.Services
                 note.PositionInBar = int.Parse(inputFile.ReadLine());
                 note.Duration = int.Parse(inputFile.ReadLine());
                 note.Volume = int.Parse(inputFile.ReadLine());
+                note.Hand = (PlayingHand)Enum.Parse(typeof(PlayingHand), inputFile.ReadLine());
                 bar.SheetNotes.Add(note);
             }
         }
@@ -168,6 +170,7 @@ namespace MusicBox.Services
                 outputFile.WriteLine(note.PositionInBar);
                 outputFile.WriteLine(note.Duration);
                 outputFile.WriteLine(note.Volume);
+                outputFile.WriteLine(note.Hand);
             }
         }
     }

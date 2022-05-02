@@ -6,6 +6,7 @@ using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using static MusicBox.Services.Interfaces.MusicSheetModels.ScaleInformation;
 using static MusicBox.Services.Interfaces.MusicSheetModels.SheetNote;
 
@@ -27,6 +28,33 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         {
             get { return timePixelPerLine; }
             set { SetProperty(ref timePixelPerLine, value); }
+        }
+
+        private PlayingHand hand;
+        public PlayingHand Hand { get => hand; set => ChangeSelectedHand(ref hand, value); }
+
+        private void ChangeSelectedHand(ref PlayingHand hand, PlayingHand value, [CallerMemberName] string propertyName = null)
+        {
+            if (SetProperty(ref hand, value, propertyName))
+            {
+                RaisePropertyChanged(nameof(IsLeftHandSelected));
+                RaisePropertyChanged(nameof(IsRightHandSelected));
+            }
+        }
+
+        public bool IsLeftHandSelected { get => Hand == PlayingHand.Left; set => SelectHand(PlayingHand.Left, value); }
+        public bool IsRightHandSelected { get => Hand == PlayingHand.Right; set => SelectHand(PlayingHand.Right, value); }
+
+        private void SelectHand(PlayingHand hand, bool selected)
+        {
+            if (selected)
+            {
+                Hand = hand;
+            }
+            else
+            {
+                Hand = hand == PlayingHand.Left ? PlayingHand.Right : PlayingHand.Left;
+            }
         }
 
         public int TimePixelIncrement { get; private set; }
@@ -51,6 +79,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             _timeSignature = timeSignature;
             _keySignature = keySignature;
             CreateSheetStaff();
+            Hand = PlayingHand.Right;
         }
 
         private void ChangeSelectedBar()
@@ -91,7 +120,8 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
                         Key = noteKey.Key,
                         TiedTo = Tie.ToNone,
                         Volume = 100,
-                        PositionInBar = pixel.StartPosition
+                        PositionInBar = pixel.StartPosition,
+                        Hand = pixel.Hand
                     };
                     sheetNote.Duration += pixel.Duration;
                 }
@@ -127,22 +157,23 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             }
             while (timePixel != null && note.Duration > 0)
             {
-                SetTimePixelStatusFromNoteAlteration(timePixel, noteAlteration);
+                SetTimePixelStatusFromNoteAlteration(timePixel, noteAlteration, note.Hand);
                 note.Duration -= TimePixelIncrement;
                 timePixel.IsExpandedToNextPixel = note.Duration > 0;
                 timePixel = timePixel.NextPixelInBar;
             }
         }
 
-        private void SetTimePixelStatusFromNoteAlteration(TimePixel timePixel, NoteAlteration noteAlteration)
+        private void SetTimePixelStatusFromNoteAlteration(TimePixel timePixel, NoteAlteration noteAlteration, PlayingHand hand)
         {
             if (noteAlteration == NoteAlteration.None)
             {
-                timePixel.Status = TimePixelStatus.PixelOn;
+                timePixel.SetStatus(TimePixelStatus.PixelOn, hand);
             }
             else
             {
-                timePixel.Status = noteAlteration == NoteAlteration.Flat ? TimePixelStatus.PixelOnAndFlat : TimePixelStatus.PixelOnAndSharp;
+                var status = noteAlteration == NoteAlteration.Flat ? TimePixelStatus.PixelOnAndFlat : TimePixelStatus.PixelOnAndSharp;
+                timePixel.SetStatus(status, hand);
             }
         }
 
@@ -252,8 +283,8 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         private TimePixel CreateNewPixel(bool isPixelOnStaffLine, StaffPart line, int startPosition, int timePixelIncrement)
         {
             return isPixelOnStaffLine
-                ? new TimePixel(timePixelIncrement, line, _keySignature.BarAlteration) { OnStaffLine = true, StartPosition = startPosition, Status = TimePixelStatus.OnStaffLine, IsExpandedToNextPixel = false }
-                : new TimePixel(timePixelIncrement, line, _keySignature.BarAlteration) { OnStaffLine = false, StartPosition = startPosition, Status = TimePixelStatus.OnBlankLine, IsExpandedToNextPixel = false };
+                ? new TimePixel(timePixelIncrement, line, _keySignature.BarAlteration, TimePixelStatus.OnStaffLine) { OnStaffLine = true, StartPosition = startPosition, IsExpandedToNextPixel = false }
+                : new TimePixel(timePixelIncrement, line, _keySignature.BarAlteration, TimePixelStatus.OnBlankLine) { OnStaffLine = false, StartPosition = startPosition, IsExpandedToNextPixel = false };
         }
 
         private void ActivatePixel(TimePixel timePixel)
@@ -282,7 +313,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         private void SetTimePixelStatus(TimePixel timePixel, TimePixelStatus status)
         {
-            timePixel.Status = status;
+            timePixel.SetStatus(status, Hand);
             NoteKey noteKey = GetKey(timePixel.Line, _keySignature.BarAlteration, ToNoteAlteration(timePixel.Status));
             timePixel.NoteTooltip = noteKey.Name;
         }

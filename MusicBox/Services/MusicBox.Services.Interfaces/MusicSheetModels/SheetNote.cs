@@ -12,6 +12,7 @@ namespace MusicBox.Services.Interfaces.MusicSheetModels
         public int Duration { get; set; }
         public int Volume { get; set; }
         public Tie TiedTo { get; set; }
+        public PlayingHand Hand { get; set; }
 
         public enum Tie
         {
