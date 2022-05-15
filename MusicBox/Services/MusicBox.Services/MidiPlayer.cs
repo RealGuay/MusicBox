@@ -121,8 +121,10 @@ namespace MusicBox.Services
             PlayingState?.Invoke(false);
         }
 
-        public void ReturnToStart()
+        public void RewindToZero()
         {
+            _beatMaker.Stop();
+            _beatMaker.RewindToZero();
         }
     }
 }

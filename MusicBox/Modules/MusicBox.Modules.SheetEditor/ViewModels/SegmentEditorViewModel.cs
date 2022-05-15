@@ -62,7 +62,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             DeleteBarCommand = new DelegateCommand(DeleteBar, CanDeleteBar).ObservesProperty(() => SelectedBarEditorVm);
             PlayCommand = new DelegateCommand(Play, CanPlay).ObservesProperty(() => IsPlaying);
             PauseCommand = new DelegateCommand(Pause, CanPause).ObservesProperty(() => IsPlaying);
-            RewindToZeroCommand = new DelegateCommand(RewindToZero, CanRewindToZero);
+            RewindToZeroCommand = new DelegateCommand(RewindToZero, CanRewindToZero).ObservesProperty(() => IsPlaying); ;
             Tempo = 60;
             _eventAggregator.GetEvent<SelectedBarChanged>().Subscribe(OnSelectedBarChanged);
             _segment = new Segment();
@@ -107,6 +107,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         private void RewindToZero()
         {
+            _midiPlayer.RewindToZero();
         }
 
         private bool CanRewindToZero()

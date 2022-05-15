@@ -11,6 +11,6 @@ namespace MusicBox.Services.Interfaces
         void Pause();
         void PlaySegment(Segment segment, int tempo);
         void PlaySheet(SheetInformation sheetInfo, int tempo);
-        void ReturnToStart();
+        void RewindToZero();
     }
 }
