@@ -11,28 +11,23 @@
         <conv:TimePixelBackgroundConverter x:Key="TimePixelBackConv" />
         <conv:IsExpandedTotNextPixelConverter x:Key="IsExpandedConv" />
     </UserControl.Resources>
-    <Grid>
-        <Border BorderThickness="2" BorderBrush="Green">
-            <ListBox x:Name="RectTimePixels" ItemsSource="{Binding TimePixels}" Visibility="Visible">
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid Columns="{Binding TimePixelPerLine}" Margin="2" />
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <Rectangle  Fill="{Binding Status,Converter={StaticResource TimePixelBackConv}}"
-                                        Height="12" Width="24"
-                                        Margin="-4">
-                            </Rectangle>
-                            <Rectangle Height="5" Width="3" Fill="{Binding Path=IsExpandedToNextPixel, Converter={StaticResource IsExpandedConv}}" Margin="4,0,-6,0" />
-                        </StackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </Border>
-        <Button Opacity="0.2" Command="{Binding ChangeSelectedBarCommand}"></Button>
-    </Grid>
+    <ItemsControl x:Name="RectTimePixels" ItemsSource="{Binding TimePixels}" Visibility="Visible">
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <UniformGrid Columns="{Binding TimePixelPerLine}" />
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+            <DataTemplate>
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle  Fill="{Binding Status,Converter={StaticResource TimePixelBackConv}}"
+                                        Height="1" Width="2"
+                                        Margin="0.5">
+                    </Rectangle>
+                    <Rectangle Height="1" Width="1" Fill="{Binding Path=IsExpandedToNextPixel, Converter={StaticResource IsExpandedConv}}" Margin="4,0,-6,0" />
+                </StackPanel>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
 
 </UserControl>
