@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Win32.Services.Interfaces;
 
 namespace MusicBox.Services
@@ -17,7 +18,7 @@ namespace MusicBox.Services
             _dlgService = win32DialogService;
         }
 
-        public void Load(SheetInformation sheetInformation)
+        public async Task LoadAsync(SheetInformation sheetInformation)
         {
             string fileName = "MusicBox1.txt";
             bool? res = _dlgService.ShowOpenFileDialog(ref fileName, ".txt", "Text documents (.txt)|*.txt");
@@ -31,12 +32,12 @@ namespace MusicBox.Services
                     sheetInformation.MusicBy = inputFile.ReadLine();
                     sheetInformation.Version = inputFile.ReadLine();
                     sheetInformation.Filename = fileName;
-                    ReadSegments(inputFile, sheetInformation);
+                    await ReadSegmentsAsync(inputFile, sheetInformation);
                 }
             }
         }
 
-        private void ReadSegments(StreamReader inputFile, SheetInformation sheetInformation)
+        private async Task ReadSegmentsAsync(StreamReader inputFile, SheetInformation sheetInformation)
         {
             Dictionary<string, Segment> distinctSegments = new Dictionary<string, Segment>();
 
@@ -50,7 +51,7 @@ namespace MusicBox.Services
                 //outputFile.WriteLine(segment.Context);
                 segment.TimeSignature = TimeSignature.FromName(inputFile.ReadLine());
                 segment.KeySignature = KeySignature.FromName(inputFile.ReadLine());
-                ReadBars(inputFile, segment);
+                await ReadBarsAsync(inputFile, segment);
                 distinctSegments[segment.Name] = segment;
             }
 
@@ -62,7 +63,7 @@ namespace MusicBox.Services
             }
         }
 
-        private void ReadBars(StreamReader inputFile, Segment segment)
+        private async Task ReadBarsAsync(StreamReader inputFile, Segment segment)
         {
             int totalBarCount = int.Parse(inputFile.ReadLine());
 
@@ -71,29 +72,29 @@ namespace MusicBox.Services
                 Bar bar = new Bar();
                 bar.Id = int.Parse(inputFile.ReadLine());
                 bar.PlayOrder = int.Parse(inputFile.ReadLine());
-                ReadSheetNotes(inputFile, bar);
+                await ReadSheetNotesAsync(inputFile, bar);
                 segment.Bars.Add(bar);
             }
         }
 
-        private void ReadSheetNotes(StreamReader inputFile, Bar bar)
+        private async Task ReadSheetNotesAsync(StreamReader inputFile, Bar bar)
         {
             int totalSheetNoteCount = int.Parse(inputFile.ReadLine());
 
             for (int i = 0; i < totalSheetNoteCount; i++)
             {
                 SheetNote note = new SheetNote();
-                note.Name = inputFile.ReadLine();
-                note.Key = int.Parse(inputFile.ReadLine());
-                note.PositionInBar = int.Parse(inputFile.ReadLine());
-                note.Duration = int.Parse(inputFile.ReadLine());
-                note.Volume = int.Parse(inputFile.ReadLine());
-                note.Hand = (PlayingHand)Enum.Parse(typeof(PlayingHand), inputFile.ReadLine());
+                note.Name = await inputFile.ReadLineAsync();
+                note.Key = int.Parse(await inputFile.ReadLineAsync());
+                note.PositionInBar = int.Parse(await inputFile.ReadLineAsync());
+                note.Duration = int.Parse(await inputFile.ReadLineAsync());
+                note.Volume = int.Parse(await inputFile.ReadLineAsync());
+                note.Hand = (PlayingHand)Enum.Parse(typeof(PlayingHand), await inputFile.ReadLineAsync());
                 bar.SheetNotes.Add(note);
             }
         }
 
-        public void Save(SheetInformation sheetInformation)
+        public async Task SaveAsync(SheetInformation sheetInformation)
         {
             string fileName = "MusicBox1.txt";
 
@@ -107,70 +108,70 @@ namespace MusicBox.Services
             {
                 using (StreamWriter outputFile = new StreamWriter(fileName, false))
                 {
-                    outputFile.WriteLine(sheetInformation.Title);
-                    outputFile.WriteLine(sheetInformation.LyricsBy);
-                    outputFile.WriteLine(sheetInformation.MusicBy);
-                    outputFile.WriteLine(sheetInformation.Version);
+                    await outputFile.WriteLineAsync(sheetInformation.Title);
+                    await outputFile.WriteLineAsync(sheetInformation.LyricsBy);
+                    await outputFile.WriteLineAsync(sheetInformation.MusicBy);
+                    await outputFile.WriteLineAsync(sheetInformation.Version);
                     sheetInformation.Filename = fileName;
-                    WriteSegments(outputFile, sheetInformation);
+                    await WriteSegmentsAsync(outputFile, sheetInformation);
                 }
             }
         }
 
-        private void WriteSegments(StreamWriter outputFile, SheetInformation sheetInformation)
+        private async Task WriteSegmentsAsync(StreamWriter outputFile, SheetInformation sheetInformation)
         {
             int totalSegmentCount = sheetInformation.Segments.Count;
             int distinctSegmentCount = sheetInformation.Segments.Distinct().Count();
 
-            outputFile.WriteLine(distinctSegmentCount);
+            await outputFile.WriteLineAsync(distinctSegmentCount.ToString());
             List<string> processedSegmentNames = new List<string>();
             foreach (Segment segment in sheetInformation.Segments)
             {
                 if (!processedSegmentNames.Contains(segment.Name))
                 {
                     processedSegmentNames.Add(segment.Name);
-                    outputFile.WriteLine(segment.Name);
-                    outputFile.WriteLine(segment.MidiChannel);
+                    await outputFile.WriteLineAsync(segment.Name);
+                    await outputFile.WriteLineAsync(segment.MidiChannel.ToString());
                     //outputFile.WriteLine(segment.Context);
-                    outputFile.WriteLine(segment.TimeSignature.Name);
-                    outputFile.WriteLine(segment.KeySignature.Name);
-                    WriteBars(outputFile, segment);
+                    await outputFile.WriteLineAsync(segment.TimeSignature.Name);
+                    await outputFile.WriteLineAsync(segment.KeySignature.Name);
+                    await WriteBarsAsync(outputFile, segment);
                 }
             }
 
-            outputFile.WriteLine(totalSegmentCount);
+            await outputFile.WriteLineAsync(totalSegmentCount.ToString());
             foreach (Segment segment in sheetInformation.Segments)
             {
-                outputFile.WriteLine(segment.Name);
+                await outputFile.WriteLineAsync(segment.Name);
             }
         }
 
-        private void WriteBars(StreamWriter outputFile, Segment segment)
+        private async Task WriteBarsAsync(StreamWriter outputFile, Segment segment)
         {
             int totalBarCount = segment.Bars.Count;
-            outputFile.WriteLine(totalBarCount);
+            await outputFile.WriteLineAsync(totalBarCount.ToString());
 
             foreach (Bar bar in segment.Bars)
             {
-                outputFile.WriteLine(bar.Id);
-                outputFile.WriteLine(bar.PlayOrder);
-                WriteSheetNotes(outputFile, bar);
+                await outputFile.WriteLineAsync(bar.Id.ToString());
+                await outputFile.WriteLineAsync(bar.PlayOrder.ToString());
+                await WriteSheetNotesAsync(outputFile, bar);
             }
         }
 
-        private void WriteSheetNotes(StreamWriter outputFile, Bar bar)
+        private async Task WriteSheetNotesAsync(StreamWriter outputFile, Bar bar)
         {
             int totalSheetNoteCount = bar.SheetNotes.Count;
-            outputFile.WriteLine(totalSheetNoteCount);
+            await outputFile.WriteLineAsync(totalSheetNoteCount.ToString());
 
             foreach (SheetNote note in bar.SheetNotes)
             {
-                outputFile.WriteLine(note.Name);
-                outputFile.WriteLine(note.Key);
-                outputFile.WriteLine(note.PositionInBar);
-                outputFile.WriteLine(note.Duration);
-                outputFile.WriteLine(note.Volume);
-                outputFile.WriteLine(note.Hand);
+                await outputFile.WriteLineAsync(note.Name);
+                await outputFile.WriteLineAsync(note.Key.ToString());
+                await outputFile.WriteLineAsync(note.PositionInBar.ToString());
+                await outputFile.WriteLineAsync(note.Duration.ToString());
+                await outputFile.WriteLineAsync(note.Volume.ToString());
+                await outputFile.WriteLineAsync(note.Hand.ToString());
             }
         }
     }

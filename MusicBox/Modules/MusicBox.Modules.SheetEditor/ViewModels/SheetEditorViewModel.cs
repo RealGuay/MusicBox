@@ -70,10 +70,10 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         #region Commands
 
-        private void Load()
+        private async void Load()
         {
             _sheetInformation = new SheetInformation(null);
-            _sheetInfoRepo.Load(_sheetInformation);
+            await _sheetInfoRepo.LoadAsync(_sheetInformation);
             LoadSheetInfo();
         }
 
@@ -97,10 +97,10 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             SegmentCollectionVm.LoadSegments(_sheetInformation.Segments);
         }
 
-        private void Save()
+        private async void Save()
         {
             ExtractSheetInfo();
-            _sheetInfoRepo.Save(_sheetInformation);
+            await _sheetInfoRepo.SaveAsync(_sheetInformation);
             SheetInformationVm.Filename = _sheetInformation.Filename;
         }
 
