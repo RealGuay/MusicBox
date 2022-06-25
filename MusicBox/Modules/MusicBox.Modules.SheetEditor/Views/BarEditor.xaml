@@ -70,7 +70,7 @@
     <Grid>
         <StackPanel>
             <Border BorderThickness="2" BorderBrush="Azure">
-                <ListBox x:Name="TimePixels" ItemsSource="{Binding TimePixels}">
+                <ListBox x:Name="TimePixels" ItemsSource="{Binding TimePixels}" MaxWidth="600" Height="800">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <UniformGrid Columns="{Binding TimePixelPerLine}" Margin="2" />

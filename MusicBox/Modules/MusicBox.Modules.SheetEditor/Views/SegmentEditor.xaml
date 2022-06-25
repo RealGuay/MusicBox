@@ -19,14 +19,14 @@
 
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" MinWidth="450"></ColumnDefinition>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
 
-                <local:BarEditor DataContext="{Binding SelectedBarEditorVm}" />
+                <local:BarEditor DataContext="{Binding SelectedBarEditorVm}"/>
 
-                <ListBox Grid.Column="1" x:Name="MusicSheetBars" ItemsSource="{Binding BarEditorVms}" SelectedItem="{Binding SelectedBarEditorVm}" AlternationCount="5000">
+                <ListBox Grid.Row="1" x:Name="MusicSheetBars" ItemsSource="{Binding BarEditorVms}" SelectedItem="{Binding SelectedBarEditorVm}" AlternationCount="5000">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel Orientation="Horizontal" />
@@ -35,7 +35,7 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel>
-                                <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplatedParent.(ItemsControl.AlternationIndex), Converter={StaticResource ItemIndexConv}}" HorizontalAlignment="Left" />
+                                <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplatedParent.(ItemsControl.AlternationIndex), Converter={StaticResource ItemIndexConv}}" HorizontalAlignment="Center" />
                                 <local:BarEditorOverview Margin="0" />
                             </StackPanel>
                         </DataTemplate>

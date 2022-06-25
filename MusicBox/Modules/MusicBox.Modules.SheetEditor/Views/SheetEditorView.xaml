@@ -12,22 +12,15 @@
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
-            <ColumnDefinition Width="Auto" ></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <GroupBox Grid.ColumnSpan="3" Header="Segment Editor">
-            <Border >
-                <local:SegmentEditor DataContext="{Binding SegmentCollectionVm.SelectedSegmentEditorVm}" />
-            </Border>
-        </GroupBox>
-
-        <GroupBox Grid.Row="1" Header="Information" MaxHeight="420" Margin="5" MinWidth="330">
+        <GroupBox Grid.Row="0" Header="Information" Margin="5" MinWidth="330">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"></RowDefinition>
@@ -71,7 +64,7 @@
             </Grid>
         </GroupBox>
 
-        <GroupBox Grid.Row="1" Grid.Column="1" Header="Segments" MinWidth="250" MaxWidth="300" Margin="5" MaxHeight="270">
+        <GroupBox Grid.Row="1" Header="Segments" MinWidth="250" Margin="5">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -94,5 +87,12 @@
                 </StackPanel>
             </Grid>
         </GroupBox>
+
+        <GroupBox Grid.RowSpan="3" Grid.Column="3" Header="Segment Editor" Margin="5">
+            <Border >
+                <local:SegmentEditor DataContext="{Binding SegmentCollectionVm.SelectedSegmentEditorVm}" />
+            </Border>
+        </GroupBox>
+
     </Grid>
 </UserControl>
