@@ -70,10 +70,10 @@
     <Grid>
         <StackPanel>
             <Border BorderThickness="2" BorderBrush="Azure">
-                <ListBox x:Name="TimePixels" ItemsSource="{Binding TimePixels}" MaxWidth="600" Height="800">
+                <ListBox x:Name="TimePixels" ItemsSource="{Binding TimePixels}" MaxWidth="800" Height="790">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <UniformGrid Columns="{Binding TimePixelPerLine}" Margin="2" />
+                            <UniformGrid Columns="{Binding TimePixelPerLine}" Margin="5" />
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
                     <ListBox.ItemTemplate>
@@ -83,7 +83,7 @@
                                         CommandParameter="{Binding}"
                                         Background="{Binding Status,Converter={StaticResource TimePixelBackConv}}"
                                         BorderThickness="0"
-                                        Height="12" Width="24"
+                                        Height="10" Width="40"
                                         Margin="-4"
                                         Style="{DynamicResource TimePixelButtonStyle}"
                                         ToolTip="{Binding NoteTooltip}">
@@ -108,7 +108,7 @@
                                          CommandParameter="{Binding}" />
                                     </Button.InputBindings>
                                 </Button>
-                                <Rectangle Height="5" Width="3" Fill="{Binding Path=IsExpandedToNextPixel, Converter={StaticResource IsExpandedConv}}" Margin="4,0,-6,0" />
+                                <Rectangle Height="5" Width="9" Fill="{Binding Path=IsExpandedToNextPixel, Converter={StaticResource IsExpandedConv}}" Margin="4,0,-6,0" />
                             </StackPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
