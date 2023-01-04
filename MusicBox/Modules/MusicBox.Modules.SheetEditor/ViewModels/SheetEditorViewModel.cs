@@ -74,7 +74,10 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         {
             _sheetInformation = new SheetInformation(null);
             await _sheetInfoRepo.LoadAsync(_sheetInformation);
-            LoadSheetInfo();
+            if (!string.IsNullOrEmpty(_sheetInformation.Filename))
+            {
+                LoadSheetInfo();
+            }
         }
 
         private void LoadSheetInfo()

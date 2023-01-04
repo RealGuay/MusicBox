@@ -21,19 +21,24 @@ namespace MusicBox.Services
         public async Task LoadAsync(SheetInformation sheetInformation)
         {
             string fileName = "MusicBox1.txt";
-            bool? res = _dlgService.ShowOpenFileDialog(ref fileName, ".txt", "Text documents (.txt)|*.txt");
 
+            bool? res = _dlgService.ShowOpenFileDialog(ref fileName, ".txt", "Text documents (.txt)|*.txt");
             if (res.HasValue && res.Value)
             {
-                using (StreamReader inputFile = new StreamReader(fileName, false))
-                {
-                    sheetInformation.Title = inputFile.ReadLine();
-                    sheetInformation.LyricsBy = inputFile.ReadLine();
-                    sheetInformation.MusicBy = inputFile.ReadLine();
-                    sheetInformation.Version = inputFile.ReadLine();
-                    sheetInformation.Filename = fileName;
-                    await ReadSegmentsAsync(inputFile, sheetInformation);
-                }
+                await ReadMusicFileAsync(sheetInformation, fileName);
+            }
+        }
+
+        private async Task ReadMusicFileAsync(SheetInformation sheetInformation, string fileName)
+        {
+            using (StreamReader inputFile = new StreamReader(fileName, false))
+            {
+                sheetInformation.Title = inputFile.ReadLine();
+                sheetInformation.LyricsBy = inputFile.ReadLine();
+                sheetInformation.MusicBy = inputFile.ReadLine();
+                sheetInformation.Version = inputFile.ReadLine();
+                sheetInformation.Filename = fileName;
+                await ReadSegmentsAsync(inputFile, sheetInformation);
             }
         }
 
