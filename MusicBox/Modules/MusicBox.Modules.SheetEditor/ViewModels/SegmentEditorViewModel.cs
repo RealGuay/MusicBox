@@ -173,11 +173,25 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             segment.Bars.Clear();
             foreach (BarEditorViewModel barEditorVm in BarEditorVms)
             {
-                Bar currentBar = new Bar() { Id = barId, PlayOrder = barId};
-                barEditorVm.ExtractBarInfo(currentBar);
-                segment.Bars.Add(currentBar);
+                ExtractBarInfo(segment, barId, barEditorVm);
                 barId++;
             }
+            segment.Name = SegmentName;
+            segment.TimeSignature = SelectedTimeSignature;
+            segment.KeySignature = SelectedKeySignature;
+        }
+
+        private static void ExtractBarInfo(Segment segment, int barId, IBarEditorViewModel barEditorVm)
+        {
+            Bar currentBar = new Bar() { Id = barId, PlayOrder = barId };
+            barEditorVm.ExtractBarInfo(currentBar);
+            segment.Bars.Add(currentBar);
+        }
+
+        public void ExtractSelectedBarInfo(Segment segment)
+        {
+            segment.Bars.Clear();
+            ExtractBarInfo(segment, 0, SelectedBarEditorVm);
             segment.Name = SegmentName;
             segment.TimeSignature = SelectedTimeSignature;
             segment.KeySignature = SelectedKeySignature;
@@ -197,5 +211,6 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             }
             SelectedBarEditorVm = BarEditorVms.Count > 0 ? BarEditorVms[0] : null;
         }
+
     }
 }

@@ -103,7 +103,7 @@ namespace MusicBox.Services
                 foreach (SheetNote note in bar.SheetNotes)
                 {
                     int absoluteOnPosition = (firstBarOffset + bar.PlayOrder) * tickPerBar + note.PositionInBar;
-                    int absoluteOffPosition = absoluteOnPosition + note.Duration - 1; // make sure to Release before replay the same note
+                    int absoluteOffPosition = absoluteOnPosition + note.Duration - 1; // make sure to Release before replaying the same note
 
                     MidiNoteToPlay midiNoteOn = new MidiNoteToPlay { TickTimeToPlay = absoluteOnPosition, MidiKey = note.Key, Volume = 100 };
                     _midiNotes.Add(midiNoteOn);

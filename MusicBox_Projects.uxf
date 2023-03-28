@@ -199,7 +199,7 @@ MusicBox.Services
 	MusicBox.Services.Interfaces
 	MusicBox.Services.MidiSanford
 		MusicBox.Services.MidiInterfaces
-		Sanford.Multimedia.Midi
+*		Sanford.Multimedia.Midi*
 </panel_attributes>
     <additional_attributes/>
   </element>

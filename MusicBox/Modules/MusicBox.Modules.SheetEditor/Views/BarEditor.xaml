@@ -68,17 +68,18 @@
         </Style>
     </UserControl.Resources>
     <Grid>
-        <StackPanel>
-            <Border BorderThickness="2" BorderBrush="Azure">
-                <ListBox x:Name="TimePixels" ItemsSource="{Binding TimePixels}" MaxWidth="800" Height="790">
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <UniformGrid Columns="{Binding TimePixelPerLine}" Margin="5" />
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
+        <GroupBox Header="Bar Editor">
+            <StackPanel>
+                <Border BorderThickness="2" BorderBrush="Azure">
+                    <ListBox x:Name="TimePixels" ItemsSource="{Binding TimePixels}" MaxWidth="800" Height="790">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="{Binding TimePixelPerLine}" Margin="5" />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
                                 <Button Command="{Binding RelativeSource={RelativeSource AncestorType=local:BarEditor}, Path=DataContext.ActivatePixelCommand}"
                                         CommandParameter="{Binding}"
                                         Background="{Binding Status,Converter={StaticResource TimePixelBackConv}}"
@@ -109,18 +110,19 @@
                                     </Button.InputBindings>
                                 </Button>
                                 <Rectangle Height="5" Width="9" Fill="{Binding Path=IsExpandedToNextPixel, Converter={StaticResource IsExpandedConv}}" Margin="4,0,-6,0" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </Border>
-            <Border BorderBrush="Black" BorderThickness="1" Margin="5">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Hand:" Margin="5,0,0,0" />
-                    <RadioButton Content="Left" IsChecked="{Binding IsLeftHandSelected}" Margin="15,0,0,0" />
-                    <RadioButton Content="Right" IsChecked="{Binding IsRightHandSelected}" Margin="15,0,0,0" />
-                </StackPanel>
-            </Border>
-        </StackPanel>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Border>
+                <Border BorderBrush="Black" BorderThickness="1" Margin="5">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Hand:" Margin="5,0,0,0" />
+                        <RadioButton Content="Left" IsChecked="{Binding IsLeftHandSelected}" Margin="15,0,0,0" />
+                        <RadioButton Content="Right" IsChecked="{Binding IsRightHandSelected}" Margin="15,0,0,0" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </GroupBox>
     </Grid>
 </UserControl>

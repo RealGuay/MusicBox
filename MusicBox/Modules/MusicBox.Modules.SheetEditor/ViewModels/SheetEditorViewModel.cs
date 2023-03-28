@@ -1,8 +1,11 @@
-﻿using MusicBox.Services.Interfaces;
+﻿using MusicBox.Modules.SheetEditor.Models;
+using MusicBox.Modules.SheetEditor.Views;
+using MusicBox.Services.Interfaces;
 using MusicBox.Services.Interfaces.MusicSheetModels;
 using Prism.Commands;
 using Prism.Ioc;
 using Prism.Mvvm;
+using System;
 using System.Collections.Generic;
 using System.Windows.Input;
 
@@ -28,6 +31,17 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             get { return isPlaying; }
             set { SetProperty(ref isPlaying, value); }
         }
+
+        public List<SectionToPlay> SectionsToPlay { get; private set; }
+
+        private SectionToPlay selectedSectionToPlay;
+
+        public SectionToPlay SelectedSectionToPlay
+        {
+            get { return selectedSectionToPlay; }
+            set { selectedSectionToPlay = value; }
+        }
+
 
         #endregion Properties
 
@@ -58,6 +72,17 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             RewindCommand = new DelegateCommand(Rewind);
 
             SheetInformationVm.Tempo = 60;
+            InitSectionsToPlay();
+        }
+
+        private void InitSectionsToPlay()
+        {
+            SectionsToPlay = new List<SectionToPlay> {
+                new SectionToPlay() { Section=Section.SHEET, Name="Sheet"},
+                new SectionToPlay() { Section=Section.SEGMENT, Name="Segment"},
+                new SectionToPlay() { Section=Section.BAR, Name="Bar"}
+                };
+            SelectedSectionToPlay = SectionsToPlay[0];
         }
 
         private void SegmentCollectionVm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -114,7 +139,19 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         private void Play()
         {
-            ExtractSheetInfo();
+            _sheetInformation.Segments.Clear();
+            if (SelectedSectionToPlay.Section == Section.SHEET)
+            {
+                ExtractAllSegments();
+            }
+            else if (SelectedSectionToPlay.Section == Section.SEGMENT)
+            {
+                ExtractSelectedSegment();
+            }
+            else
+            {
+                ExtractSelectedBar();
+            }
             _midiPlayer.PlaySheet(_sheetInformation, 60);   // tempo
             IsPlaying = true;
         }
@@ -127,7 +164,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         private void ExtractSheetInfo()
         {
             ExtractGeneralInfo();
-            ExtractSegments();
+            ExtractAllSegments();
         }
 
         private void ExtractGeneralInfo()
@@ -139,18 +176,16 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             _sheetInformation.Filename = SheetInformationVm.Filename;
         }
 
-        private void ExtractSegments()
+        private void ExtractAllSegments()
         {
             Dictionary<ISegmentEditorViewModel, Segment> processedSegments = new Dictionary<ISegmentEditorViewModel, Segment>();
 
-            _sheetInformation.Segments.Clear();
             foreach (ISegmentEditorViewModel segmentEditorVm in SegmentCollectionVm.SegmentEditorVms)
             {
                 Segment currentSegment;
                 if (!processedSegments.ContainsKey(segmentEditorVm))
                 {
-                    currentSegment = new Segment();
-                    segmentEditorVm.ExtractSegmentInfo(currentSegment);
+                    currentSegment = ExtractOneSegment(segmentEditorVm);
                     processedSegments.Add(segmentEditorVm, currentSegment);
                 }
                 else
@@ -159,6 +194,26 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
                 }
                 _sheetInformation.Segments.Add(currentSegment);
             }
+        }
+
+        private static Segment ExtractOneSegment(ISegmentEditorViewModel segmentEditorVm)
+        {
+            Segment segment = new Segment();
+            segmentEditorVm.ExtractSegmentInfo(segment);
+            return segment;
+        }
+
+        private void ExtractSelectedSegment()
+        {
+            Segment segment = ExtractOneSegment(SegmentCollectionVm.SelectedSegmentEditorVm);
+            _sheetInformation.Segments.Add(segment);
+        }
+
+        private void ExtractSelectedBar()
+        {
+            Segment segment = new Segment();
+            SegmentCollectionVm.SelectedSegmentEditorVm.ExtractSelectedBarInfo(segment);
+            _sheetInformation.Segments.Add(segment);
         }
 
         private void Pause()

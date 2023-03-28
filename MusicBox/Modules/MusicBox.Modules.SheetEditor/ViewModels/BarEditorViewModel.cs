@@ -93,7 +93,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             return newModel;
         }
 
-        internal void ExtractBarInfo(Bar currentBar)
+        public void ExtractBarInfo(Bar currentBar)
         {
             if (currentBar is null)
             {

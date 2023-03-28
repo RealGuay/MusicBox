@@ -11,6 +11,7 @@
         <conv:TimePixelBackgroundConverter x:Key="TimePixelBackConv" />
         <conv:IsExpandedTotNextPixelConverter x:Key="IsExpandedConv" />
     </UserControl.Resources>
+    <GroupBox Header="Bar Editor Overview">
     <ItemsControl x:Name="RectTimePixels" ItemsSource="{Binding TimePixels}" Visibility="Visible">
         <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
@@ -29,5 +30,5 @@
             </DataTemplate>
         </ItemsControl.ItemTemplate>
     </ItemsControl>
-
+    </GroupBox>
 </UserControl>
