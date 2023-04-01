@@ -1,55 +1,89 @@
 ﻿using MusicBox.Services.Interfaces.MusicSheetModels;
 using Prism.Mvvm;
 using System;
+using System.Threading;
 using static MusicBox.Services.Interfaces.MusicSheetModels.ScaleInformation;
 
 namespace MusicBox.Modules.SheetEditor.Models
 {
     public class TimePixel : BindableBase
     {
-        private int startPosition;
-        public int StartPosition { get => startPosition; set => SetProperty(ref startPosition, value); }
+        private static int _nextTimePixelId;
 
+        public const int NumberOfWhiteKeys = 52;
+        public const int QuarterDuration = 96;   // nb of screen pixels per Quarter note !!!
+        public const int ToneHeight = 10;
+
+        private int id;
+        private int position;
+        private int tone;
         private int duration;
-        public int Duration { get => duration; set => SetProperty(ref duration, value); }
+        private string noteAlteration;
+
+        public int Id { get => id; set => SetProperty(ref id, value); }
+        public int Position { get => position; set => SetProperty(ref position, value); }
+        public int Tone { get => tone; set => SetProperty(ref tone, value); }
+        public int Duration { get => duration; set => SetProperty(ref duration, value, OnDurationChanged); }
+        public string NoteAlteration { get => noteAlteration; set => SetProperty(ref noteAlteration, value); }
+
+
+
+
+
 
         private string noteTooltip;
         public string NoteTooltip { get => noteTooltip; set => SetProperty(ref noteTooltip, value); }
 
-        private StaffPart line;
-        public StaffPart Line { get => line; set => SetProperty(ref line, value); }
+        //private StaffPart line;
+        //public StaffPart Line { get => line; set => SetProperty(ref line, value); }
 
-        private bool onStaffLine;
-        public bool OnStaffLine { get => onStaffLine; set => SetProperty(ref onStaffLine, value); }
+        //private bool onStaffLine;
+        //public bool OnStaffLine { get => onStaffLine; set => SetProperty(ref onStaffLine, value); }
 
-        private TimePixelStatus status;
-        public TimePixelStatus Status { get => status; private set => SetProperty(ref status, value); }
-
-        private TimePixel previousPixelInBar;
-        public TimePixel PreviousPixelInBar { get => previousPixelInBar; set => SetProperty(ref previousPixelInBar, value); }
-
-        private TimePixel nextPixelInBar;
-        public TimePixel NextPixelInBar { get => nextPixelInBar; set => SetProperty(ref nextPixelInBar, value); }
-
-        private bool isExpandedToNextPixel;
-        public bool IsExpandedToNextPixel { get => isExpandedToNextPixel; set => SetProperty(ref isExpandedToNextPixel, value); }
 
         private PlayingHand hand;
         public PlayingHand Hand { get => hand; set => SetProperty(ref hand, value); }
 
-        public TimePixel(int duration, StaffPart line, BarAlteration barAlteration, TimePixelStatus status)
+        //public TimePixel(int duration, StaffPart line, BarAlteration barAlteration, TimePixelStatus status)
+        //{
+        //    Duration = duration;
+        //    Line = line;
+        //    NoteKey noteKey = GetKey(line, barAlteration, NoteAlteration.None);
+        //    NoteTooltip = noteKey.Name;
+        //}
+
+
+
+
+
+        public int ToneRectangleHeight { get => ToneHeight; }
+
+        public event EventHandler? DurationChanged;
+
+        private void OnDurationChanged()
         {
-            Duration = duration;
-            Line = line;
-            NoteKey noteKey = GetKey(line, barAlteration, NoteAlteration.None);
-            NoteTooltip = noteKey.Name;
-            Status = status;
+            DurationChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        public void SetStatus(TimePixelStatus status, PlayingHand hand)
+
+        public TimePixel(int tone, int position)
         {
-            Status = status;
-            Hand = hand;
+            this.id = Interlocked.Increment(ref _nextTimePixelId);
+            this.tone = tone;
+            this.position = position;
+            this.duration = QuarterDuration / 2;
+            this.noteAlteration = string.Empty;
+            DurationChanged = null;
         }
+
+        public TimePixel DeepCopy()
+        {
+            TimePixel tp = (TimePixel)MemberwiseClone();
+            // add reference type copy here...
+            return tp;
+        }
+
+
+
     }
 }

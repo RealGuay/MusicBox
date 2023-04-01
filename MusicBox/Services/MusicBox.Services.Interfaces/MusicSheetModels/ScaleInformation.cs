@@ -42,14 +42,14 @@ namespace MusicBox.Services.Interfaces.MusicSheetModels
 
         public static NoteKey[][] AllScales { get; } = new NoteKey[][] { DFlatMajor, AFlatMajor, EFlatMajor, BFlatMajor, FMajor, CMajor, GMajor, DMajor, AMajor, EMajor, BMajor };
 
-        public static NoteKey GetKey(StaffPart line, BarAlteration barAlteration, NoteAlteration noteAlteration)
+        public static NoteKey GetKey(int line, BarAlteration barAlteration, NoteAlteration noteAlteration)
         {
             NoteKey [] notes = AllScales[(int)barAlteration];
-            NoteKey noteKey = AllScales[(int)barAlteration][(int)line];
+            NoteKey noteKey = AllScales[(int)barAlteration][line];
             return  noteKey.AddAlteration(noteAlteration);
         }
 
-        public static void GetTimePixelInfoFromName(string noteName, BarAlteration barAlteration, out StaffPart line, out NoteAlteration noteAlteration)
+        public static void GetTimePixelInfoFromName(string noteName, BarAlteration barAlteration, out int line, out NoteAlteration noteAlteration)
         {
             int scaleIndex = (int)barAlteration;
             noteAlteration = NoteAlteration.None;
@@ -66,7 +66,7 @@ namespace MusicBox.Services.Interfaces.MusicSheetModels
                 NoteKey NoteOnLine = AllScales[scaleIndex][lineIndex];
                 noteAlteration =  noteKey.Key < NoteOnLine.Key ? NoteAlteration.Flat : NoteAlteration.Sharp;
             }
-            line = (StaffPart)lineIndex;
+            line = lineIndex;
         }
 
         public enum ScaleSelector

@@ -3,32 +3,37 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:MusicBox.Modules.SheetEditor.Views"
              xmlns:conv="clr-namespace:MusicBox.Modules.SheetEditor.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-        <conv:TimePixelBackgroundConverter x:Key="TimePixelBackConv" />
-        <conv:IsExpandedTotNextPixelConverter x:Key="IsExpandedConv" />
+        <conv:TimePixelSizeConverter x:Key="TimePixelSizeConv" />
     </UserControl.Resources>
     <GroupBox Header="Bar Editor Overview">
-    <ItemsControl x:Name="RectTimePixels" ItemsSource="{Binding TimePixels}" Visibility="Visible">
-        <ItemsControl.ItemsPanel>
-            <ItemsPanelTemplate>
-                <UniformGrid Columns="{Binding TimePixelPerLine}" />
-            </ItemsPanelTemplate>
-        </ItemsControl.ItemsPanel>
-        <ItemsControl.ItemTemplate>
-            <DataTemplate>
-                <StackPanel Orientation="Horizontal">
-                    <Rectangle  Fill="{Binding Status,Converter={StaticResource TimePixelBackConv}}"
-                                        Height="1" Width="2"
-                                        Margin="0.5">
-                    </Rectangle>
-                    <Rectangle Height="1" Width="1" Fill="{Binding Path=IsExpandedToNextPixel, Converter={StaticResource IsExpandedConv}}" Margin="4,0,-6,0" />
-                </StackPanel>
-            </DataTemplate>
-        </ItemsControl.ItemTemplate>
-    </ItemsControl>
+
+        <ItemsControl x:Name="BarTimePixels" ItemsSource="{Binding TimePixels}" Height="120" Width="120" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Rectangle x:Name="NoteRectangle" 
+                                   Height="{Binding ToneRectangleHeight, Converter={StaticResource TimePixelSizeConv}}" 
+                                   Width="{Binding Duration, Converter={StaticResource TimePixelSizeConv}}"
+                                   Margin="0.5" Fill="Black">
+                        </Rectangle>
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemContainerStyle>
+                <Style>
+                    <Setter Property="Canvas.Left" Value="{Binding Position, Converter={StaticResource TimePixelSizeConv}}"/>
+                    <Setter Property="Canvas.Top" Value="{Binding Tone, Converter={StaticResource TimePixelSizeConv}}"/>
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+        </ItemsControl>
     </GroupBox>
 </UserControl>

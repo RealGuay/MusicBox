@@ -3,118 +3,85 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:conv="clr-namespace:MusicBox.Modules.SheetEditor.Converters"
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors" 
              xmlns:local="clr-namespace:MusicBox.Modules.SheetEditor.Views"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-        <conv:TimePixelBackgroundConverter x:Key="TimePixelBackConv" />
-        <conv:IsExpandedTotNextPixelConverter x:Key="IsExpandedConv" />
-        <conv:TimePixelEnableConverter x:Key="TimePixelEnableConv" />
-        <Style x:Key="FocusVisual">
-            <Setter Property="Control.Template">
-                <Setter.Value>
-                    <ControlTemplate>
-                        <Rectangle Margin="2" StrokeDashArray="1 2" SnapsToDevicePixels="true" StrokeThickness="1" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <SolidColorBrush x:Key="Button.Static.Background" Color="#FFDDDDDD" />
-        <SolidColorBrush x:Key="Button.Static.Border" Color="#FF707070" />
-        <SolidColorBrush x:Key="Button.MouseOver.Background" Color="Transparent" />
-        <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#FF3C7FB1" />
-        <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FFC4E5F6" />
-        <SolidColorBrush x:Key="Button.Pressed.Border" Color="#FF2C628B" />
-        <SolidColorBrush x:Key="Button.Disabled.Background" Color="Goldenrod" />
-        <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5" />
-        <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383" />
-        <Style x:Key="TimePixelButtonStyle" TargetType="{x:Type Button}">
-            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}" />
-            <Setter Property="Background" Value="{StaticResource Button.Static.Background}" />
-            <Setter Property="BorderBrush" Value="{StaticResource Button.Static.Border}" />
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="HorizontalContentAlignment" Value="Center" />
-            <Setter Property="VerticalContentAlignment" Value="Center" />
-            <Setter Property="Padding" Value="1" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" SnapsToDevicePixels="true">
-                            <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsDefaulted" Value="true">
-                                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="true">
-                                <!-- <Setter Property="Background" TargetName="border" Value="{StaticResource Button.MouseOver.Background}" /> -->
-                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.MouseOver.Border}" />
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="true">
-                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Pressed.Background}" />
-                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Pressed.Border}" />
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="false">
-                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Disabled.Background}" />
-                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Disabled.Border}" />
-                                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
     </UserControl.Resources>
     <Grid>
         <GroupBox Header="Bar Editor">
-            <StackPanel>
-                <Border BorderThickness="2" BorderBrush="Azure">
-                    <ListBox x:Name="TimePixels" ItemsSource="{Binding TimePixels}" MaxWidth="800" Height="790">
-                        <ListBox.ItemsPanel>
+                <Grid x:Name="MainBarGrid" Margin="30">
+
+                    <Canvas>
+                        <Rectangle x:Name="SelectedItemRectangle" Stroke="Red" StrokeThickness="2" Margin="-2" Visibility="{Binding SelectedTimePixelVisibility, FallbackValue=Hidden}"
+                           Height="{Binding SelectedTimePixelHeight}" Width="{Binding SelectedTimePixelWidth}"  
+                           Canvas.Left="{Binding SelectedTimePixel.Position}" Canvas.Top="{Binding SelectedTimePixel.Tone}"
+                           >
+                        </Rectangle>
+                    </Canvas>
+                    <Rectangle x:Name="PositionRectangle" Height="{Binding Height, ElementName=BarTimePixels}" Width="{Binding Width, ElementName=BarTimePixels}" Fill="LightGray" Opacity="0.2" VerticalAlignment="Top" HorizontalAlignment="Left" 
+                        AllowDrop="True" Drop="PositionRectangle_Drop" DragOver="PositionRectangle_DragOver">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="MouseLeftButtonDown">
+                                <b:InvokeCommandAction
+                                    Command="{Binding DataContext.ActivateTimePixel , RelativeSource={RelativeSource AncestorType={x:Type local:BarEditor}}}"
+                                    CommandParameter="{Binding ElementName=PositionRectangle}"/>
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                    </Rectangle>
+
+
+                    <ItemsControl x:Name="BarTimePixels" ItemsSource="{Binding TimePixels}" Height="{Binding BarHeight}" Width="{Binding BarWidth}" VerticalAlignment="Top" HorizontalAlignment="Left">
+                        <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <UniformGrid Columns="{Binding TimePixelPerLine}" Margin="5" />
+                                <Canvas/>
                             </ItemsPanelTemplate>
-                        </ListBox.ItemsPanel>
-                        <ListBox.ItemTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                <Button Command="{Binding RelativeSource={RelativeSource AncestorType=local:BarEditor}, Path=DataContext.ActivatePixelCommand}"
-                                        CommandParameter="{Binding}"
-                                        Background="{Binding Status,Converter={StaticResource TimePixelBackConv}}"
-                                        BorderThickness="0"
-                                        Height="10" Width="40"
-                                        Margin="-4"
-                                        Style="{DynamicResource TimePixelButtonStyle}"
-                                        ToolTip="{Binding NoteTooltip}">
-                                    <Button.IsEnabled>
-                                        <MultiBinding Converter="{StaticResource TimePixelEnableConv}">
-                                            <Binding RelativeSource="{RelativeSource AncestorType=local:BarEditor}" Path="DataContext.Hand"  />
-                                            <Binding />
-                                        </MultiBinding>
-                                    </Button.IsEnabled>
-                                    <Button.InputBindings>
-                                        <MouseBinding Gesture="Shift+LeftClick"
-                                         Command="{Binding RelativeSource={RelativeSource AncestorType=local:BarEditor}, Path=DataContext.ExpandPixelCommand}"
+                                <Grid>
+
+                                    <Rectangle x:Name="NoteRectangle" Height="{Binding ToneRectangleHeight}" Width="{Binding Duration}" Tag="{Binding Id}" Margin="0,0,0,0"
+                                   MouseWheel="NoteRectangle_MouseWheel"
+                                   AllowDrop="True" MouseMove="NoteRectangle_MouseMove" Drop="NoteRectangle_Drop" DragOver="NoteRectangle_DragOver"
+                                   MouseEnter="NoteRectangle_MouseEnter" MouseLeave="NoteRectangle_MouseLeave"                                  
+                                       >
+                                        <Rectangle.Fill>
+                                            <LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
+                                                <GradientStop Color="#FF283525" Offset="1"/>
+                                                <GradientStop Color="#FF75EA56" Offset="0"/>
+                                            </LinearGradientBrush>
+                                        </Rectangle.Fill>
+
+                                        <Rectangle.InputBindings>
+                                            <MouseBinding Gesture="LeftClick"
+                                         Command="{Binding RelativeSource={RelativeSource AncestorType=local:BarEditor}, Path=DataContext.SelectTimePixelCommand}"
                                          CommandParameter="{Binding}" />
-                                        <MouseBinding Gesture="Shift+LeftDoubleClick"
-                                         Command="{Binding RelativeSource={RelativeSource AncestorType=local:BarEditor}, Path=DataContext.ExpandPixelCommand}"
+                                            <MouseBinding Gesture="RightClick"
+                                         Command="{Binding RelativeSource={RelativeSource AncestorType=local:BarEditor}, Path=DataContext.DeleteTimePixelCommand}"
                                          CommandParameter="{Binding}" />
-                                        <MouseBinding Gesture="WheelClick"
-                                         Command="{Binding RelativeSource={RelativeSource AncestorType=local:BarEditor}, Path=DataContext.AlterPixelCommand}"
-                                         CommandParameter="{Binding}" />
-                                        <MouseBinding Gesture="Shift+WheelClick"
-                                         Command="{Binding RelativeSource={RelativeSource AncestorType=local:BarEditor}, Path=DataContext.AlterPixelCommand}"
-                                         CommandParameter="{Binding}" />
-                                    </Button.InputBindings>
-                                </Button>
-                                <Rectangle Height="5" Width="9" Fill="{Binding Path=IsExpandedToNextPixel, Converter={StaticResource IsExpandedConv}}" Margin="4,0,-6,0" />
-                                </StackPanel>
+                                        </Rectangle.InputBindings>
+                                    </Rectangle>
+
+                                    <TextBlock x:Name="NoteAlteration" Text="{Binding NoteAlteration}" FontSize="9" FontWeight="Bold" Foreground="Black"
+                                       HorizontalAlignment="Left" Padding="0"
+                                       Height="10" Margin="0,-2,0,0"></TextBlock>
+                                </Grid>
                             </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </Border>
+                        </ItemsControl.ItemTemplate>
+                        <ItemsControl.ItemContainerStyle>
+                            <Style>
+                                <Setter Property="Canvas.Left" Value="{Binding Position}"/>
+                                <Setter Property="Canvas.Top" Value="{Binding Tone}"/>
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
+                    </ItemsControl>
+
+
+                </Grid>
+
+            <!--<StackPanel>
                 <Border BorderBrush="Black" BorderThickness="1" Margin="5">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Hand:" Margin="5,0,0,0" />
@@ -122,7 +89,7 @@
                         <RadioButton Content="Right" IsChecked="{Binding IsRightHandSelected}" Margin="15,0,0,0" />
                     </StackPanel>
                 </Border>
-            </StackPanel>
+            </StackPanel>-->
         </GroupBox>
     </Grid>
 </UserControl>

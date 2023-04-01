@@ -15,10 +15,10 @@ namespace MusicBox.Modules.SheetEditor.Converters
             if (values == null || values.Length != 2) throw new ArgumentException("Invalid number of values");
             PlayingHand selectedHand = (PlayingHand) values[0];
             TimePixel timepixel = (TimePixel) values[1];
-            if (timepixel.Status >= TimePixelStatus.PixelOn)
-            {
-                return selectedHand == timepixel.Hand;
-            }
+            //if (timepixel.Status >= TimePixelStatus.PixelOn)
+            //{
+            //    return selectedHand == timepixel.Hand;
+            //}
             return true;
         }
 
