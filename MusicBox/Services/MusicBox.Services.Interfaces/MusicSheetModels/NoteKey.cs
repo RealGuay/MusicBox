@@ -22,15 +22,27 @@ namespace MusicBox.Services.Interfaces.MusicSheetModels
             {
                 return this;
             }
-            if (noteAlteration == NoteAlteration.Natural)
+            else if (noteAlteration == NoteAlteration.Natural)
             {
-                var naturalName = Name.Substring(0, Name.Length - 1);
-                index = Array.FindIndex(NoteKeys, n => n.Name == naturalName);
-                return NoteKeys[index];
+                if (Name[^1] == 'b' || Name[^1] =='#')
+                {
+                    var naturalName = Name.Substring(0, Name.Length - 1);
+                    index = Array.FindIndex(NoteKeys, n => n.Name == naturalName);
+                    return NoteKeys[index];
+                }
+                return this;
             }
+            else 
+            {
+                int alteredKey = Key + (int)noteAlteration;
+                index = Array.FindIndex(NoteKeys, (n => n.Key == alteredKey));
+                if (index != -1)
+                {
+                    return NoteKeys[index];
 
-            index = Array.FindIndex(NoteKeys, (n => n.Name == Name));
-            return NoteKeys[index + (int) noteAlteration];
+                }
+               return this;  // cannot apply the alteration : end of keyboard
+            }
         }
 
         public static NoteKey FindFromName(string name)
