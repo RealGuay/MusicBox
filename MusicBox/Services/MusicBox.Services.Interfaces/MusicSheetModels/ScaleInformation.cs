@@ -20,6 +20,14 @@ namespace MusicBox.Services.Interfaces.MusicSheetModels
             '\u266E',
         };
 
+        public static NoteAlteration GetNextNoteAlteration(NoteAlteration noteAlteration)
+        {
+            int current = Array.IndexOf(Enum.GetValues(typeof(NoteAlteration)), noteAlteration);
+            int next = ++current % Enum.GetNames(typeof(NoteAlteration)).Length;
+
+            noteAlteration = (NoteAlteration)Enum.GetValues(typeof(NoteAlteration)).GetValue(next);
+            return noteAlteration;
+        }
 
         public enum BarAlteration
         {

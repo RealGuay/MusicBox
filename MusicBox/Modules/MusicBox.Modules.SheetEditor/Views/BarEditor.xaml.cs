@@ -116,7 +116,7 @@ namespace MusicBox.Modules.SheetEditor.Views
 
                 if (Keyboard.Modifiers == ModifierKeys.Shift)
                 {
-                    ///                    _viewModel.SetNoteAlteration((int)rect.Tag);
+                    _viewModel.RotateNoteAlteration((int)rect.Tag);
                 }
                 else if (Keyboard.Modifiers == ModifierKeys.Control)
                 {

@@ -69,5 +69,10 @@ namespace MusicBox.Modules.SheetEditor.Models
             // add reference type copy here...
             return tp;
         }
+
+        public void RotateNoteAlteration()
+        {
+            NoteAlteration = ScaleInformation.GetNextNoteAlteration(NoteAlteration);
+        }
     }
 }

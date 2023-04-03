@@ -322,5 +322,11 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
             TimePixels.Add(tp);
         }
+
+        internal void RotateNoteAlteration(int id)
+        {
+            TimePixel tp = FindTimePixel(id);
+            tp.RotateNoteAlteration();
+        }
     }
 }
