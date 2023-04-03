@@ -18,43 +18,29 @@ namespace MusicBox.Modules.SheetEditor.Models
         private int position;
         private int tone;
         private int duration;
-        private string noteAlteration;
+
+        private NoteAlteration noteAlteration;
+        private string noteAlterationSymbol;
 
         public int Id { get => id; set => SetProperty(ref id, value); }
         public int Position { get => position; set => SetProperty(ref position, value); }
         public int Tone { get => tone; set => SetProperty(ref tone, value); }
         public int Duration { get => duration; set => SetProperty(ref duration, value, OnDurationChanged); }
-        public string NoteAlteration { get => noteAlteration; set => SetProperty(ref noteAlteration, value); }
+        public NoteAlteration NoteAlteration { get => noteAlteration; set => SetProperty(ref noteAlteration, value, OnNoteAlterationChanged); }
 
+        private void OnNoteAlterationChanged()
+        {
+            NoteAlterationSymbol = $"{NoteAlterationSymbols[(int)noteAlteration + 1]}";
+        }
 
-
-
-
+        public string NoteAlterationSymbol { get => noteAlterationSymbol; set => SetProperty(ref noteAlterationSymbol,value); }
 
         private string noteTooltip;
         public string NoteTooltip { get => noteTooltip; set => SetProperty(ref noteTooltip, value); }
 
-        //private StaffPart line;
-        //public StaffPart Line { get => line; set => SetProperty(ref line, value); }
-
-        //private bool onStaffLine;
-        //public bool OnStaffLine { get => onStaffLine; set => SetProperty(ref onStaffLine, value); }
-
-
         private PlayingHand hand;
+
         public PlayingHand Hand { get => hand; set => SetProperty(ref hand, value); }
-
-        //public TimePixel(int duration, StaffPart line, BarAlteration barAlteration, TimePixelStatus status)
-        //{
-        //    Duration = duration;
-        //    Line = line;
-        //    NoteKey noteKey = GetKey(line, barAlteration, NoteAlteration.None);
-        //    NoteTooltip = noteKey.Name;
-        //}
-
-
-
-
 
         public int ToneRectangleHeight { get => ToneHeight; }
 
@@ -65,14 +51,15 @@ namespace MusicBox.Modules.SheetEditor.Models
             DurationChanged?.Invoke(this, EventArgs.Empty);
         }
 
-
         public TimePixel(int tone, int position)
         {
             this.id = Interlocked.Increment(ref _nextTimePixelId);
             this.tone = tone;
             this.position = position;
             this.duration = QuarterDuration / 2;
-            this.noteAlteration = string.Empty;
+            this.noteAlteration = NoteAlteration.None;
+
+            //this.noteTooltip = NoteTooltip;
             DurationChanged = null;
         }
 
@@ -82,8 +69,5 @@ namespace MusicBox.Modules.SheetEditor.Models
             // add reference type copy here...
             return tp;
         }
-
-
-
     }
 }

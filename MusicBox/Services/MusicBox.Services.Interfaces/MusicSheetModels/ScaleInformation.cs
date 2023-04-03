@@ -8,8 +8,18 @@ namespace MusicBox.Services.Interfaces.MusicSheetModels
         {
             Flat = -1,
             None = 0,
-            Sharp = 1
+            Sharp = 1,
+            Natural = 2  // bécarre !!!
         }
+
+        public static char[] NoteAlterationSymbols { get; } = new char[]
+        {
+            '\u266D',
+            ' ',
+            '\u266F',
+            '\u266E',
+        };
+
 
         public enum BarAlteration
         {
@@ -42,11 +52,14 @@ namespace MusicBox.Services.Interfaces.MusicSheetModels
 
         public static NoteKey[][] AllScales { get; } = new NoteKey[][] { DFlatMajor, AFlatMajor, EFlatMajor, BFlatMajor, FMajor, CMajor, GMajor, DMajor, AMajor, EMajor, BMajor };
 
+        private static int indexOfCMajor = 5;
+
         public static NoteKey GetKey(int line, BarAlteration barAlteration, NoteAlteration noteAlteration)
         {
-            NoteKey [] notes = AllScales[(int)barAlteration];
+            NoteKey[] notes = AllScales[(int)barAlteration];
             NoteKey noteKey = AllScales[(int)barAlteration][line];
-            return  noteKey.AddAlteration(noteAlteration);
+
+            return noteKey.AddAlteration(noteAlteration);
         }
 
         public static void GetTimePixelInfoFromName(string noteName, BarAlteration barAlteration, out int line, out NoteAlteration noteAlteration)
@@ -64,9 +77,37 @@ namespace MusicBox.Services.Interfaces.MusicSheetModels
                     throw new InvalidOperationException("Unable to find staff line from note key!");
                 }
                 NoteKey NoteOnLine = AllScales[scaleIndex][lineIndex];
-                noteAlteration =  noteKey.Key < NoteOnLine.Key ? NoteAlteration.Flat : NoteAlteration.Sharp;
+                noteAlteration = SetNoteAlteration(scaleIndex, noteKey, NoteOnLine);
             }
             line = lineIndex;
+        }
+
+        private static NoteAlteration SetNoteAlteration(int scaleIndex, NoteKey noteKey, NoteKey NoteOnLine)
+        {
+            NoteAlteration noteAlteration;
+            if (IsAFlatScale(scaleIndex))
+            {
+                noteAlteration = noteKey.Key < NoteOnLine.Key ? NoteAlteration.Flat : NoteAlteration.Natural;
+            }
+            else if (IsASharpScale(scaleIndex))
+            {
+                noteAlteration = noteKey.Key < NoteOnLine.Key ? NoteAlteration.Natural : NoteAlteration.Sharp;
+            }
+            else
+            {
+                noteAlteration = noteKey.Key < NoteOnLine.Key ? NoteAlteration.Flat : NoteAlteration.Sharp;
+            }
+            return noteAlteration;
+        }
+
+        private static bool IsASharpScale(int scaleIndex)
+        {
+            return scaleIndex > indexOfCMajor;
+        }
+
+        private static bool IsAFlatScale(int scaleIndex)
+        {
+            return scaleIndex < indexOfCMajor;
         }
 
         public enum ScaleSelector

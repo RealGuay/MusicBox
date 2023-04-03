@@ -287,7 +287,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             SheetNote sheetNote = null;
             foreach (TimePixel pixel in TimePixels)
             {
-                NoteKey noteKey = GetKey(pixel.Tone / _toneResolution, _keySignature.BarAlteration, NoteAlteration.None);
+                NoteKey noteKey = GetKey(pixel.Tone / _toneResolution, _keySignature.BarAlteration, pixel.NoteAlteration);
 
                 sheetNote = new SheetNote
                 {
@@ -317,6 +317,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
             TimePixel tp = new TimePixel(line * _toneResolution, note.PositionInBar * _screeenPixelPerTick);
             tp.Duration = note.Duration * _screeenPixelPerTick;
+            tp.NoteAlteration = noteAlteration;
             tp.Hand = note.Hand;
 
             TimePixels.Add(tp);

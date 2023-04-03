@@ -2,8 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:b="http://schemas.microsoft.com/xaml/behaviors" 
              xmlns:local="clr-namespace:MusicBox.Modules.SheetEditor.Views"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -11,75 +11,73 @@
     </UserControl.Resources>
     <Grid>
         <GroupBox Header="Bar Editor">
-                <Grid x:Name="MainBarGrid" Margin="30">
+            <Grid x:Name="MainBarGrid" Margin="30">
 
-                    <Canvas>
-                        <Rectangle x:Name="SelectedItemRectangle" Stroke="Red" StrokeThickness="2" Margin="-2" Visibility="{Binding SelectedTimePixelVisibility, FallbackValue=Hidden}"
-                           Height="{Binding SelectedTimePixelHeight}" Width="{Binding SelectedTimePixelWidth}"  
-                           Canvas.Left="{Binding SelectedTimePixel.Position}" Canvas.Top="{Binding SelectedTimePixel.Tone}"
-                           >
-                        </Rectangle>
-                    </Canvas>
-                    <Rectangle x:Name="PositionRectangle" Height="{Binding Height, ElementName=BarTimePixels}" Width="{Binding Width, ElementName=BarTimePixels}" Fill="LightGray" Opacity="0.2" VerticalAlignment="Top" HorizontalAlignment="Left" 
-                        AllowDrop="True" Drop="PositionRectangle_Drop" DragOver="PositionRectangle_DragOver">
-                        <b:Interaction.Triggers>
-                            <b:EventTrigger EventName="MouseLeftButtonDown">
-                                <b:InvokeCommandAction
-                                    Command="{Binding DataContext.ActivateTimePixel , RelativeSource={RelativeSource AncestorType={x:Type local:BarEditor}}}"
-                                    CommandParameter="{Binding ElementName=PositionRectangle}"/>
-                            </b:EventTrigger>
-                        </b:Interaction.Triggers>
+                <Canvas>
+                    <Rectangle x:Name="SelectedItemRectangle" Stroke="Red" StrokeThickness="2" Margin="-2" Visibility="{Binding SelectedTimePixelVisibility, FallbackValue=Hidden}"
+                           Height="{Binding SelectedTimePixelHeight}" Width="{Binding SelectedTimePixelWidth}"
+                           Canvas.Left="{Binding SelectedTimePixel.Position}" Canvas.Top="{Binding SelectedTimePixel.Tone}">
                     </Rectangle>
+                </Canvas>
+                <Rectangle x:Name="PositionRectangle" Height="{Binding Height, ElementName=BarTimePixels}" Width="{Binding Width, ElementName=BarTimePixels}" Fill="LightGray" Opacity="0.2" VerticalAlignment="Top" HorizontalAlignment="Left"
+                        AllowDrop="True" Drop="PositionRectangle_Drop" DragOver="PositionRectangle_DragOver">
+                    <b:Interaction.Triggers>
+                        <b:EventTrigger EventName="MouseLeftButtonDown">
+                            <b:InvokeCommandAction
+                                    Command="{Binding DataContext.ActivateTimePixel , RelativeSource={RelativeSource AncestorType={x:Type local:BarEditor}}}"
+                                    CommandParameter="{Binding ElementName=PositionRectangle}" />
+                        </b:EventTrigger>
+                    </b:Interaction.Triggers>
+                </Rectangle>
 
+                <ItemsControl x:Name="BarTimePixels" ItemsSource="{Binding TimePixels}" Height="{Binding BarHeight}" Width="{Binding BarWidth}" VerticalAlignment="Top" HorizontalAlignment="Left">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                
+                                <Rectangle x:Name="NoteRectangle" Height="{Binding ToneRectangleHeight}" Width="{Binding Duration}" Tag="{Binding Id}" 
+                                           Margin="0,0,0,0"
+                                           MouseWheel="NoteRectangle_MouseWheel"
+                                           AllowDrop="True" MouseMove="NoteRectangle_MouseMove" Drop="NoteRectangle_Drop" DragOver="NoteRectangle_DragOver"
+                                           MouseEnter="NoteRectangle_MouseEnter" MouseLeave="NoteRectangle_MouseLeave">
+                                    <Rectangle.Fill>
+                                        <LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
+                                            <GradientStop Color="#FF283525" Offset="1" />
+                                            <GradientStop Color="#FF75EA56" Offset="0" />
+                                        </LinearGradientBrush>
+                                    </Rectangle.Fill>
 
-                    <ItemsControl x:Name="BarTimePixels" ItemsSource="{Binding TimePixels}" Height="{Binding BarHeight}" Width="{Binding BarWidth}" VerticalAlignment="Top" HorizontalAlignment="Left">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <Canvas/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-
-                                    <Rectangle x:Name="NoteRectangle" Height="{Binding ToneRectangleHeight}" Width="{Binding Duration}" Tag="{Binding Id}" Margin="0,0,0,0"
-                                   MouseWheel="NoteRectangle_MouseWheel"
-                                   AllowDrop="True" MouseMove="NoteRectangle_MouseMove" Drop="NoteRectangle_Drop" DragOver="NoteRectangle_DragOver"
-                                   MouseEnter="NoteRectangle_MouseEnter" MouseLeave="NoteRectangle_MouseLeave"                                  
-                                       >
-                                        <Rectangle.Fill>
-                                            <LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
-                                                <GradientStop Color="#FF283525" Offset="1"/>
-                                                <GradientStop Color="#FF75EA56" Offset="0"/>
-                                            </LinearGradientBrush>
-                                        </Rectangle.Fill>
-
-                                        <Rectangle.InputBindings>
-                                            <MouseBinding Gesture="LeftClick"
+                                    <Rectangle.InputBindings>
+                                        <MouseBinding Gesture="LeftClick"
                                          Command="{Binding RelativeSource={RelativeSource AncestorType=local:BarEditor}, Path=DataContext.SelectTimePixelCommand}"
                                          CommandParameter="{Binding}" />
-                                            <MouseBinding Gesture="RightClick"
+                                        <MouseBinding Gesture="RightClick"
                                          Command="{Binding RelativeSource={RelativeSource AncestorType=local:BarEditor}, Path=DataContext.DeleteTimePixelCommand}"
                                          CommandParameter="{Binding}" />
-                                        </Rectangle.InputBindings>
-                                    </Rectangle>
+                                    </Rectangle.InputBindings>
+                                </Rectangle>
 
-                                    <TextBlock x:Name="NoteAlteration" Text="{Binding NoteAlteration}" FontSize="9" FontWeight="Bold" Foreground="Black"
-                                       HorizontalAlignment="Left" Padding="0"
-                                       Height="10" Margin="0,-2,0,0"></TextBlock>
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                        <ItemsControl.ItemContainerStyle>
-                            <Style>
-                                <Setter Property="Canvas.Left" Value="{Binding Position}"/>
-                                <Setter Property="Canvas.Top" Value="{Binding Tone}"/>
-                            </Style>
-                        </ItemsControl.ItemContainerStyle>
-                    </ItemsControl>
-
-
-                </Grid>
+                                <TextBlock x:Name="NoteAlterationSymbol" Text="{Binding NoteAlterationSymbol}" FontSize="18" FontWeight="UltraBold" 
+                                           Foreground="Black"
+                                            HorizontalAlignment="Left"
+                                            Height="20" 
+                                            Margin="0,-10,0,0"></TextBlock>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemContainerStyle>
+                        <Style>
+                            <Setter Property="Canvas.Left" Value="{Binding Position}" />
+                            <Setter Property="Canvas.Top" Value="{Binding Tone}" />
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+                </ItemsControl>
+            </Grid>
 
             <!--<StackPanel>
                 <Border BorderBrush="Black" BorderThickness="1" Margin="5">

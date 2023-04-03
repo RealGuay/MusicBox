@@ -16,12 +16,20 @@ namespace MusicBox.Services.Interfaces.MusicSheetModels
 
         public NoteKey AddAlteration(NoteAlteration noteAlteration)
         {
+            int index;
+
             if (noteAlteration == NoteAlteration.None)
             {
                 return this;
             }
+            if (noteAlteration == NoteAlteration.Natural)
+            {
+                var naturalName = Name.Substring(0, Name.Length - 1);
+                index = Array.FindIndex(NoteKeys, n => n.Name == naturalName);
+                return NoteKeys[index];
+            }
 
-            int index = Array.FindIndex(NoteKeys, (n => n.Name == Name));
+            index = Array.FindIndex(NoteKeys, (n => n.Name == Name));
             return NoteKeys[index + (int) noteAlteration];
         }
 
