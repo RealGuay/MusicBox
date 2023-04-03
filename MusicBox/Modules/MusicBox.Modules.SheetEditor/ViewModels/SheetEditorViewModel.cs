@@ -178,6 +178,8 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         private void ExtractAllSegments()
         {
+            _sheetInformation.Segments.Clear();
+
             Dictionary<ISegmentEditorViewModel, Segment> processedSegments = new Dictionary<ISegmentEditorViewModel, Segment>();
 
             foreach (ISegmentEditorViewModel segmentEditorVm in SegmentCollectionVm.SegmentEditorVms)
