@@ -120,7 +120,7 @@ namespace MusicBox.Modules.SheetEditor.Views
                 }
                 else if (Keyboard.Modifiers == ModifierKeys.Control)
                 {
-                    ///                    _viewModel.ToggleTripetDuration((int)rect.Tag, e.Delta > 0);
+                    _viewModel.ConvertToTriplets((int)rect.Tag);
                 }
                 else
                 {

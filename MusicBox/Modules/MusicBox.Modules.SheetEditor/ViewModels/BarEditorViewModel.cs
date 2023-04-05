@@ -15,10 +15,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 {
     public class BarEditorViewModel : BindableBase, IBarEditorViewModel
     {
-        private readonly int _positionResolution = TimePixel.QuarterDuration / 8;
         private readonly int _screeenPixelPerTick = TimePixel.QuarterDuration / (int)TickResolution.Normal;
-
-        private readonly int _toneResolution;
 
         private TimePixel? _storedTimePixel;
         private int barWidth;
@@ -97,9 +94,8 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             Hand = PlayingHand.Right;
 
             CalculateBarWidth();
-            _toneResolution = TimePixel.ToneHeight + 2; // leave vertical space between each tone
             _storedTimePixel = null;
-            BarHeight = TimePixel.NumberOfWhiteKeys * _toneResolution;
+            BarHeight = TimePixel.NumberOfWhiteKeys * TimePixel.ToneResolution;
             selectedTimePixel = null;
             selectedTimePixelVisibility = Visibility.Hidden;
 
@@ -147,8 +143,8 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         internal void GetHorizontalLinesInfo(int actualHeight, out int yTopHorizontalLine, out int verticalSpacingPerTone)
         {
-            yTopHorizontalLine = 18 * _toneResolution + TimePixel.ToneHeight / 2;
-            verticalSpacingPerTone = _toneResolution * 2;
+            yTopHorizontalLine = 18 * TimePixel.ToneResolution + TimePixel.ToneHeight / 2;
+            verticalSpacingPerTone = TimePixel.ToneResolution * 2;
         }
 
         private void ActivateTimePixelExecute(object obj)
@@ -157,37 +153,27 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             if (rec != null)
             {
                 var pos = Mouse.GetPosition(rec);
-                int position = RoundPosition(pos.X, _positionResolution);
-                int tone = RoundPosition(pos.Y, _toneResolution);
+                int position, tone;
+                TimePixel.ConvertMousePositionToToneAndPosition(pos, out position, out tone);
                 if (!TimePixels.Any(t => t.Tone == tone && t.Position == position))
                 {
-                    TimePixel tp = new TimePixel(tone, position, hand);
-                    tp.DurationChanged += TimePixel_DurationChanged;
+                    TimePixel tp = CreateNewTimePixel(position, tone);
                     TimePixels.Add(tp);
                 }
             }
         }
 
-        private int RoundPosition(double value, int round)
+        private TimePixel CreateNewTimePixel(int position, int tone)
         {
-            int rounded = (int)(Math.Round(value) / round);
-            return rounded * round;
+            TimePixel tp = new TimePixel(tone, position, hand);
+            tp.DurationChanged += TimePixel_DurationChanged;
+            return tp;
         }
 
         public void ModifyDuration(int id, bool increase)
         {
             var timePixel = FindTimePixel(id);
-            bool isTriplet = timePixel.Duration % 3 > 0;
-            if (!isTriplet)
-            {
-                timePixel.Duration += increase ? _positionResolution : -_positionResolution;
-            }
-            else
-            {
-                timePixel.Duration *= 3;
-                timePixel.Duration /= increase ? 2 : 4;
-            }
-            timePixel.Duration = Math.Max(timePixel.Duration, _positionResolution);
+            timePixel.ModifyDuration(increase);
         }
 
         private TimePixel FindTimePixel(int id)
@@ -238,8 +224,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         internal void MoveTimePixel(int id, Point pt)
         {
             var timePixel = FindTimePixel(id);
-            timePixel.Position = Math.Max(RoundPosition(pt.X, _positionResolution), 0);
-            timePixel.Tone = Math.Max(RoundPosition(pt.Y, _toneResolution), 0);
+            timePixel.MoveTimePixel(pt);
             //DisplayCurrentNoteInfo(id);
         }
 
@@ -287,7 +272,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             SheetNote sheetNote = null;
             foreach (TimePixel pixel in TimePixels)
             {
-                NoteKey noteKey = GetKey(pixel.Tone / _toneResolution, _keySignature.BarAlteration, pixel.NoteAlteration);
+                NoteKey noteKey = GetKey(pixel.Tone / TimePixel.ToneResolution, _keySignature.BarAlteration, pixel.NoteAlteration);
 
                 sheetNote = new SheetNote
                 {
@@ -315,7 +300,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         {
             ScaleInformation.GetTimePixelInfoFromName(note.Name, _keySignature.BarAlteration, out int line, out NoteAlteration noteAlteration);
 
-            TimePixel tp = new TimePixel(line * _toneResolution, note.PositionInBar * _screeenPixelPerTick, note.Hand);
+            TimePixel tp = new TimePixel(line * TimePixel.ToneResolution, note.PositionInBar * _screeenPixelPerTick, note.Hand);
             tp.Duration = note.Duration * _screeenPixelPerTick;
             tp.NoteAlteration = noteAlteration;
 
@@ -326,6 +311,25 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         {
             TimePixel tp = FindTimePixel(id);
             tp.RotateNoteAlteration();
+        }
+
+        internal void ConvertToTriplets(int id)
+        {
+            TimePixel tp = FindTimePixel(id);
+            if (!tp.IsTriplet)
+            {
+                int tripletDuration = tp.Duration / 3;
+                tp.Duration = tripletDuration;
+                TimePixel tp2 = CreateNewTimePixel(tp.Position + tp.Duration, tp.Tone);
+                TimePixel tp3 = CreateNewTimePixel(tp2.Position + tp.Duration, tp.Tone);
+                tp2.Duration = tripletDuration;
+                tp3.Duration = tripletDuration;
+                tp.IsTriplet = true;
+                tp2.IsTriplet = true;
+                tp3.IsTriplet = true;
+                TimePixels.Add(tp2);
+                TimePixels.Add(tp3);
+            }
         }
     }
 }
