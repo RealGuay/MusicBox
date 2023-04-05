@@ -161,7 +161,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
                 int tone = RoundPosition(pos.Y, _toneResolution);
                 if (!TimePixels.Any(t => t.Tone == tone && t.Position == position))
                 {
-                    TimePixel tp = new TimePixel(tone, position);
+                    TimePixel tp = new TimePixel(tone, position, hand);
                     tp.DurationChanged += TimePixel_DurationChanged;
                     TimePixels.Add(tp);
                 }
@@ -315,10 +315,9 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         {
             ScaleInformation.GetTimePixelInfoFromName(note.Name, _keySignature.BarAlteration, out int line, out NoteAlteration noteAlteration);
 
-            TimePixel tp = new TimePixel(line * _toneResolution, note.PositionInBar * _screeenPixelPerTick);
+            TimePixel tp = new TimePixel(line * _toneResolution, note.PositionInBar * _screeenPixelPerTick, note.Hand);
             tp.Duration = note.Duration * _screeenPixelPerTick;
             tp.NoteAlteration = noteAlteration;
-            tp.Hand = note.Hand;
 
             TimePixels.Add(tp);
         }

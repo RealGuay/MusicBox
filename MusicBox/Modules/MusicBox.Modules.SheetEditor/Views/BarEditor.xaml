@@ -12,6 +12,10 @@
     <Grid>
         <GroupBox Header="Bar Editor">
             <Grid x:Name="MainBarGrid" Margin="30">
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
 
                 <Canvas>
                     <Rectangle x:Name="SelectedItemRectangle" Stroke="Red" StrokeThickness="2" Margin="-2" Visibility="{Binding SelectedTimePixelVisibility, FallbackValue=Hidden}"
@@ -48,7 +52,7 @@
                                     <Rectangle.Fill>
                                         <LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
                                             <GradientStop Color="#FF283525" Offset="1" />
-                                            <GradientStop Color="#FF75EA56" Offset="0" />
+                                            <GradientStop Color="{Binding HandColor}" Offset="0" />
                                         </LinearGradientBrush>
                                     </Rectangle.Fill>
 
@@ -77,17 +81,19 @@
                         </Style>
                     </ItemsControl.ItemContainerStyle>
                 </ItemsControl>
+
+
+                <StackPanel Grid.Row="1" HorizontalAlignment="Left" Margin="0,10">
+                    <Border BorderBrush="Black" BorderThickness="1" Margin="5" >
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="New Note Hand:" Margin="5,0,0,0" />
+                            <RadioButton Content="Left" IsChecked="{Binding IsLeftHandSelected}" Margin="5,0,0,0" />
+                            <RadioButton Content="Right" IsChecked="{Binding IsRightHandSelected}" Margin="15,0,5,0" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
             </Grid>
 
-            <!--<StackPanel>
-                <Border BorderBrush="Black" BorderThickness="1" Margin="5">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Hand:" Margin="5,0,0,0" />
-                        <RadioButton Content="Left" IsChecked="{Binding IsLeftHandSelected}" Margin="15,0,0,0" />
-                        <RadioButton Content="Right" IsChecked="{Binding IsRightHandSelected}" Margin="15,0,0,0" />
-                    </StackPanel>
-                </Border>
-            </StackPanel>-->
         </GroupBox>
     </Grid>
 </UserControl>

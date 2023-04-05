@@ -1,7 +1,9 @@
 ﻿using MusicBox.Services.Interfaces.MusicSheetModels;
 using Prism.Mvvm;
 using System;
+
 using System.Threading;
+using System.Windows.Media;
 using static MusicBox.Services.Interfaces.MusicSheetModels.ScaleInformation;
 
 namespace MusicBox.Modules.SheetEditor.Models
@@ -9,6 +11,8 @@ namespace MusicBox.Modules.SheetEditor.Models
     public class TimePixel : BindableBase
     {
         private static int _nextTimePixelId;
+        private static Color leftHandColor = (Color)ColorConverter.ConvertFromString("#FF75EA56");
+        private static Color rightHandColor = (Color)ColorConverter.ConvertFromString("#FF408DE4");
 
         public const int NumberOfWhiteKeys = 52;
         public const int QuarterDuration = 96;   // nb of screen pixels per Quarter note !!!
@@ -42,6 +46,8 @@ namespace MusicBox.Modules.SheetEditor.Models
 
         public PlayingHand Hand { get => hand; set => SetProperty(ref hand, value); }
 
+        public Color HandColor { get => Hand == PlayingHand.Left ? leftHandColor : rightHandColor;}
+
         public int ToneRectangleHeight { get => ToneHeight; }
 
         public event EventHandler? DurationChanged;
@@ -51,13 +57,14 @@ namespace MusicBox.Modules.SheetEditor.Models
             DurationChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        public TimePixel(int tone, int position)
+        public TimePixel(int tone, int position, PlayingHand hand)
         {
             this.id = Interlocked.Increment(ref _nextTimePixelId);
             this.tone = tone;
             this.position = position;
             this.duration = QuarterDuration / 2;
             this.noteAlteration = NoteAlteration.None;
+            this.hand = hand;
 
             //this.noteTooltip = NoteTooltip;
             DurationChanged = null;
