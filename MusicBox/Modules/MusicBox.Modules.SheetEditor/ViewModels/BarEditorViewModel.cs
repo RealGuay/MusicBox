@@ -255,7 +255,18 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         public IBarEditorViewModel DeepCopy()
         {
             BarEditorViewModel newModel = new BarEditorViewModel(_eventAggregator, _timeSignature, _keySignature);
+            CopyTimePixels(newModel);
             return newModel;
+        }
+
+        private void CopyTimePixels(BarEditorViewModel newModel)
+        {
+            foreach (var t in TimePixels) 
+            {
+                TimePixel copy = t.DeepCopy();
+                copy.DurationChanged += newModel.TimePixel_DurationChanged;
+                newModel.TimePixels.Add(copy);
+            }
         }
 
         public void ExtractBarInfo(Bar currentBar)
@@ -303,9 +314,11 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             TimePixel tp = new TimePixel(line * TimePixel.ToneResolution, note.PositionInBar * _screeenPixelPerTick, note.Hand);
             tp.Duration = note.Duration * _screeenPixelPerTick;
             tp.NoteAlteration = noteAlteration;
+            tp.DurationChanged += TimePixel_DurationChanged;
 
             TimePixels.Add(tp);
         }
+
 
         internal void RotateNoteAlteration(int id)
         {

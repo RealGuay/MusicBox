@@ -24,7 +24,7 @@ namespace MusicBox.Services.Interfaces.MusicSheetModels
             }
             else if (noteAlteration == NoteAlteration.Natural)
             {
-                if (Name[^1] == 'b' || Name[^1] == '#')
+                if (Name[^1] == 'b' || Name[^1] == 's')
                 {
                     var naturalName = Name.Substring(0, Name.Length - 1);
                     index = Array.FindIndex(NoteKeys, n => n.Name == naturalName);
@@ -34,7 +34,7 @@ namespace MusicBox.Services.Interfaces.MusicSheetModels
             }
             else
             {
-                string alteredName = noteAlteration == NoteAlteration.Flat ? Name + "b" : Name + "#";
+                string alteredName = noteAlteration == NoteAlteration.Flat ? Name + "b" : Name + "s";
                 index = Array.FindIndex(NoteKeys, (n => n.Name == alteredName));
                 if (index != -1)
                 {
