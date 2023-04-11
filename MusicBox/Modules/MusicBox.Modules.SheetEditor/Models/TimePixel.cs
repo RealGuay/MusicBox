@@ -83,8 +83,6 @@ namespace MusicBox.Modules.SheetEditor.Models
 
         public TimePixel DeepCopy()
         {
-            //  TimePixel tp = (TimePixel)MemberwiseClone();
-
             TimePixel tp = new TimePixel(tone, position, hand); // note : copy's Id is different from the original
 
             tp.duration = duration;
@@ -92,11 +90,10 @@ namespace MusicBox.Modules.SheetEditor.Models
             tp.RefreshNoteAlterationSymbol();
             tp.IsTriplet = isTriplet;
             tp.noteTooltip = noteTooltip;
+
+            tp.RaisePropertyChanged(); // refresh all binding properties  ???
+
             // Do NOT forget to set DurationChanged when required
-
-            // add reference type copy here...
-
-            tp.RaisePropertyChanged(null); // refresh all binding properties
             return tp;
         }
 
