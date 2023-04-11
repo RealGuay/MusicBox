@@ -224,5 +224,11 @@ namespace MusicBox.Modules.SheetEditor.Views
             {
             }
         }
+
+        private void PositionRectangle_MouseMove(object sender, MouseEventArgs e)
+        {
+            Point pt = Mouse.GetPosition(PositionRectangle);
+            MouseTone.Text = _viewModel.GetKeyName(pt); // $"X:{pt.X} Y:{pt.Y}";
+        }
     }
 }

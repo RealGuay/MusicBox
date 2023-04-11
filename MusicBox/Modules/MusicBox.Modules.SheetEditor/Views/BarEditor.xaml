@@ -35,7 +35,8 @@
                     </Rectangle>
                 </Canvas>
                 <Rectangle  Grid.Column="1" x:Name="PositionRectangle" Height="{Binding Height, ElementName=BarTimePixels}" Width="{Binding Width, ElementName=BarTimePixels}" Fill="LightGray" Opacity="0.2" VerticalAlignment="Top" HorizontalAlignment="Left"
-                        AllowDrop="True" Drop="PositionRectangle_Drop" DragOver="PositionRectangle_DragOver">
+                        AllowDrop="True" Drop="PositionRectangle_Drop" DragOver="PositionRectangle_DragOver"
+                        MouseMove="PositionRectangle_MouseMove"    >
                     <b:Interaction.Triggers>
                         <b:EventTrigger EventName="MouseLeftButtonDown">
                             <b:InvokeCommandAction
@@ -97,14 +98,20 @@
                 <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,10">
                     <Border BorderBrush="Black" BorderThickness="1" Margin="5" >
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="New Note Hand:" Margin="5,0,0,0" />
-                            <RadioButton Content="Left" IsChecked="{Binding IsLeftHandSelected}" Margin="5,0,0,0" />
-                            <RadioButton Content="Right" IsChecked="{Binding IsRightHandSelected}" Margin="15,0,5,0" />
+                            <TextBlock Text="New Note : " Margin="5,0,0,0" />
+                            <TextBlock Text="Tone : " Margin="5,0,0,0" />
+                            <TextBlock x:Name="MouseTone" FontWeight="Bold" Width="Auto"/>
+                                <StackPanel  Orientation="Horizontal">
+                                    <TextBlock Text="Hand:" Margin="5,0,0,0" />
+                                <RadioButton Content="Left" IsChecked="{Binding IsLeftHandSelected}"  Margin="5,0,0,0" VerticalAlignment="Center" FontWeight="Bold" />
+                                <RadioButton Content="Right" IsChecked="{Binding IsRightHandSelected}" Margin="5,0,5,0" VerticalAlignment="Center" FontWeight="Bold" />
+                                </StackPanel>
                         </StackPanel>
                     </Border>
                 </StackPanel>
                 <Border Grid.Row="2"  Grid.ColumnSpan="2"  BorderBrush="Black" BorderThickness="1" Margin="5" HorizontalAlignment="Left">
                     <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Selected Note: "/>
                         <TextBlock Text="Id: "/>
                         <TextBlock Text="{Binding SelectedTimePixel.Id}" Width="35" />
                         <TextBlock Text="Tone: "/>

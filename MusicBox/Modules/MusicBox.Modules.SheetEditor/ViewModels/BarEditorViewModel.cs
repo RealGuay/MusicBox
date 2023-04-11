@@ -345,5 +345,13 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
                 TimePixels.Add(tp3);
             }
         }
+
+        internal string GetKeyName(Point pt)
+        {
+            TimePixel.ConvertMousePositionToToneAndPosition(pt, out int position, out int tone);
+            NoteKey noteKey = GetKey(tone / TimePixel.ToneResolution, _keySignature.BarAlteration, NoteAlteration.None);
+            return noteKey.Name;
+
+        }
     }
 }
