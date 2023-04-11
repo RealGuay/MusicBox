@@ -19,6 +19,7 @@ namespace MusicBox.Modules.SheetEditor.Views
         {
             InitializeComponent();
             DataContextChanged += BarEditor_DataContextChanged;
+            MainBarGrid.SizeChanged += MainBarGrid_SizeChanged;
             PositionRectangle.SizeChanged += PositionRectangle_SizeChanged;
         }
 
@@ -34,10 +35,15 @@ namespace MusicBox.Modules.SheetEditor.Views
             _viewModel = (BarEditorViewModel)DataContext;
         }
 
+        private void MainBarGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            RemovePreviousLines();
+            AddBarLines();
+        }
+
         private void PositionRectangle_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (_viewModel == null) { return; }
-
             RemovePreviousLines();
             AddBarLines();
         }
@@ -61,10 +67,10 @@ namespace MusicBox.Modules.SheetEditor.Views
 
         private void AddHorizontalLines()
         {
-            if (PositionRectangle.ActualWidth == 0) { return; }
+            if (MainBarGrid.ActualWidth == 0) { return; }
 
             int yTopHorizontalLine, verticalSpacingPerTone;
-            _viewModel.GetHorizontalLinesInfo((int)PositionRectangle.ActualHeight, out yTopHorizontalLine, out verticalSpacingPerTone);
+            BarEditorViewModel.GetHorizontalLinesInfo(out yTopHorizontalLine, out verticalSpacingPerTone);
 
             for (int i = 0; i < (5 + 1 + 5); i++)
             {
@@ -73,9 +79,10 @@ namespace MusicBox.Modules.SheetEditor.Views
                 line.StrokeThickness = 2;
                 line.X1 = 0;
                 line.Y1 = i * verticalSpacingPerTone + yTopHorizontalLine;
-                line.X2 = PositionRectangle.ActualWidth;
+                line.X2 = MainBarGrid.ActualWidth;
                 line.Y2 = line.Y1;
                 line.Opacity = 0.7;
+                Grid.SetColumnSpan(line, 2);
                 if (i != 5) // add space between the 2 staffs
                 {
                     MainBarGrid.Children.Add(line);
@@ -101,6 +108,7 @@ namespace MusicBox.Modules.SheetEditor.Views
                 line.X2 = line.X1;
                 line.Y2 = PositionRectangle.ActualHeight;
                 line.Opacity = (i % (subBeatLines / beatLines + 1)) > 0 ? 0.1 : 0.4;
+                Grid.SetColumn(line, 2);
                 MainBarGrid.Children.Add(line);
                 Canvas.SetZIndex(line, -1);
             }

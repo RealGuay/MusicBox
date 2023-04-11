@@ -141,7 +141,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             totalLines++; // end line on right
         }
 
-        internal void GetHorizontalLinesInfo(int actualHeight, out int yTopHorizontalLine, out int verticalSpacingPerTone)
+        internal static void GetHorizontalLinesInfo(out int yTopHorizontalLine, out int verticalSpacingPerTone)
         {
             yTopHorizontalLine = 18 * TimePixel.ToneResolution + TimePixel.ToneHeight / 2;
             verticalSpacingPerTone = TimePixel.ToneResolution * 2;
