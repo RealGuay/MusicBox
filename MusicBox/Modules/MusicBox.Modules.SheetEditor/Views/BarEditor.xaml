@@ -108,10 +108,10 @@
                         <TextBlock Text="Id: "/>
                         <TextBlock Text="{Binding SelectedTimePixel.Id}" Width="35" />
                         <TextBlock Text="Tone: "/>
-                        <TextBlock Text="{Binding SelectedTimePixel.Tone}" Width="35"/>
+                        <TextBlock Text="{Binding SelectedTimePixel.Tone}" Width="25"/>
                         <TextBlock Text="( "/>
-                        <TextBlock Text="{Binding SelectedTimePixel.NoteTooltip}" Width="35"/>
-                        <TextBlock Text=" )"/>
+                        <TextBlock Text="{Binding SelectedTimePixel.NoteTooltip}" FontWeight="Bold"/>
+                        <TextBlock Text=" ) "/>
                         <TextBlock Text="Position: "/>
                         <TextBlock Text="{Binding SelectedTimePixel.Position}" Width="35"/>
                         <TextBlock Text="Duration: "/>
