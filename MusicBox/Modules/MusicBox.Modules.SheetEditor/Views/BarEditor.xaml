@@ -100,7 +100,7 @@
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="New Note : " Margin="5,0,0,0" />
                             <TextBlock Text="Tone : " Margin="5,0,0,0" />
-                            <TextBlock x:Name="MouseTone" FontWeight="Bold" Width="Auto"/>
+                            <TextBlock x:Name="MouseTone" FontWeight="Bold" Width="30"/>
                                 <StackPanel  Orientation="Horizontal">
                                     <TextBlock Text="Hand:" Margin="5,0,0,0" />
                                 <RadioButton Content="Left" IsChecked="{Binding IsLeftHandSelected}"  Margin="5,0,0,0" VerticalAlignment="Center" FontWeight="Bold" />
