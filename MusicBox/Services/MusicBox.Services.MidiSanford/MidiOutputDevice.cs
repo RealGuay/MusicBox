@@ -8,8 +8,12 @@ namespace MusicBox.Services.MidiSanford
     {
         private OutputDevice outDev1;
 
-        public MidiOutputDevice(int deviceId = 0)
+        public MidiOutputDevice(int deviceId = -1)
         {
+            if (deviceId == -1)
+            {
+                deviceId = OutputDevice.DeviceCount - 1;
+            }
             outDev1 = new OutputDevice(deviceId);
         }
 
