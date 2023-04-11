@@ -59,7 +59,7 @@ namespace MusicBox.Modules.SheetEditor.Models
             NoteAlterationSymbol = $"{NoteAlterationSymbols[(int)noteAlteration + 1]}";
         }
 
-        public TimePixel(int tone, int position, PlayingHand hand)
+        public TimePixel(int tone, int position, PlayingHand hand, KeySignature keySignature)
         {
             id = GetNextId();
             this.tone = tone;
@@ -70,7 +70,8 @@ namespace MusicBox.Modules.SheetEditor.Models
             noteAlteration = NoteAlteration.None;
             RefreshNoteAlterationSymbol();
             isTriplet = false;
-            noteTooltip = string.Empty;
+
+            SetNoteTooltip(keySignature);
 
             //this.noteTooltip = NoteTooltip;
             DurationChanged = null;
@@ -81,15 +82,15 @@ namespace MusicBox.Modules.SheetEditor.Models
             return Interlocked.Increment(ref nextTimePixelId);
         }
 
-        public TimePixel DeepCopy()
+        public TimePixel DeepCopy(KeySignature keySignature)
         {
-            TimePixel tp = new TimePixel(tone, position, hand); // note : copy's Id is different from the original
+            TimePixel tp = new TimePixel(tone, position, hand, keySignature); // note : copy's Id is different from the original
 
             tp.duration = duration;
             tp.noteAlteration = noteAlteration;
             tp.RefreshNoteAlterationSymbol();
             tp.IsTriplet = isTriplet;
-            tp.noteTooltip = noteTooltip;
+            SetNoteTooltip(keySignature);
 
             tp.RaisePropertyChanged(); // refresh all binding properties  ???
 
@@ -97,9 +98,16 @@ namespace MusicBox.Modules.SheetEditor.Models
             return tp;
         }
 
-        public void RotateNoteAlteration()
+        private void SetNoteTooltip(KeySignature keySignature)
+        {
+            NoteKey noteKey = GetKey(Tone / TimePixel.ToneResolution, keySignature.BarAlteration, NoteAlteration);
+            NoteTooltip = noteKey.Name;
+        }
+
+        public void RotateNoteAlteration(KeySignature keySignature)
         {
             NoteAlteration = ScaleInformation.GetNextNoteAlteration(NoteAlteration);
+            SetNoteTooltip(keySignature);
         }
 
         internal void ModifyDuration(bool increase)
@@ -120,10 +128,11 @@ namespace MusicBox.Modules.SheetEditor.Models
             return rounded * round;
         }
 
-        public void MoveTimePixel(Point pt)
+        public void MoveTimePixel(Point pt, KeySignature keySignature)
         {
             Position = Math.Max(RoundPosition(pt.X, TimeResolution), 0);
             Tone = Math.Max(RoundPosition(pt.Y, ToneResolution), 0);
+            SetNoteTooltip(keySignature);
         }
     }
 }

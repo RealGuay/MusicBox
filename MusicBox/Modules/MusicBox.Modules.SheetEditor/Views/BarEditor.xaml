@@ -56,7 +56,7 @@
                             <Grid>
                                 
                                 <Rectangle x:Name="NoteRectangle" Height="{Binding ToneRectangleHeight}" Width="{Binding Duration}" Tag="{Binding Id}" 
-                                           Margin="0,0,0,0"
+                                           Margin="0,0,0,0"  ToolTip="{Binding NoteTooltip}"
                                            MouseWheel="NoteRectangle_MouseWheel"
                                            AllowDrop="True" MouseMove="NoteRectangle_MouseMove" Drop="NoteRectangle_Drop" DragOver="NoteRectangle_DragOver"
                                            MouseEnter="NoteRectangle_MouseEnter" MouseLeave="NoteRectangle_MouseLeave">

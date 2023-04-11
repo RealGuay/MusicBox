@@ -163,9 +163,9 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             }
         }
 
-        private TimePixel CreateNewTimePixel(int position, int tone)
+        private TimePixel CreateNewTimePixel(int position, int tone )
         {
-            TimePixel tp = new TimePixel(tone, position, hand);
+            TimePixel tp = new TimePixel(tone, position, hand, _keySignature);
             tp.DurationChanged += TimePixel_DurationChanged;
             return tp;
         }
@@ -203,7 +203,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         internal void StoreTimePixel(int id)
         {
             TimePixel tp = FindTimePixel(id);
-            _storedTimePixel = tp.DeepCopy();
+            _storedTimePixel = tp.DeepCopy(_keySignature);
         }
 
         internal void RecallTimePixel(int id)
@@ -214,7 +214,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             int index = TimePixels.IndexOf(tp);
             if (index >= 0)
             {
-                var tpRestored = _storedTimePixel.DeepCopy();
+                var tpRestored = _storedTimePixel.DeepCopy(_keySignature);
                 TimePixels[index] = tpRestored;
                 _storedTimePixel = null;
                 //HideCurrentNoteInfo();
@@ -224,7 +224,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         internal void MoveTimePixel(int id, Point pt)
         {
             var timePixel = FindTimePixel(id);
-            timePixel.MoveTimePixel(pt);
+            timePixel.MoveTimePixel(pt, _keySignature);
             //DisplayCurrentNoteInfo(id);
         }
 
@@ -263,7 +263,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         {
             foreach (var t in TimePixels) 
             {
-                TimePixel copy = t.DeepCopy();
+                TimePixel copy = t.DeepCopy(_keySignature);
                 copy.DurationChanged += newModel.TimePixel_DurationChanged;
                 newModel.TimePixels.Add(copy);
             }
@@ -311,9 +311,10 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         {
             ScaleInformation.GetTimePixelInfoFromName(note.Name, _keySignature.BarAlteration, out int line, out NoteAlteration noteAlteration);
 
-            TimePixel tp = new TimePixel(line * TimePixel.ToneResolution, note.PositionInBar * _screeenPixelPerTick, note.Hand);
+            TimePixel tp = new TimePixel(line * TimePixel.ToneResolution, note.PositionInBar * _screeenPixelPerTick, note.Hand, _keySignature);
             tp.Duration = note.Duration * _screeenPixelPerTick;
             tp.NoteAlteration = noteAlteration;
+            tp.NoteTooltip = note.Name;
             tp.DurationChanged += TimePixel_DurationChanged;
 
             TimePixels.Add(tp);
@@ -323,7 +324,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         internal void RotateNoteAlteration(int id)
         {
             TimePixel tp = FindTimePixel(id);
-            tp.RotateNoteAlteration();
+            tp.RotateNoteAlteration(_keySignature);
         }
 
         internal void ConvertToTriplets(int id)
