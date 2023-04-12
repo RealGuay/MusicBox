@@ -65,10 +65,10 @@ namespace MusicBox.Services
 
         private void ConvertToMidiNotes(SheetInformation sheetInfo)
         {
-            int lastBarIndex = 0;
+            int positionOffset = 0;
             foreach (Segment segment in sheetInfo.Segments)
             {
-                lastBarIndex += ConvertToMidiNotes(segment, lastBarIndex);
+                positionOffset += ConvertToMidiNotes(segment, positionOffset);
             }
         }
 
@@ -94,15 +94,15 @@ namespace MusicBox.Services
             PlayingState?.Invoke(true);
         }
 
-        private int ConvertToMidiNotes(Segment segment, int firstBarOffset)
+        private int ConvertToMidiNotes(Segment segment, int positionOffset)
         {
-            int tickPerBar = (int)TickResolution.Normal * 4;  // SIC true only for 4:4
+            int tickPerBar = (int)TickResolution.Normal * segment.TimeSignature.BeatsPerBar;
 
             foreach (Bar bar in segment.Bars)
             {
                 foreach (SheetNote note in bar.SheetNotes)
                 {
-                    int absoluteOnPosition = (firstBarOffset + bar.PlayOrder) * tickPerBar + note.PositionInBar;
+                    int absoluteOnPosition = positionOffset + (bar.PlayOrder * tickPerBar) + note.PositionInBar;
                     int absoluteOffPosition = absoluteOnPosition + note.Duration - 1; // make sure to Release before replaying the same note
 
                     MidiNoteToPlay midiNoteOn = new MidiNoteToPlay { TickTimeToPlay = absoluteOnPosition, MidiKey = note.Key, Volume = 100 };
@@ -112,7 +112,7 @@ namespace MusicBox.Services
                     _midiNotes.Add(midiNoteOff);
                 }
             }
-            return segment.Bars.Count;
+            return segment.Bars.Count * tickPerBar; // position of the beginning of the next segment
         }
 
         public void Pause()
