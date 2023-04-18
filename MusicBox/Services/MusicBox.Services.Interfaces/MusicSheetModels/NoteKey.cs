@@ -62,11 +62,6 @@ namespace MusicBox.Services.Interfaces.MusicSheetModels
             throw new InvalidOperationException($"Invalid NoteAlteration: {noteAlteration}");
         }
 
-        public static NoteKey FindFromName(string name)
-        {
-            return Array.Find(NoteKeys, (n => n.Name == name));
-        }
-
         public static NoteKey Cm1 { get; } = new NoteKey("Cm1", 0);
         public static NoteKey Cm1s { get; } = new NoteKey("Cm1s", 1);
         public static NoteKey Dm1b { get; } = new NoteKey("Dm1b", 1);
