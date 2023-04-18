@@ -32,16 +32,34 @@ namespace MusicBox.Services.Interfaces.MusicSheetModels
                 }
                 return this;
             }
-            else
+            else if( noteAlteration == NoteAlteration.Flat)
             {
-                string alteredName = noteAlteration == NoteAlteration.Flat ? Name + "b" : Name + "s";
-                index = Array.FindIndex(NoteKeys, (n => n.Name == alteredName));
-                if (index != -1)
+                if(Name[^1] == 's')
                 {
-                    return NoteKeys[index];
+                    string alteredName = Name.Substring(0, Name.Length -1);
+                    return new NoteKey(alteredName, Key - 1);
                 }
-                throw new InvalidOperationException($"Unable to find NoteKey name: {alteredName}");  // cannot apply the alteration : end of keyboard
+                else
+                {
+                    string alteredName = Name + "b";
+                    return new NoteKey(alteredName, Key - 1);
+                }
+
             }
+            else if (noteAlteration == NoteAlteration.Sharp)
+            {
+                if (Name[^1] == 'b')
+                {
+                    string alteredName = Name.Substring(0, Name.Length - 1);
+                    return new NoteKey(alteredName, Key + 1);
+                }
+                else
+                {
+                    string alteredName = Name + "s";
+                    return new NoteKey(alteredName, Key + 1);
+                }
+            }
+            throw new InvalidOperationException($"Invalid NoteAlteration: {noteAlteration}");
         }
 
         public static NoteKey FindFromName(string name)

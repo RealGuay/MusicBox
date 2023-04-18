@@ -74,38 +74,40 @@ namespace MusicBox.Services.Interfaces.MusicSheetModels
         {
             int scaleIndex = (int)barAlteration;
             noteAlteration = NoteAlteration.None;
-            NoteKey noteKey = NoteKey.FindFromName(noteName);
 
-            int lineIndex = Array.IndexOf(AllScales[scaleIndex], noteKey);
+            string baseNoteName = noteName[..2];
+            int lineIndex = Array.FindIndex(AllScales[scaleIndex], n => n.Name[..2] == baseNoteName);
             if (lineIndex == -1)
             {
-                lineIndex = Array.FindIndex(AllScales[scaleIndex], n => n.Name[..2] == noteName[..2]);
-                if (lineIndex == -1)
-                {
-                    throw new InvalidOperationException("Unable to find staff line from note key!");
-                }
-                NoteKey NoteOnLine = AllScales[scaleIndex][lineIndex];
-                noteAlteration = SetNoteAlteration(scaleIndex, noteKey, NoteOnLine);
+                throw new InvalidOperationException($"Unable to find staff line from note name {noteName}!");
+            }
+            NoteKey NoteOnLine = AllScales[scaleIndex][lineIndex];
+            if (NoteOnLine.Name != noteName)
+            {
+                noteAlteration = SetNoteAlteration(noteName, NoteOnLine.Name);
             }
             line = lineIndex;
         }
 
-        private static NoteAlteration SetNoteAlteration(int scaleIndex, NoteKey noteKey, NoteKey NoteOnLine)
+        private static NoteAlteration SetNoteAlteration(string noteName, string noteOnLineName)
         {
-            NoteAlteration noteAlteration;
-            if (IsAFlatScale(scaleIndex))
+            if (noteName.Length > noteOnLineName.Length)
             {
-                noteAlteration = noteKey.Key < NoteOnLine.Key ? NoteAlteration.Flat : NoteAlteration.Natural;
-            }
-            else if (IsASharpScale(scaleIndex))
-            {
-                noteAlteration = noteKey.Key < NoteOnLine.Key ? NoteAlteration.Natural : NoteAlteration.Sharp;
+                var added = noteName.Substring(noteOnLineName.Length);
+                if (added.Length > 0)
+                {
+                    if (added.StartsWith("b")) return NoteAlteration.Flat; else return NoteAlteration.Sharp;
+                }
             }
             else
             {
-                noteAlteration = noteKey.Key < NoteOnLine.Key ? NoteAlteration.Flat : NoteAlteration.Sharp;
+                var added = noteOnLineName.Substring(noteName.Length);
+                if (added.Length > 0)
+                {
+                    if (added.StartsWith("b")) return NoteAlteration.Sharp; else return NoteAlteration.Flat;
+                }
             }
-            return noteAlteration;
+            throw new InvalidOperationException($"Unable to set note alteration: {noteName} {noteOnLineName}");
         }
 
         private static bool IsASharpScale(int scaleIndex)
