@@ -14,14 +14,70 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="300"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <GroupBox Grid.Row="0" Header="Information" Margin="5" MinWidth="330">
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.ColumnSpan="3"  HorizontalAlignment="Center" >
+            <Border Padding="50,5" >
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding SheetInformationVm.Title}" FontSize="30" FontWeight="Bold" MouseEnter="Title_MouseEnter"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+
+        <GroupBox   Grid.Row="2" Header="Play Info" >
+            <StackPanel Orientation="Vertical">
+                <ComboBox ItemsSource="{Binding SectionsToPlay}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedSectionToPlay}" Width="80" Margin="7">
+                </ComboBox>
+                <StackPanel>
+                    <ctrl:PlayAndTempo
+                        PlayCommand="{Binding PlayCommand}"
+                        PauseCommand="{Binding PauseCommand}"
+                        RewindCommand="{Binding RewindCommand}"
+                        IsPlaying="{Binding IsPlaying}"
+                        Tempo="{Binding SheetInformationVm.Tempo, Mode=TwoWay}" FontSize="12"></ctrl:PlayAndTempo>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+
+        <GroupBox Grid.Row="1" Header="Segments" MinWidth="250" Margin="5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel VerticalAlignment="Center" MinWidth="70">
+                    <Button Content="New"    Margin="10" Command="{Binding SegmentCollectionVm.NewSegmentCommand}"></Button>
+                    <Button Content="Repeat" Margin="10" Command="{Binding SegmentCollectionVm.RepeatSegmentCommand}"></Button>
+                    <Button Content="Copy"   Margin="10" Command="{Binding SegmentCollectionVm.CopySegmentCommand}"></Button>
+                    <Button Content="Delete" Margin="10" Command="{Binding SegmentCollectionVm.DeleteSegmentCommand}"></Button>
+                    <Button Content="↑↑↑" Margin="10"  Command="{Binding SegmentCollectionVm.MoveUpSegmentCommand}"></Button>
+                    <Button Content="↓↓↓" Margin="10"  Command="{Binding SegmentCollectionVm.MoveDownSegmentCommand}"></Button>
+                </StackPanel>
+
+                <ListBox  Grid.Column="1" ItemsSource="{Binding SegmentCollectionVm.SegmentEditorVms}" DisplayMemberPath="SegmentName" SelectedIndex="{Binding SegmentCollectionVm.SelectedSegmentIndex}" Margin="5" MinHeight="200" d:ItemsSource="{d:SampleData ItemCount=5}"></ListBox>
+
+                <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Grid.Row="1" Grid.RowSpan="3" Grid.Column="3" Header="Segment Editor" Margin="5">
+            <Border >
+                <local:SegmentEditor DataContext="{Binding SegmentCollectionVm.SelectedSegmentEditorVm}" />
+            </Border>
+        </GroupBox>
+
+        <GroupBox Grid.Row="1" Grid.ColumnSpan="3" Header="Information" HorizontalAlignment="Center" Visibility="{Binding InformationVisibility}" 
+                  Background="LightBlue" VerticalAlignment="Top" Margin="0,-10,0,0"
+                  Width="500" >
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"></RowDefinition>
@@ -38,67 +94,24 @@
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                     <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Title:" Margin="5,5" HorizontalAlignment="Right" />
-                <TextBox   Grid.Row="0" Grid.Column="1" Text="{Binding SheetInformationVm.Title}" Height="20" />
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Lyrics by:" Margin="5,5" HorizontalAlignment="Right" />
-                <TextBox   Grid.Row="1" Grid.Column="1" Text="{Binding SheetInformationVm.LyricsBy}"  Height="20" />
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Music by:" Margin="5,5" HorizontalAlignment="Right" />
-                <TextBox   Grid.Row="2" Grid.Column="1" Text="{Binding SheetInformationVm.MusicBy}"  Height="20" />
-                <TextBlock Grid.Row="3" Grid.Column="0" Text="Version:" Margin="5,5" HorizontalAlignment="Right" />
-                <TextBox   Grid.Row="3" Grid.Column="1" Text="{Binding SheetInformationVm.Version}"  Height="20" />
-                <TextBlock Grid.Row="4" Grid.Column="0" Text="File:" Margin="5,5" HorizontalAlignment="Right" />
-                <TextBox   Grid.Row="4" Grid.Column="1" Text="{Binding SheetInformationVm.Filename, Mode=TwoWay}" IsEnabled="False" Height="20" />
+                
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Title:" Margin="5,5" HorizontalAlignment="Right" />
+                <TextBox   Grid.Row="1" Grid.Column="1" Text="{Binding SheetInformationVm.Title}" Height="20" />
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Lyrics by:" Margin="5,5" HorizontalAlignment="Right" />
+                <TextBox   Grid.Row="2" Grid.Column="1" Text="{Binding SheetInformationVm.LyricsBy}"  Height="20" />
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="Music by:" Margin="5,5" HorizontalAlignment="Right" />
+                <TextBox   Grid.Row="3" Grid.Column="1" Text="{Binding SheetInformationVm.MusicBy}"  Height="20" />
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="Version:" Margin="5,5" HorizontalAlignment="Right" />
+                <TextBox   Grid.Row="4" Grid.Column="1" Text="{Binding SheetInformationVm.Version}"  Height="20" />
+                <TextBlock Grid.Row="5" Grid.Column="0" Text="File:" Margin="5,5" HorizontalAlignment="Right" />
+                <TextBox   Grid.Row="5" Grid.Column="1" Text="{Binding SheetInformationVm.Filename, Mode=TwoWay}" IsEnabled="False" Height="20" />
 
-                <StackPanel Grid.Row="6" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0" HorizontalAlignment="Center">
-                    <Button Content="Load" Command="{Binding LoadCommand}" Margin="10" Width="80" />
-                    <Button Content="Save"  Command="{Binding SaveCommand}" Margin="10" Width="80" />
+                <StackPanel Grid.Row="6" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0" HorizontalAlignment="Center" >
+                    <Button Content="Load" Command="{Binding LoadCommand}" Margin="0,10,20,10" Width="80" />
+                    <Button Content="Save"  Command="{Binding SaveCommand}" Margin="0,10,20,10"  Width="80" />
                 </StackPanel>
+                <Button Grid.Row="6" Grid.Column="1" Content="^" Command="{Binding CollapseInformationCommand}" Margin="0,0,0,-25" HorizontalAlignment="Right" Height="15"/>
             </Grid>
-        </GroupBox>
-
-        <GroupBox   Grid.Row="1" Header="Play Info" >
-            <StackPanel Orientation="Horizontal">
-                <ComboBox ItemsSource="{Binding SectionsToPlay}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedSectionToPlay}" Width="125" Margin="7">
-                </ComboBox>
-                <StackPanel Grid.Row="8" Grid.ColumnSpan="2" Orientation="Horizontal">
-                    <ctrl:PlayAndTempo
-                        PlayCommand="{Binding PlayCommand}"
-                        PauseCommand="{Binding PauseCommand}"
-                        RewindCommand="{Binding RewindCommand}"
-                        IsPlaying="{Binding IsPlaying}"
-                        Tempo="{Binding SheetInformationVm.Tempo, Mode=TwoWay}" FontSize="12"></ctrl:PlayAndTempo>
-                </StackPanel>
-            </StackPanel>
-        </GroupBox>
-
-        <GroupBox Grid.Row="2" Header="Segments" MinWidth="250" Margin="5">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-
-                <StackPanel VerticalAlignment="Center" MinWidth="70">
-                    <Button Content="New"    Margin="10" Command="{Binding SegmentCollectionVm.NewSegmentCommand}"></Button>
-                    <Button Content="Repeat" Margin="10" Command="{Binding SegmentCollectionVm.RepeatSegmentCommand}"></Button>
-                    <Button Content="Copy"   Margin="10" Command="{Binding SegmentCollectionVm.CopySegmentCommand}"></Button>
-                    <Button Content="Delete" Margin="10" Command="{Binding SegmentCollectionVm.DeleteSegmentCommand}"></Button>
-                </StackPanel>
-
-                <ListBox  Grid.Column="1" ItemsSource="{Binding SegmentCollectionVm.SegmentEditorVms}" DisplayMemberPath="SegmentName" SelectedIndex="{Binding SegmentCollectionVm.SelectedSegmentIndex}" Margin="5" MinHeight="200" d:ItemsSource="{d:SampleData ItemCount=5}"></ListBox>
-
-                <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                    <Button Content="↑↑↑" Margin="10"  Command="{Binding SegmentCollectionVm.MoveUpSegmentCommand}"></Button>
-                    <Button Content="↓↓↓" Margin="10"  Command="{Binding SegmentCollectionVm.MoveDownSegmentCommand}"></Button>
-                </StackPanel>
-            </Grid>
-        </GroupBox>
-
-        <GroupBox Grid.RowSpan="3" Grid.Column="3" Header="Segment Editor" Margin="5">
-            <Border >
-                <local:SegmentEditor DataContext="{Binding SegmentCollectionVm.SelectedSegmentEditorVm}" />
-            </Border>
         </GroupBox>
 
     </Grid>

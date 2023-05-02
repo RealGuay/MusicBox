@@ -1,12 +1,11 @@
 ﻿using MusicBox.Modules.SheetEditor.Models;
-using MusicBox.Modules.SheetEditor.Views;
 using MusicBox.Services.Interfaces;
 using MusicBox.Services.Interfaces.MusicSheetModels;
 using Prism.Commands;
 using Prism.Ioc;
 using Prism.Mvvm;
-using System;
 using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Input;
 
 namespace MusicBox.Modules.SheetEditor.ViewModels
@@ -42,6 +41,8 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             set { selectedSectionToPlay = value; }
         }
 
+        private Visibility informationVisibility;
+        public Visibility InformationVisibility { get => informationVisibility; set => SetProperty(ref informationVisibility, value); }
 
         #endregion Properties
 
@@ -52,6 +53,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         public ICommand PlayCommand { get; set; }
         public ICommand PauseCommand { get; set; }
         public ICommand RewindCommand { get; set; }
+        public ICommand CollapseInformationCommand { get; set; }
 
         #endregion ICommands
 
@@ -62,6 +64,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             _midiPlayer = containerProvider.Resolve<IMidiPlayer>();
             _sheetInformation = new SheetInformation(null); // sic Context
             _sheetInfoRepo = containerProvider.Resolve<ISheetInformationRepo>();
+            informationVisibility = Visibility.Visible;
 
             SegmentCollectionVm.PropertyChanged += SegmentCollectionVm_PropertyChanged;
 
@@ -70,6 +73,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             PlayCommand = new DelegateCommand(Play, CanPlay);
             PauseCommand = new DelegateCommand(Pause);
             RewindCommand = new DelegateCommand(Rewind);
+            CollapseInformationCommand = new DelegateCommand(CollapseInformation);
 
             SheetInformationVm.Tempo = 60;
             InitSectionsToPlay();
@@ -225,6 +229,11 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         private void Rewind()
         {
+        }
+
+        private void CollapseInformation()
+        {
+            InformationVisibility = Visibility.Collapsed;
         }
 
         #endregion Commands

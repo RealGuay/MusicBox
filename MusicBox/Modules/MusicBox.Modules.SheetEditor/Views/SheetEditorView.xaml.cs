@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MusicBox.Modules.SheetEditor.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -21,6 +22,12 @@ namespace MusicBox.Modules.SheetEditor.Views
         public SheetEditorView()
         {
             InitializeComponent();
+        }
+
+        private void Title_MouseEnter(object sender, MouseEventArgs e)
+        {
+            SheetEditorViewModel model = (SheetEditorViewModel)DataContext;
+            model.InformationVisibility = Visibility.Visible;
         }
     }
 }

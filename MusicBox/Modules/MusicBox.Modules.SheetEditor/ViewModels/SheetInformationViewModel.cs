@@ -53,6 +53,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         public SheetInformationViewModel(IContainerProvider containerProvider)
         {
             _sheetInformation = containerProvider.Resolve<SheetInformation>();
+            Title = "Sheet Title";
         }
 
         private void ChangeProperty<T>(T current, T value, Action<T> setOutput, [CallerMemberName] string propertyName = null)
