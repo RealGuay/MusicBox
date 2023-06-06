@@ -17,8 +17,8 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         ISegmentEditorViewModel DeepCopy();
 
-        void ExtractSegmentInfo(Segment currentSegment);
-        void ExtractSelectedBarInfo(Segment segment);
+        void ExtractSegmentInfo(Segment currentSegment, PlayingHand hand);
+        void ExtractSelectedBarInfo(Segment segment, PlayingHand hand);
         void LoadSegmentInfo(Segment segment);
     }
 }

@@ -14,6 +14,6 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         IBarEditorViewModel DeepCopy();
 
         void LoadBarInfo(Bar bar);
-        void ExtractBarInfo(Bar currentBar);
+        void ExtractBarInfo(Bar currentBar, PlayingHand hand);
     }
 }

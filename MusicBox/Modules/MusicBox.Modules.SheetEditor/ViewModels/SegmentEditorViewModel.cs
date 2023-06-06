@@ -86,7 +86,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         private void Play()
         {
-            ExtractSegmentInfo(_segment);
+            ExtractSegmentInfo(_segment, PlayingHand.Both);
             _midiPlayer.PlaySegment(_segment, Tempo);
         }
 
@@ -167,13 +167,13 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             return copy;
         }
 
-        public void ExtractSegmentInfo(Segment segment)
+        public void ExtractSegmentInfo(Segment segment, PlayingHand hand)
         {
             int barId = 0;
             segment.Bars.Clear();
             foreach (BarEditorViewModel barEditorVm in BarEditorVms)
             {
-                ExtractBarInfo(segment, barId, barEditorVm);
+                ExtractBarInfo(segment, barId, barEditorVm, hand);
                 barId++;
             }
             segment.Name = SegmentName;
@@ -181,17 +181,17 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             segment.KeySignature = SelectedKeySignature;
         }
 
-        private static void ExtractBarInfo(Segment segment, int barId, IBarEditorViewModel barEditorVm)
+        private void ExtractBarInfo(Segment segment, int barId, IBarEditorViewModel barEditorVm, PlayingHand hand)
         {
             Bar currentBar = new Bar() { Id = barId, PlayOrder = barId };
-            barEditorVm.ExtractBarInfo(currentBar);
+            barEditorVm.ExtractBarInfo(currentBar, hand);
             segment.Bars.Add(currentBar);
         }
 
-        public void ExtractSelectedBarInfo(Segment segment)
+        public void ExtractSelectedBarInfo(Segment segment, PlayingHand hand)
         {
             segment.Bars.Clear();
-            ExtractBarInfo(segment, 0, SelectedBarEditorVm);
+            ExtractBarInfo(segment, 0, SelectedBarEditorVm, hand);
             segment.Name = SegmentName;
             segment.TimeSignature = SelectedTimeSignature;
             segment.KeySignature = SelectedKeySignature;

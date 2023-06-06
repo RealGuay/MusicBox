@@ -7,6 +7,7 @@ namespace MusicBox.Services.Interfaces.MusicSheetModels
     public enum PlayingHand
     {
         Right,
-        Left
+        Left,
+        Both
     }
 }

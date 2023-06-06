@@ -69,15 +69,16 @@
 
         <GroupBox   Grid.Row="2" Header="Play Info" >
             <StackPanel Orientation="Vertical">
-                <ComboBox ItemsSource="{Binding SectionsToPlay}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedSectionToPlay}" Width="80" Margin="7"/>
-                <StackPanel>
-                    <ctrl:PlayAndTempo
+                <StackPanel Orientation="Horizontal">
+                    <ComboBox ItemsSource="{Binding SectionsToPlay}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedSectionToPlay}" Width="80" Margin="7"/>
+                    <ComboBox ItemsSource="{Binding HandsToPlay}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedHandToPlay}" Width="90" Margin="7"/>
+                </StackPanel>
+                <ctrl:PlayAndTempo
                         PlayCommand="{Binding PlayCommand}"
                         PauseCommand="{Binding PauseCommand}"
                         RewindCommand="{Binding RewindCommand}"
                         IsPlaying="{Binding IsPlaying}"
                         Tempo="{Binding SheetInformationVm.Tempo, Mode=TwoWay}" FontSize="12"/>
-                </StackPanel>
             </StackPanel>
         </GroupBox>
 

@@ -269,33 +269,36 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             }
         }
 
-        public void ExtractBarInfo(Bar currentBar)
+        public void ExtractBarInfo(Bar currentBar, PlayingHand hand)
         {
             if (currentBar is null)
             {
                 throw new ArgumentNullException(nameof(currentBar));
             }
-            ExtractBarNotes(currentBar);
+            ExtractBarNotes(currentBar, hand);
         }
 
-        private void ExtractBarNotes(Bar currentBar)
+        private void ExtractBarNotes(Bar currentBar, PlayingHand hand)
         {
             SheetNote sheetNote = null;
             foreach (TimePixel pixel in TimePixels)
             {
-                NoteKey noteKey = GetKey(pixel.Tone / TimePixel.ToneResolution, _keySignature.BarAlteration, pixel.NoteAlteration);
-
-                sheetNote = new SheetNote
+                if (hand == pixel.Hand || hand == PlayingHand.Both)
                 {
-                    Name = noteKey.Name,
-                    Key = noteKey.Key,
-                    TiedTo = SheetNote.Tie.ToNone,
-                    Volume = 100,
-                    PositionInBar = pixel.Position / _screeenPixelPerTick,
-                    Hand = pixel.Hand
-                };
-                sheetNote.Duration = pixel.Duration / _screeenPixelPerTick;
-                currentBar.SheetNotes.Add(sheetNote);
+                    NoteKey noteKey = GetKey(pixel.Tone / TimePixel.ToneResolution, _keySignature.BarAlteration, pixel.NoteAlteration);
+
+                    sheetNote = new SheetNote
+                    {
+                        Name = noteKey.Name,
+                        Key = noteKey.Key,
+                        TiedTo = SheetNote.Tie.ToNone,
+                        Volume = 100,
+                        PositionInBar = pixel.Position / _screeenPixelPerTick,
+                        Hand = pixel.Hand
+                    };
+                    sheetNote.Duration = pixel.Duration / _screeenPixelPerTick;
+                    currentBar.SheetNotes.Add(sheetNote);
+                }
             }
         }
 

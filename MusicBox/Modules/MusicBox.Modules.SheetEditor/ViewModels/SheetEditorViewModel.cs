@@ -4,7 +4,9 @@ using MusicBox.Services.Interfaces.MusicSheetModels;
 using Prism.Commands;
 using Prism.Ioc;
 using Prism.Mvvm;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Input;
 
 namespace MusicBox.Modules.SheetEditor.ViewModels
@@ -33,12 +35,16 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         public List<SectionToPlay> SectionsToPlay { get; private set; }
 
         private SectionToPlay selectedSectionToPlay;
-
         public SectionToPlay SelectedSectionToPlay
         {
             get { return selectedSectionToPlay; }
             set { selectedSectionToPlay = value; }
         }
+
+        public List<HandToPlay> HandsToPlay { get; private set; }
+
+        private HandToPlay selectedHandToPlay;
+        public HandToPlay SelectedHandToPlay { get => selectedHandToPlay; set => selectedHandToPlay = value; }
 
         #endregion Properties
 
@@ -70,16 +76,27 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
             SheetInformationVm.Tempo = 60;
             InitSectionsToPlay();
+            InitHandsToPlay();
+        }
+
+        private void InitHandsToPlay()
+        {
+            HandsToPlay = new List<HandToPlay> {
+                new HandToPlay() { Hand=PlayingHand.Both,  Name="Both Hands"},
+                new HandToPlay() { Hand=PlayingHand.Left,  Name="Left Hand"},
+                new HandToPlay() { Hand=PlayingHand.Right, Name="Right Hand"},
+            };
+            SelectedHandToPlay = HandsToPlay.First();
         }
 
         private void InitSectionsToPlay()
         {
             SectionsToPlay = new List<SectionToPlay> {
-                new SectionToPlay() { Section=Section.SHEET, Name="Sheet"},
+                new SectionToPlay() { Section=Section.SHEET,   Name="Sheet"},
                 new SectionToPlay() { Section=Section.SEGMENT, Name="Segment"},
-                new SectionToPlay() { Section=Section.BAR, Name="Bar"}
+                new SectionToPlay() { Section=Section.BAR,     Name="Bar"}
                 };
-            SelectedSectionToPlay = SectionsToPlay[0];
+            SelectedSectionToPlay = SectionsToPlay.First();
         }
 
         private void SegmentCollectionVm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -195,10 +212,10 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             }
         }
 
-        private static Segment ExtractOneSegment(ISegmentEditorViewModel segmentEditorVm)
+        private Segment ExtractOneSegment(ISegmentEditorViewModel segmentEditorVm)
         {
             Segment segment = new Segment();
-            segmentEditorVm.ExtractSegmentInfo(segment);
+            segmentEditorVm.ExtractSegmentInfo(segment, SelectedHandToPlay.Hand);
             return segment;
         }
 
@@ -211,7 +228,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         private void ExtractSelectedBar()
         {
             Segment segment = new Segment();
-            SegmentCollectionVm.SelectedSegmentEditorVm.ExtractSelectedBarInfo(segment);
+            SegmentCollectionVm.SelectedSegmentEditorVm.ExtractSelectedBarInfo(segment, SelectedHandToPlay.Hand);
             _sheetInformation.Segments.Add(segment);
         }
 
