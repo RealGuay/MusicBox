@@ -54,12 +54,6 @@
 
             <Button Content="Add Bar" Command="{Binding AddBarCommand}" Margin="10,0" VerticalAlignment="Center" Width="60" />
             <Button Content="Delete Bar" Command="{Binding DeleteBarCommand}" Margin="5,0,10,0"  VerticalAlignment="Center"  Width="60" />
-            <ctrl:PlayAndTempo
-                PlayCommand="{Binding PlayCommand}"
-                PauseCommand="{Binding PauseCommand}"
-                RewindCommand="{Binding RewindToZeroCommand}"
-                IsPlaying="{Binding IsPlaying}"
-                Tempo="{Binding Tempo, Mode=TwoWay}" />
         </StackPanel>
     </Grid>
 </UserControl>
