@@ -72,13 +72,6 @@ namespace MusicBox.Services
             }
         }
 
-        public void PlaySegment(Segment segment, int tempo)
-        {
-            _midiNotes.Clear();
-            ConvertToMidiNotes(segment, 0);
-            PlayMidiNotes(tempo);
-        }
-
         private void PlayMidiNotes(int tempo)
         {
             _midiNotes.Sort((a, b) => a.TickTimeToPlay.CompareTo(b.TickTimeToPlay));
@@ -123,8 +116,13 @@ namespace MusicBox.Services
 
         public void RewindToZero()
         {
-            _beatMaker.Stop();
+            Pause();
             _beatMaker.RewindToZero();
+        }
+
+        public void SetTempo(int tempo)
+        {
+            _beatMaker.SetTempo(tempo);
         }
     }
 }

@@ -4,9 +4,9 @@ using MusicBox.Services.Interfaces.MusicSheetModels;
 using Prism.Commands;
 using Prism.Ioc;
 using Prism.Mvvm;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
 namespace MusicBox.Modules.SheetEditor.ViewModels
@@ -16,15 +16,18 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         private IMidiPlayer _midiPlayer;
         private SheetInformation _sheetInformation;
         private readonly ISheetInformationRepo _sheetInfoRepo;
+        private const int DefaultTempo = 60;
 
         #region Properties
+
+        private bool isPlaying;
+        private HandToPlay selectedHandToPlay;
+        private int tempo;
 
         public SheetInformationViewModel SheetInformationVm { get; private set; }
         public SegmentCollectionViewModel SegmentCollectionVm { get; private set; }
 
         public bool IsSegmentSelected { get => SegmentCollectionVm.SelectedSegmentEditorVm != null; }
-
-        private bool isPlaying;
 
         public bool IsPlaying
         {
@@ -32,9 +35,20 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             set { SetProperty(ref isPlaying, value); }
         }
 
+        public int Tempo { get => tempo; set => SetTempo(ref tempo, value); }
+
+        private void SetTempo(ref int tempo, int value, [CallerMemberName] string propertyName = null)
+        {
+            if (SetProperty(ref tempo, value, propertyName))
+            {
+                ChangeMidiPlayerTempo(tempo);
+            }
+        }
+
         public List<SectionToPlay> SectionsToPlay { get; private set; }
 
         private SectionToPlay selectedSectionToPlay;
+
         public SectionToPlay SelectedSectionToPlay
         {
             get { return selectedSectionToPlay; }
@@ -43,7 +57,6 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         public List<HandToPlay> HandsToPlay { get; private set; }
 
-        private HandToPlay selectedHandToPlay;
         public HandToPlay SelectedHandToPlay { get => selectedHandToPlay; set => selectedHandToPlay = value; }
 
         #endregion Properties
@@ -66,6 +79,8 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             _sheetInformation = new SheetInformation(null); // sic Context
             _sheetInfoRepo = containerProvider.Resolve<ISheetInformationRepo>();
 
+            _midiPlayer.PlayingState += _midiPlayer_PlayingState;
+
             SegmentCollectionVm.PropertyChanged += SegmentCollectionVm_PropertyChanged;
 
             LoadCommand = new DelegateCommand(Load);
@@ -74,9 +89,15 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             PauseCommand = new DelegateCommand(Pause);
             RewindCommand = new DelegateCommand(Rewind);
 
-            SheetInformationVm.Tempo = 60;
+            SheetInformationVm.Tempo = DefaultTempo;
+            Tempo = DefaultTempo;
             InitSectionsToPlay();
             InitHandsToPlay();
+        }
+
+        private void _midiPlayer_PlayingState(bool isPlaying)
+        {
+            IsPlaying = isPlaying;
         }
 
         private void InitHandsToPlay()
@@ -166,7 +187,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             {
                 ExtractSelectedBar();
             }
-            _midiPlayer.PlaySheet(_sheetInformation, 60);   // tempo
+            _midiPlayer.PlaySheet(_sheetInformation, Tempo);   // tempo
             IsPlaying = true;
         }
 
@@ -234,11 +255,18 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
 
         private void Pause()
         {
+            _midiPlayer.Pause();
             IsPlaying = false;
         }
 
         private void Rewind()
         {
+            _midiPlayer.RewindToZero();
+        }
+
+        private void ChangeMidiPlayerTempo(int tempo)
+        {
+            _midiPlayer.SetTempo(tempo);
         }
 
         #endregion Commands

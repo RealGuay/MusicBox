@@ -78,7 +78,7 @@
                         PauseCommand="{Binding PauseCommand}"
                         RewindCommand="{Binding RewindCommand}"
                         IsPlaying="{Binding IsPlaying}"
-                        Tempo="{Binding SheetInformationVm.Tempo, Mode=TwoWay}" FontSize="12"/>
+                        Tempo="{Binding Tempo, Mode=TwoWay}" FontSize="12"/>
             </StackPanel>
         </GroupBox>
 

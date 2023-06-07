@@ -9,8 +9,8 @@ namespace MusicBox.Services.Interfaces
         event Action<bool> PlayingState;
 
         void Pause();
-        void PlaySegment(Segment segment, int tempo);
         void PlaySheet(SheetInformation sheetInfo, int tempo);
         void RewindToZero();
+        void SetTempo(int tempo);
     }
 }
