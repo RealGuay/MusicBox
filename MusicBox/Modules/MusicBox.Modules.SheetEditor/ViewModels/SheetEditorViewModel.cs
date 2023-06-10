@@ -177,15 +177,15 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             _sheetInformation.Segments.Clear();
             if (SelectedSectionToPlay.Section == Section.SHEET)
             {
-                ExtractAllSegments();
+                ExtractAllSegments(SelectedHandToPlay.Hand);
             }
             else if (SelectedSectionToPlay.Section == Section.SEGMENT)
             {
-                ExtractSelectedSegment();
+                ExtractSelectedSegment(SelectedHandToPlay.Hand);
             }
             else
             {
-                ExtractSelectedBar();
+                ExtractSelectedBar(SelectedHandToPlay.Hand);
             }
             _midiPlayer.PlaySheet(_sheetInformation, Tempo);   // tempo
             IsPlaying = true;
@@ -199,7 +199,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
         private void ExtractSheetInfo()
         {
             ExtractGeneralInfo();
-            ExtractAllSegments();
+            ExtractAllSegments(PlayingHand.Both);
         }
 
         private void ExtractGeneralInfo()
@@ -211,7 +211,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             _sheetInformation.Filename = SheetInformationVm.Filename;
         }
 
-        private void ExtractAllSegments()
+        private void ExtractAllSegments(PlayingHand hand)
         {
             _sheetInformation.Segments.Clear();
 
@@ -222,7 +222,7 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
                 Segment currentSegment;
                 if (!processedSegments.ContainsKey(segmentEditorVm))
                 {
-                    currentSegment = ExtractOneSegment(segmentEditorVm);
+                    currentSegment = ExtractOneSegment(segmentEditorVm, hand);
                     processedSegments.Add(segmentEditorVm, currentSegment);
                 }
                 else
@@ -233,23 +233,23 @@ namespace MusicBox.Modules.SheetEditor.ViewModels
             }
         }
 
-        private Segment ExtractOneSegment(ISegmentEditorViewModel segmentEditorVm)
+        private Segment ExtractOneSegment(ISegmentEditorViewModel segmentEditorVm, PlayingHand hand)
         {
             Segment segment = new Segment();
-            segmentEditorVm.ExtractSegmentInfo(segment, SelectedHandToPlay.Hand);
+            segmentEditorVm.ExtractSegmentInfo(segment, hand);
             return segment;
         }
 
-        private void ExtractSelectedSegment()
+        private void ExtractSelectedSegment(PlayingHand hand)
         {
-            Segment segment = ExtractOneSegment(SegmentCollectionVm.SelectedSegmentEditorVm);
+            Segment segment = ExtractOneSegment(SegmentCollectionVm.SelectedSegmentEditorVm, hand);
             _sheetInformation.Segments.Add(segment);
         }
 
-        private void ExtractSelectedBar()
+        private void ExtractSelectedBar(PlayingHand hand)
         {
             Segment segment = new Segment();
-            SegmentCollectionVm.SelectedSegmentEditorVm.ExtractSelectedBarInfo(segment, SelectedHandToPlay.Hand);
+            SegmentCollectionVm.SelectedSegmentEditorVm.ExtractSelectedBarInfo(segment, hand);
             _sheetInformation.Segments.Add(segment);
         }
 
