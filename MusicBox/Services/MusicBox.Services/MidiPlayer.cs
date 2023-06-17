@@ -89,7 +89,12 @@ namespace MusicBox.Services
 
         private int ConvertToMidiNotes(Segment segment, int positionOffset)
         {
-            int tickPerBar = (int)TickResolution.Normal * segment.TimeSignature.BeatsPerBar;
+            int tickPerQuarter = (int)TickResolution.Normal;
+
+            TimeSignature ts = segment.TimeSignature;
+            int notesPerBar = ts.BeatsPerBar * ts.NotesPerBeat;
+            int quarterPerBar = notesPerBar / ts.NotesPerQuarter;
+            int tickPerBar = tickPerQuarter * quarterPerBar;
 
             foreach (Bar bar in segment.Bars)
             {
